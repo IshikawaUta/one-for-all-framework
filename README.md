@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="public/images/logo.png" width="128" height="128" alt="OFA Framework Logo">
+  <img src="public/images/logo.png" width="500" height="500" alt="OFA Framework Logo">
 </p>
 
 # ⚡ One-For-All (OFA) Framework
