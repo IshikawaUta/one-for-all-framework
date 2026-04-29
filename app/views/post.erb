@@ -1,0 +1,33 @@
+<div class="glass-card anime-element" style="text-align: left; max-width: 800px; margin: 0 auto;">
+    <div style="margin-bottom: 2rem;">
+        <span class="badge" style="background: var(--primary); color: white; padding: 0.3rem 0.8rem; border-radius: 0.5rem; font-size: 0.8rem; font-weight: 700;">
+            <%= @post.category.upcase %>
+        </span>
+        <h1 style="margin: 1rem 0 0.5rem 0; font-size: 3rem; line-height: 1.1;"><%= @post.title %></h1>
+        <p style="color: var(--text-muted); font-size: 0.95rem;">Published on <%= @post.created_at.strftime('%B %d, %Y') %></p>
+    </div>
+
+    <% if @post.image_url && !@post.image_url.empty? %>
+        <img src="<%= @post.image_url %>" alt="<%= @post.title %>" style="width: 100%; max-height: 400px; object-fit: cover; border-radius: 1.5rem; margin-bottom: 2.5rem; border: 1px solid var(--border);">
+    <% end %>
+
+    <div class="post-content markdown-content">
+        <%= markdown(@post.content) %>
+    </div>
+
+    <div class="mt-12 pt-8 border-t border-white/5">
+        <a href="/" class="btn-secondary">
+            <i class="fas fa-arrow-left mr-2"></i> Back to Blog
+        </a>
+    </div>
+</div>
+
+<script>
+    anime({
+        targets: '.anime-element',
+        translateY: [30, 0],
+        opacity: [0, 1],
+        duration: 800,
+        easing: 'easeOutExpo'
+    });
+</script>

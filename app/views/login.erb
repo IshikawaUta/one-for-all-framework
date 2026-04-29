@@ -1,0 +1,45 @@
+<div class="glass-panel max-w-md mx-auto p-10 space-y-8">
+    <div class="text-center">
+        <h2 class="text-3xl font-black tracking-tight">Welcome Back</h2>
+        <p class="text-slate-500 dark:text-slate-400 mt-2">Sign in to manage your framework.</p>
+    </div>
+
+    <% if @error %>
+        <div class="bg-red-500/10 border border-red-500/20 text-red-500 p-4 rounded-2xl text-sm font-semibold flex items-center gap-3">
+            <i class="fas fa-circle-exclamation"></i>
+            <%= @error %>
+        </div>
+    <% end %>
+
+    <form action="/login" method="POST" class="space-y-4">
+        <%= csrf_tag %>
+        <div class="space-y-1">
+            <label class="text-xs font-bold uppercase tracking-wider text-slate-400 ml-1">Username</label>
+            <div class="relative">
+                <i class="fas fa-user absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                <input type="text" name="username" placeholder="admin" required autofocus
+                    class="w-full pl-12 pr-4 py-3 bg-white/5 border border-white/10 rounded-2xl focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all">
+            </div>
+        </div>
+        
+        <div class="space-y-1">
+            <label class="text-xs font-bold uppercase tracking-wider text-slate-400 ml-1">Password</label>
+            <div class="relative">
+                <i class="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                <input type="password" name="password" placeholder="••••••••" required
+                    class="w-full pl-12 pr-4 py-3 bg-white/5 border border-white/10 rounded-2xl focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all">
+            </div>
+        </div>
+
+        <button type="submit" class="btn-premium w-full mt-4">
+            Sign In <i class="fas fa-sign-in-alt ml-2"></i>
+        </button>
+    </form>
+
+    <div class="text-center pt-4 border-t border-white/5">
+        <p class="text-sm text-slate-500 dark:text-slate-400">
+            Forgot password? <a href="#" class="text-primary font-bold hover:underline">Contact System Admin</a>
+        </p>
+    </div>
+</div>
+

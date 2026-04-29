@@ -1,0 +1,21 @@
+<div class="glass-card anime-element">
+    <h1><%= @title %></h1>
+    <div class="page-content markdown-content" style="margin-top: 2rem;">
+        <%= markdown(@content) %>
+    </div>
+    <div class="mt-12 pt-8 border-t border-white/5">
+        <a href="/" class="btn-secondary">
+            <i class="fas fa-arrow-left mr-2"></i> Back to Home
+        </a>
+    </div>
+</div>
+
+<script>
+    anime({
+        targets: '.anime-element',
+        translateY: [30, 0],
+        opacity: [0, 1],
+        duration: 1000,
+        easing: 'easeOutExpo'
+    });
+</script>

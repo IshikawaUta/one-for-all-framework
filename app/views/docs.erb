@@ -1,0 +1,140 @@
+<div class="space-y-12 pb-20">
+    <div class="text-left">
+        <div class="badge-premium">Documentation v1.0</div>
+        <h1 class="text-5xl font-black tracking-tighter mb-4 text-slate-700 dark:text-white">Framework <span class="text-primary">Guide</span></h1>
+        <p class="text-xl text-slate-500 max-w-2xl leading-relaxed">Everything you need to know about building premium web applications with the One-For-All framework.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <!-- Sidebar Navigation -->
+        <aside class="md:col-span-1 space-y-4 sticky top-28 h-fit hidden md:block">
+            <h4 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-4 ml-4">Table of Contents</h4>
+            <nav class="space-y-1">
+                <a href="#intro" class="block px-4 py-2 rounded-xl hover:bg-primary/5 text-slate-600 hover:text-primary transition-all font-semibold border-l-2 border-transparent hover:border-primary">Introduction</a>
+                <a href="#cli" class="block px-4 py-2 rounded-xl hover:bg-primary/5 text-slate-600 hover:text-primary transition-all font-semibold border-l-2 border-transparent hover:border-primary">CLI Power Tools</a>
+                <a href="#structure" class="block px-4 py-2 rounded-xl hover:bg-primary/5 text-slate-600 hover:text-primary transition-all font-semibold border-l-2 border-transparent hover:border-primary">Project Structure</a>
+                <a href="#routing" class="block px-4 py-2 rounded-xl hover:bg-primary/5 text-slate-600 hover:text-primary transition-all font-semibold border-l-2 border-transparent hover:border-primary">Routing System</a>
+                <a href="#cms" class="block px-4 py-2 rounded-xl hover:bg-primary/5 text-slate-600 hover:text-primary transition-all font-semibold border-l-2 border-transparent hover:border-primary">CMS & Features</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="md:col-span-3 space-y-16">
+            <!-- Introduction -->
+            <section id="intro" class="glass-panel p-8 md:p-12 text-left">
+                <h2 class="text-3xl font-black tracking-tight mb-6 flex items-center gap-3">
+                    <i class="fas fa-star text-primary"></i> Introduction
+                </h2>
+                <div class="markdown-content">
+                    <p><strong>One-For-All (OFA)</strong> is a high-performance Ruby web framework focused on speed and aesthetics. It uses a modular architecture built on top of the <em>Eks-Cent</em> engine, allowing you to scale from simple landing pages to complex CMS-driven sites effortlessly.</p>
+                    <p>Our philosophy is "Premium by Default". You shouldn't have to spend hours tweaking CSS just to get a modern look. With OFA, you get Glassmorphism, animations, and responsive layouts baked in.</p>
+                </div>
+            </section>
+
+            <!-- CLI Commands -->
+            <section id="cli" class="space-y-6 text-left">
+                <h2 class="text-3xl font-black tracking-tight flex items-center gap-3 ml-2">
+                    <i class="fas fa-terminal text-primary"></i> CLI Power Tools
+                </h2>
+                <div class="glass-panel overflow-hidden">
+                    <table class="w-full text-left border-collapse">
+                        <thead class="bg-primary/5 border-b border-white/10">
+                            <tr>
+                                <th class="px-6 py-4 text-xs font-black uppercase text-slate-400">Command</th>
+                                <th class="px-6 py-4 text-xs font-black uppercase text-slate-400">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-white/5">
+                            <tr>
+                                <td class="px-6 py-4 font-mono text-sm text-primary">./ofa init</td>
+                                <td class="px-6 py-4 text-slate-600 dark:text-slate-400">Initializes the project environment and DB.</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 font-mono text-sm text-primary">./ofa run</td>
+                                <td class="px-6 py-4 text-slate-600 dark:text-slate-400">Starts the Eksa development server.</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 font-mono text-sm text-primary">./ofa g controller [name]</td>
+                                <td class="px-6 py-4 text-slate-600 dark:text-slate-400">Generates a new controller in app/controllers.</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 font-mono text-sm text-primary">./ofa theme [light|dark]</td>
+                                <td class="px-6 py-4 text-slate-600 dark:text-slate-400">Instantly toggles between UI themes.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Structure -->
+            <section id="structure" class="glass-panel p-8 md:p-12 text-left">
+                <h2 class="text-3xl font-black tracking-tight mb-6 flex items-center gap-3">
+                    <i class="fas fa-folder-tree text-primary"></i> Project Structure
+                </h2>
+                <div class="space-y-4">
+                    <div class="p-4 bg-slate-900 rounded-2xl font-mono text-sm text-blue-400 overflow-x-auto">
+<pre>
+/app
+  /controllers  # Logic handlers
+  /models       # Database entities
+  /views        # ERB templates
+/config
+  /database.rb  # DB connections
+  /routes.rb    # URL mapping
+/public
+  /images       # Static assets
+  /css          # Custom styles
+</pre>
+                    </div>
+                    <p class="text-slate-500 text-sm">Most of your work will happen inside the <code>/app</code> directory following the standard MVC pattern.</p>
+                </div>
+            </section>
+
+            <!-- Routing -->
+            <section id="routing" class="space-y-6 text-left">
+                <h2 class="text-3xl font-black tracking-tight flex items-center gap-3 ml-2">
+                    <i class="fas fa-route text-primary"></i> Routing System
+                </h2>
+                <div class="glass-panel p-8">
+                    <p class="text-slate-600 dark:text-slate-400 mb-6">Routes are defined in <code>config/routes.rb</code> using a clean Ruby DSL. You can map simple URLs or use the <code>resources</code> helper for full CRUD.</p>
+                    <div class="p-4 bg-slate-900 rounded-2xl font-mono text-sm text-green-400">
+<pre>
+# config/routes.rb
+get "/" do |req, res|
+  res.render "home"
+end
+
+resources :posts
+</pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CMS -->
+            <section id="cms" class="glass-panel p-8 md:p-12 text-left bg-gradient-to-br from-primary/10 to-transparent">
+                <h2 class="text-3xl font-black tracking-tight mb-6 flex items-center gap-3">
+                    <i class="fas fa-shield-halved text-primary"></i> CMS & Auth
+                </h2>
+                <div class="markdown-content">
+                    <p>OFA comes with a secure built-in CMS dashboard accessible at <code>/dashboard</code>. To manage features, use the CLI:</p>
+                    <div class="p-4 bg-white/5 border border-white/10 rounded-2xl mb-4 font-mono text-sm">
+                        ./ofa feature enable auth<br>
+                        ./ofa feature enable cms
+                    </div>
+                    <p>Authentication is handled via BCrypt hashing with an 8-hour session sliding expiration window for optimal security.</p>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+</script>

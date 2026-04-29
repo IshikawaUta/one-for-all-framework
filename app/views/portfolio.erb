@@ -1,0 +1,73 @@
+<div class="header-section anime-element" style="margin-bottom: 3rem;">
+    <h1>Creative Portfolio</h1>
+    <p>Showcasing my best work, creative journey, and engineering experiments.</p>
+</div>
+
+<div class="portfolio-grid grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
+    <% if @projects.empty? %>
+        <div class="glass-card col-span-full py-20 text-center">
+            <div class="w-20 h-20 bg-primary/10 text-primary rounded-3xl flex items-center justify-center mx-auto mb-6 text-3xl">
+                <i class="fas fa-folder-open"></i>
+            </div>
+            <p class="text-xl font-bold text-slate-400">No projects displayed yet.</p>
+        </div>
+    <% end %>
+
+    <% @projects.each do |project| %>
+    <div class="project-card glass-card flex flex-col h-full !p-0">
+        <div class="card-glow"></div>
+        
+        <div class="relative overflow-hidden aspect-video group-hover:scale-[1.02] transition-transform duration-700">
+            <% if project.image_url && !project.image_url.empty? %>
+                <img src="<%= project.image_url %>" alt="<%= project.title %>" class="w-full h-full object-cover">
+            <% else %>
+                <div class="w-full h-full bg-gradient-to-br from-primary to-secondary opacity-20"></div>
+            <% end %>
+            <div class="absolute inset-0 bg-gradient-to-t from-bg via-transparent to-transparent opacity-60"></div>
+        </div>
+        
+        <div class="p-8 flex flex-col flex-grow relative z-10">
+            <div class="badge-premium">Featured Project</div>
+            <h3 class="text-2xl font-black mb-4 tracking-tight group-hover:text-primary transition-colors"><%= project.title %></h3>
+            
+            <div class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed mb-8 flex-grow">
+                <%= markdown(project.description.split("\n")[0..2].join("\n") + "...") %>
+            </div>
+            
+            <div class="flex items-center justify-between mt-auto pt-6 border-t border-white/5">
+                <% if project.link && !project.link.empty? %>
+                    <a href="<%= project.link %>" target="_blank" class="btn-premium !px-6 !py-2.5 !text-sm">
+                        <i class="fas fa-external-link-alt mr-2"></i> Live Demo
+                    </a>
+                <% end %>
+                <a href="/projects/<%= project.slug %>" class="group/link flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-primary transition-colors">
+                    Case Study <i class="fas fa-arrow-right group-hover/link:translate-x-1 transition-transform"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    <% end %>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        anime({
+            targets: '.header-section',
+            translateY: [20, 0],
+            opacity: [0, 1],
+            duration: 800,
+            easing: 'easeOutCubic',
+            delay: 400
+        });
+
+        anime({
+            targets: '.project-card',
+            translateY: [50, 0],
+            scale: [0.95, 1],
+            opacity: [0, 1],
+            duration: 800,
+            delay: anime.stagger(150, {start: 600}),
+            easing: 'easeOutExpo'
+        });
+    });
+</script>

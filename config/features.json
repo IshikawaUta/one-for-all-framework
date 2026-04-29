@@ -1,0 +1,7 @@
+{
+  "auth": true,
+  "cms": true,
+  "type": "landing_page",
+  "theme": "light_glass",
+  "storage": "cloudinary"
+}

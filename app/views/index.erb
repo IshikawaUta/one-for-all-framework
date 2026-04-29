@@ -1,0 +1,70 @@
+<div class="text-center space-y-6 max-w-2xl mx-auto py-12">
+    <div class="inline-flex items-center px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-wider animate-pulse">
+        Framework Version 1.0.0
+    </div>
+    
+    <h1 class="text-5xl md:text-7xl font-black tracking-tight leading-tight">
+        One-For-All
+    </h1>
+    
+    <p class="text-lg md:text-xl text-slate-500 dark:text-slate-400 max-w-xl mx-auto">
+        The high-performance MVC framework for modern Rubyists. Built for speed, aesthetics, and developer happiness.
+    </p>
+
+    <div class="flex flex-wrap justify-center gap-4 pt-4">
+        <% if session[:user_id] || session[:username] %>
+            <a href="/dashboard" class="btn-premium">
+                <i class="fas fa-gauge-high mr-2"></i> Dashboard
+            </a>
+            <form action="/logout" method="POST" class="inline">
+                <%= csrf_tag if defined?(csrf_tag) %>
+                <button type="submit" class="px-8 py-3 rounded-2xl border border-white/10 dark:border-white/5 font-semibold text-slate-600 dark:text-slate-300 hover:bg-white/5 transition-all">
+                    Logout
+                </button>
+            </form>
+        <% else %>
+            <a href="/login" class="btn-premium">
+                Get Started <i class="fas fa-arrow-right ml-2 text-sm"></i>
+            </a>
+            <a href="/docs" class="px-8 py-3 rounded-2xl border border-white/10 dark:border-white/5 font-semibold text-slate-600 dark:text-slate-300 hover:bg-white/5 transition-all">
+                Read Documentation
+            </a>
+        <% end %>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-24">
+    <div class="glass-card !p-10 group">
+        <div class="card-glow"></div>
+        <div class="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center text-primary text-3xl mb-8 group-hover:scale-110 group-hover:bg-primary group-hover:text-white transition-all duration-500 shadow-xl shadow-primary/10">
+            <i class="fas fa-rocket"></i>
+        </div>
+        <h3 class="text-2xl font-black mb-4 tracking-tighter">Lightning Fast</h3>
+        <p class="text-slate-500 dark:text-slate-400 leading-relaxed">
+            Optimized runtime performance and zero-config caching out of the box. Experience 100/100 Lighthouse scores.
+        </p>
+    </div>
+
+    <div class="glass-card !p-10 group">
+        <div class="card-glow !bg-secondary/10"></div>
+        <div class="w-16 h-16 bg-secondary/10 rounded-2xl flex items-center justify-center text-secondary text-3xl mb-8 group-hover:scale-110 group-hover:bg-secondary group-hover:text-white transition-all duration-500 shadow-xl shadow-secondary/10">
+            <i class="fas fa-gem"></i>
+        </div>
+        <h3 class="text-2xl font-black mb-4 tracking-tighter">Clean MVC</h3>
+        <p class="text-slate-500 dark:text-slate-400 leading-relaxed">
+            Beautifully structured code inspired by the best modern web paradigms. Scalable, maintainable, and elegant.
+        </p>
+    </div>
+
+    <div class="glass-card !p-10 group">
+        <div class="card-glow"></div>
+        <div class="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center text-primary text-3xl mb-8 group-hover:scale-110 group-hover:bg-primary group-hover:text-white transition-all duration-500 shadow-xl shadow-primary/10">
+            <i class="fas fa-shield-halved"></i>
+        </div>
+        <h3 class="text-2xl font-black mb-4 tracking-tighter">Secure by Default</h3>
+        <p class="text-slate-500 dark:text-slate-400 leading-relaxed">
+            Built-in protection against common vulnerabilities. CSRF, XSS, and SQL Injection mitigation ready.
+        </p>
+    </div>
+</div>
+

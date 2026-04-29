@@ -1,0 +1,70 @@
+<div class="header-section anime-element" style="margin-bottom: 3rem;">
+    <h1>Blog Feed</h1>
+    <p>Thoughts, tutorials, and insights from the edge of technology.</p>
+</div>
+
+<div class="blog-list grid grid-cols-1 gap-6 text-left">
+    <% if @posts.empty? %>
+        <div class="glass-card py-20 text-center">
+            <div class="w-20 h-20 bg-primary/10 text-primary rounded-3xl flex items-center justify-center mx-auto mb-6 text-3xl">
+                <i class="fas fa-feather-pointed"></i>
+            </div>
+            <p class="text-xl font-bold text-slate-400">No articles published yet.</p>
+        </div>
+    <% end %>
+
+    <% @posts.each do |post| %>
+    <article class="blog-item glass-card !p-0 flex flex-col md:flex-row group cursor-pointer" onclick="location.href='/posts/<%= post.slug %>'">
+        <div class="card-glow"></div>
+        
+        <div class="md:w-1/3 h-48 md:h-auto bg-gradient-to-br from-primary/20 to-secondary/20 relative overflow-hidden">
+            <% if post.image_url && !post.image_url.empty? %>
+                <img src="<%= post.image_url %>" alt="<%= post.title %>" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+            <% else %>
+                <div class="absolute inset-0 flex items-center justify-center text-primary/30 group-hover:scale-110 transition-transform duration-700">
+                    <i class="fas fa-file-alt text-6xl"></i>
+                </div>
+            <% end %>
+        </div>
+        
+        <div class="p-8 flex-1 relative z-10">
+            <div class="flex items-center gap-4 mb-4">
+                <span class="badge-premium !mb-0"><%= post.category ? post.category : 'General' %></span>
+                <span class="text-xs font-bold text-slate-400 uppercase tracking-widest"><%= post.created_at.strftime('%B %d, %Y') %></span>
+            </div>
+            
+            <h3 class="text-2xl font-black mb-4 tracking-tight group-hover:text-primary transition-colors"><%= post.title %></h3>
+            
+            <div class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed mb-6">
+                <%= markdown(post.content.split("\n")[0..1].join("\n") + "...") %>
+            </div>
+            
+            <div class="flex items-center gap-2 text-primary font-bold text-sm">
+                Read Article <i class="fas fa-chevron-right text-[10px] group-hover:translate-x-1 transition-transform"></i>
+            </div>
+        </div>
+    </article>
+    <% end %>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        anime({
+            targets: '.header-section',
+            translateY: [-20, 0],
+            opacity: [0, 1],
+            duration: 800,
+            easing: 'easeOutCubic',
+            delay: 400
+        });
+
+        anime({
+            targets: '.blog-item',
+            translateX: [-50, 0],
+            opacity: [0, 1],
+            duration: 800,
+            delay: anime.stagger(200, {start: 600}),
+            easing: 'easeOutExpo'
+        });
+    });
+</script>

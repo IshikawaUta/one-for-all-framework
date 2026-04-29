@@ -1,0 +1,499 @@
+#!/usr/bin/env ruby
+
+require 'fileutils'
+require 'optparse'
+require 'json'
+
+# Framework core path
+FRAMEWORK_ROOT = File.expand_path('..', __dir__)
+# Current project path (where the user is running the command)
+PROJECT_ROOT = Dir.pwd
+
+# Load dotenv from project root if exists
+begin
+  require 'dotenv'
+  Dotenv.load(File.join(PROJECT_ROOT, '.env'))
+rescue LoadError
+end
+
+def help
+  puts "✨ One-For-All Framework CLI ✨"
+  puts "-----------------------------"
+  puts "Usage:"
+  puts "  ofa new NAME [TYPE]   - Create a new project + automatic bundle install"
+  puts "  ofa init [TYPE]       - Initialize project in current folder"
+  puts "  ofa g controller NAME - Generate a new controller"
+  puts "  ofa g model NAME      - Generate a new model"
+  puts "  ofa g migration NAME  - Generate a new migration"
+  puts "  ofa g post TITLE      - Create a new post [args: --category, --author, --image]"
+  puts "  ofa feature ACTION F  - Toggle features: action=enable/disable, F=cms/auth"
+  puts "  ofa type NAME         - Set application type: portfolio, blog, landing_page"
+  puts "  ofa theme NAME        - Set UI theme: light_glass, dark_glass"
+  puts "  ofa storage NAME      - Set image storage: local, cloudinary"
+  puts "  ofa reset-password USR PWD - Reset admin account password"
+  puts "  ofa db switch TYPE [NAME] - Switch DB: sqlite, mysql, mariadb, mongodb, postgres"
+  puts "  ofa db migrate        - Run database migrations"
+  puts "  ofa migrate           - Run database migrations (alias for db migrate)"
+  puts "  ofa run               - Start the application server"
+  puts "  ofa deploy            - Deploy project to production"
+  puts "-----------------------------"
+  exit
+end
+
+def run_migrations
+  Object.const_set(:APP_ROOT, PROJECT_ROOT) unless defined?(APP_ROOT)
+  require File.join(FRAMEWORK_ROOT, 'config', 'boot')
+  puts "Running migrations..."
+  migration_path = File.join(PROJECT_ROOT, "db/migrations")
+  FileUtils.mkdir_p(migration_path)
+  
+  if defined?(DB) && DB
+    if Dir.glob(File.join(migration_path, '*.rb')).empty?
+      puts "No custom migrations found in #{migration_path}."
+      puts "Core tables are automatically created. You're ready to go!"
+    else
+      Sequel.extension :migration
+      Sequel::Migrator.run(DB, migration_path)
+      puts "Migrations completed."
+    end
+  end
+end
+
+def ensure_initialized!
+  config_path = File.join(PROJECT_ROOT, 'config', 'features.json')
+  unless File.exist?(config_path)
+    puts "❌ Error: Project not initialized in this folder."
+    puts "   Please run 'ofa init' first."
+    exit 1
+  end
+end
+
+command = ARGV.shift
+help if command.nil? || ['help', '-h', '--help'].include?(command)
+
+case command
+when 'new'
+  project_name = ARGV.shift
+  app_type = ARGV.shift || 'landing_page'
+  if project_name.nil? || project_name.empty?
+    puts "Usage: ofa new PROJECT_NAME [TYPE]"
+    exit 1
+  end
+  target_dir = File.join(PROJECT_ROOT, project_name)
+  if Dir.exist?(target_dir)
+    puts "❌ Folder '#{project_name}' already exists."
+    exit 1
+  end
+  FileUtils.mkdir_p(target_dir)
+  puts "✨ Creating new project '#{project_name}' (#{app_type})..."
+  # Delegate to 'init' logic by re-invoking ofa in the new directory using absolute path
+  absolute_ofa_path = File.expand_path(__FILE__)
+  system("cd #{target_dir} && ruby #{absolute_ofa_path} init #{app_type}")
+  puts "📦 Running bundle install..."
+  success = system("cd #{target_dir} && bundle install --quiet")
+  if success
+    puts ""
+    puts "✅ Project '#{project_name}' is ready!"
+    puts "   cd #{project_name} && ofa run"
+  else
+    puts "⚠️  bundle install failed. Please run it manually in folder #{project_name}."
+  end
+
+when 'init'
+  app_type = ARGV.shift || 'landing_page'
+  puts "Initializing One-For-All project as '#{app_type}' in #{PROJECT_ROOT}..."
+
+  # --- Interactive Wizard ---
+  puts "\n🛠️  Project Configuration (Press Enter for default)"
+  
+  # 1. Database Configuration
+  print "💾 Choose Database [1. SQLite (default), 2. MongoDB Atlas]: "
+  db_choice = STDIN.gets.chomp
+  db_type = db_choice == '2' ? 'mongodb' : 'sqlite'
+  
+  db_url = ""
+  if db_type == 'mongodb'
+    print "🔗 Enter MongoDB Connection String: "
+    db_url = STDIN.gets.chomp
+  end
+
+  # 2. Image Storage Configuration
+  print "🖼️ Choose Image Storage [1. Local (default), 2. Cloudinary]: "
+  img_choice = STDIN.gets.chomp
+  img_storage = img_choice == '2' ? 'cloudinary' : 'local'
+  
+  cloudinary_url = ""
+  if img_storage == 'cloudinary'
+    print "☁️ Enter Cloudinary URL (cloudinary://KEY:SECRET@NAME): "
+    cloudinary_url = STDIN.gets.chomp
+  end
+  puts "-----------------------------\n"
+
+  # Create directories
+  dirs = ['app/controllers', 'app/models', 'app/views', 'config', 'db/migrations', 'public/css', 'public/js', 'public/img', 'public/img/uploads']
+  dirs.each { |dir| FileUtils.mkdir_p(File.join(PROJECT_ROOT, dir)) }
+  
+  # Copy framework core migrations
+  framework_migrations = File.join(FRAMEWORK_ROOT, 'db/migrations')
+  project_migrations = File.join(PROJECT_ROOT, 'db/migrations')
+  if File.directory?(framework_migrations)
+    Dir.glob(File.join(framework_migrations, '*.rb')).each do |mig|
+      FileUtils.cp(mig, project_migrations)
+    end
+  end
+
+  # Create .env
+  env_content = []
+  env_content << "EKS_ENV=development"
+  env_content << "DATABASE_URL=#{db_url}" if db_type == 'mongodb'
+  env_content << "CLOUDINARY_URL=#{cloudinary_url}" if img_storage == 'cloudinary'
+  File.write(File.join(PROJECT_ROOT, '.env'), env_content.join("\n"))
+
+  # Create config.ru
+  puts "  Creating system files..."
+  config_ru_content = <<~RUBY
+    # Generated by One-For-All CLI
+    # Target framework: #{FRAMEWORK_ROOT}
+    
+    # Add framework to load path
+    $LOAD_PATH.unshift '#{FRAMEWORK_ROOT}'
+    APP_ROOT = File.expand_path(__dir__)
+    require 'config/boot'
+    
+    # Middleware setup
+    use EksCent::Middleware::ShowExceptions
+    use EksCent::Middleware::Session, secret: EksCent.secret_key_base
+    use AuthMiddleware
+    use CSRFMiddleware
+    use EksCent::Middleware::Static, root: 'public'
+    use EksCent::Middleware::Logger
+    
+    run ROUTES
+  RUBY
+  File.write(File.join(PROJECT_ROOT, 'config.ru'), config_ru_content)
+
+  # Create Gemfile
+  gemfile_content = <<~RUBY
+    source 'https://rubygems.org'
+    
+    gem 'eks-cent', '4.0.0'
+    gem 'eksa-server'
+    gem 'sequel'
+    gem 'sqlite3'
+    gem 'bcrypt'
+    gem 'dotenv'
+    gem 'cloudinary'
+    gem 'mongo'
+    gem 'mysql2'
+    gem 'kramdown'
+    gem 'kramdown-parser-gfm'
+  RUBY
+  File.write(File.join(PROJECT_ROOT, 'Gemfile'), gemfile_content)
+
+  # Create base ApplicationController
+  app_controller_content = <<~'RUBY'
+    class ApplicationController
+      attr_reader :req, :res
+      
+      def initialize(req, res)
+        @req = req
+        @res = res
+      end
+      
+      def params
+        @req.params
+      end
+      
+      def session
+        @req.env['eks_cent.session'] ||= {}
+      end
+      
+      def render(template, **locals)
+        # Pass controller instance variables to the view
+        instance_variables.each do |var|
+          locals[var.to_s.delete('@').to_sym] ||= instance_variable_get(var)
+        end
+        @res.render(template, **locals)
+      end
+      
+      def redirect_to(path)
+        @res.status = 302
+        @res.headers['Location'] = path
+      end
+      
+      # Validation Helper
+      def validate!(required_params)
+        missing = required_params.select { |p| params[p.to_s].nil? || params[p.to_s].empty? }
+        unless missing.empty?
+          @res.status = 400
+          render 'error', message: "Missing required parameters: #{missing.join(', ')}"
+          throw(:halt)
+        end
+      end
+      
+      # CSRF Helper for views
+      def csrf_token
+        @req.env['eks_cent.csrf_token']
+      end
+    end
+  RUBY
+  File.write(File.join(PROJECT_ROOT, 'app/controllers/application_controller.rb'), app_controller_content)
+
+  # Setup features.json
+  config_path = File.join(PROJECT_ROOT, 'config', 'features.json')
+  unless File.exist?(config_path)
+    default_config = { 
+      "auth" => true, 
+      "cms" => true, 
+      "type" => app_type, 
+      "theme" => "dark_glass",
+      "storage" => img_storage
+    }
+    File.write(config_path, JSON.pretty_generate(default_config))
+  end
+
+  # Setup database.json
+  db_config_path = File.join(PROJECT_ROOT, 'config', 'database.json')
+  unless File.exist?(db_config_path)
+    if db_type == 'mongodb'
+      db_default = { "adapter" => "env" }
+    else
+      db_default = { "adapter" => "sqlite", "database" => "db/development.sqlite3" }
+    end
+    File.write(db_config_path, JSON.pretty_generate(db_default))
+  end
+
+  # Premium Scaffolding
+  puts "  Generating premium UI components..."
+  # Copy views from framework to project
+  framework_views = File.join(FRAMEWORK_ROOT, 'app', 'views')
+  project_views = File.join(PROJECT_ROOT, 'app', 'views')
+  
+  # Recursive copy for views (including cms folder)
+  FileUtils.cp_r(File.join(framework_views, '.'), project_views)
+  
+  # Copy models from framework to project
+  framework_models = File.join(FRAMEWORK_ROOT, 'app', 'models')
+  project_models = File.join(PROJECT_ROOT, 'app', 'models')
+  FileUtils.cp_r(File.join(framework_models, '.'), project_models)
+
+  # Copy controllers from framework to project
+  framework_controllers = File.join(FRAMEWORK_ROOT, 'app', 'controllers')
+  project_controllers = File.join(PROJECT_ROOT, 'app', 'controllers')
+  # Filter out specific internal framework controllers if needed, but here we want them
+  Dir.glob(File.join(framework_controllers, '*.rb')).each do |file|
+    # Skip ApplicationController because we generated a custom one for the project
+    next if File.basename(file) == 'application_controller.rb'
+    FileUtils.cp(file, project_controllers)
+  end
+
+  # Ensure public/css exists but we no longer rely on style.css for layout
+  css_dir = File.join(PROJECT_ROOT, 'public/css')
+  FileUtils.mkdir_p(css_dir)
+  File.write(File.join(css_dir, 'style.css'), "/* Custom styles here. Framework uses layout.erb for core UI. */")
+
+  # Scaffolding based on type
+  case app_type
+  when 'blog'
+    puts "  Scaffolding Blog starter..."
+    File.write(File.join(PROJECT_ROOT, 'app/controllers/posts_controller.rb'), <<~RUBY)
+      require_relative 'application_controller'
+      class PostsController < ApplicationController
+        def index; end
+      end
+    RUBY
+  end
+
+  puts "Done! Run 'ofa run' to start your app."
+
+when 'g'
+  ensure_initialized!
+  sub = ARGV.shift
+  name = ARGV.shift
+  if sub == 'controller' && name
+    class_name = name.capitalize + "Controller"
+    file_name = File.join(PROJECT_ROOT, "app/controllers/#{name.downcase}_controller.rb")
+    content = <<~RUBY
+      require_relative 'application_controller'
+
+      class #{class_name} < ApplicationController
+        def index
+          # Logic for #{name}
+        end
+      end
+    RUBY
+    File.write(file_name, content)
+    puts "Created: #{file_name}"
+  elsif sub == 'model' && name
+    class_name = name.capitalize
+    file_name = File.join(PROJECT_ROOT, "app/models/#{name.downcase}.rb")
+    content = <<~RUBY
+      class #{class_name} < Sequel::Model
+      end
+    RUBY
+    File.write(file_name, content)
+    puts "Created: #{file_name}"
+  elsif sub == 'migration' && name
+    version = Time.now.strftime('%Y%m%d%H%M%S')
+    dir_path = File.join(PROJECT_ROOT, "db/migrations")
+    FileUtils.mkdir_p(dir_path)
+    file_name = File.join(dir_path, "#{version}_#{name.downcase}.rb")
+    content = <<~RUBY
+      Sequel.migration do
+        change do
+        end
+      end
+    RUBY
+    File.write(file_name, content)
+    puts "Created migration: #{file_name}"
+  elsif sub == 'post' && name
+    options = {}
+    OptionParser.new do |opts|
+      opts.on("--category CAT") { |v| options[:category] = v }
+      opts.on("--author AUTH") { |v| options[:author] = v }
+      opts.on("--image IMG") { |v| options[:image] = v }
+    end.parse!(ARGV)
+    dir_path = File.join(PROJECT_ROOT, "app/views/posts")
+    FileUtils.mkdir_p(dir_path)
+    file_name = File.join(dir_path, "#{name.downcase.gsub(' ', '_')}.erb")
+    content = "<h1>#{name}</h1>\n<p>Author: #{options[:author] || 'Admin'}</p>\n<p>Category: #{options[:category] || 'General'}</p>"
+    File.write(file_name, content)
+    puts "Created post: #{file_name}"
+  else
+    puts "Usage: ofa g [controller|model|migration|post] NAME"
+  end
+
+when 'feature'
+  ensure_initialized!
+  action = ARGV.shift
+  feature = ARGV.shift
+  config_path = File.join(PROJECT_ROOT, 'config', 'features.json')
+  config = JSON.parse(File.read(config_path))
+  config[feature] = (action == 'enable')
+  File.write(config_path, JSON.pretty_generate(config))
+  puts "Feature '#{feature}' has been #{action}d."
+
+when 'type'
+  ensure_initialized!
+  name = ARGV.shift
+  unless %w[landing_page portfolio blog].include?(name)
+    puts "❌ Error: Invalid app type '#{name}'. Choose: landing_page, portfolio, blog."
+    exit 1
+  end
+  config_path = File.join(PROJECT_ROOT, 'config', 'features.json')
+  config = JSON.parse(File.read(config_path))
+  config['type'] = name
+  File.write(config_path, JSON.pretty_generate(config))
+  puts "Application type set to '#{name}'."
+
+when 'theme'
+  ensure_initialized!
+  name = ARGV.shift
+  unless %w[light_glass dark_glass].include?(name)
+    puts "❌ Error: Invalid theme '#{name}'. Choose: light_glass, dark_glass."
+    exit 1
+  end
+  config_path = File.join(PROJECT_ROOT, 'config', 'features.json')
+  config = JSON.parse(File.read(config_path))
+  config['theme'] = name
+  File.write(config_path, JSON.pretty_generate(config))
+  puts "Application theme set to '#{name}'."
+
+when 'storage'
+  ensure_initialized!
+  name = ARGV.shift
+  unless %w[local cloudinary].include?(name)
+    puts "❌ Error: Invalid storage type '#{name}'. Choose: local, cloudinary."
+    exit 1
+  end
+  config_path = File.join(PROJECT_ROOT, 'config', 'features.json')
+  config = JSON.parse(File.read(config_path))
+  config['storage'] = name
+  File.write(config_path, JSON.pretty_generate(config))
+  puts "Application storage set to '#{name}'."
+
+when 'reset-password'
+  Object.const_set(:APP_ROOT, PROJECT_ROOT) unless defined?(APP_ROOT)
+  require File.join(FRAMEWORK_ROOT, 'config', 'boot')
+  user_name = ARGV.shift
+  new_pwd = ARGV.shift
+  if user_name.nil? || new_pwd.nil?
+    puts "Usage: ofa reset-password USERNAME PASSWORD"
+    exit 1
+  end
+  begin
+    user = User.find(username: user_name) rescue nil
+    if user
+      user.password = new_pwd
+      user.save
+      puts "✅ Password for '#{user_name}' has been reset."
+    else
+      user = User.new(username: user_name)
+      user.password = new_pwd
+      user.save
+      puts "✅ User '#{user_name}' created with the provided password."
+    end
+  rescue ArgumentError => e
+    puts "❌ Error: #{e.message}"
+    puts "   Requirements: min 8 characters, one uppercase, one number."
+    exit 1
+  end
+
+when 'migrate'
+  run_migrations
+
+when 'db'
+  sub = ARGV.shift
+  config_path = File.join(PROJECT_ROOT, 'config', 'database.json')
+  case sub
+  when 'switch'
+    type = ARGV.shift
+    db_name = ARGV.shift
+    case type
+    when 'env'
+      config = { "adapter" => "env" }
+    when 'sqlite'
+      config = { "adapter" => "sqlite", "database" => db_name || "db/development.sqlite3" }
+    else
+      config = { "adapter" => type, "host" => "localhost", "user" => "root", "password" => "", "database" => db_name || "one_for_all" }
+    end
+    File.write(config_path, JSON.pretty_generate(config))
+    puts "Switched to #{type} mode."
+  when 'migrate'
+    run_migrations
+  end
+
+when 'run'
+  ensure_initialized!
+  # Check for config.ru
+  unless File.exist?(File.join(PROJECT_ROOT, 'config.ru'))
+    puts "Error: config.ru not found. Ensure you are in the project root or run 'ofa init'."
+    exit 1
+  end
+  puts "Starting One-For-All server..."
+  exec "bundle exec eksa-server"
+
+when 'deploy'
+  puts "🚀 Starting Deployment process..."
+  puts "-----------------------------"
+  
+  # 1. Check for Git
+  unless system("git rev-parse --is-inside-work-tree > /dev/null 2>&1")
+    puts "❌ Error: Project not initialized with Git."
+    puts "   Please run 'git init' and commit your changes first."
+    exit 1
+  end
+
+  # 2. Check for Railway CLI as an example of deployment target
+  if system("railway --version > /dev/null 2>&1")
+    puts "📦 Railway CLI detected. Deploying to Railway..."
+    exec "railway up"
+  else
+    puts "⚠️  Deployment target not detected (Railway/Vercel)."
+    puts "   Suggestion: Install Railway CLI or prepare a Dockerfile for VPS."
+    puts "   This framework supports deployment via Docker or Git Push."
+  end
+
+else
+  help
+end

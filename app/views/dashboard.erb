@@ -1,0 +1,122 @@
+<div class="flex flex-col md:flex-row gap-8 items-start">
+    <!-- CMS Sidebar -->
+    <aside class="glass-panel w-full md:w-64 p-6 sticky top-24">
+        <div class="flex items-center gap-2 mb-8 px-2">
+            <div class="w-6 h-6 bg-primary rounded flex items-center justify-center text-white text-xs">
+                <i class="fas fa-user-shield"></i>
+            </div>
+            <h3 class="font-black tracking-tight text-lg">Admin<span class="text-primary">Panel</span></h3>
+        </div>
+
+        <nav class="space-y-2">
+            <a href="/dashboard" class="flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 <%= @req.path == '/dashboard' ? 'bg-primary text-white shadow-lg shadow-primary/30' : 'text-slate-500 hover:bg-white/5' %>">
+                <i class="fas fa-chart-pie w-5"></i>
+                <span class="font-semibold">Dashboard</span>
+            </a>
+            
+            <a href="/dashboard/pages" class="flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 <%= @req.path.start_with?('/dashboard/pages') ? 'bg-primary text-white shadow-lg shadow-primary/30' : 'text-slate-500 hover:bg-white/5' %>">
+                <i class="fas fa-file-lines w-5"></i>
+                <span class="font-semibold">Pages</span>
+            </a>
+
+            <% if FEATURES_CONFIG['type'] == 'blog' %>
+                <a href="/dashboard/posts" class="flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 <%= @req.path.start_with?('/dashboard/posts') ? 'bg-primary text-white shadow-lg shadow-primary/30' : 'text-slate-500 hover:bg-white/5' %>">
+                    <i class="fas fa-pen-nib w-5"></i>
+                    <span class="font-semibold">Blog Posts</span>
+                </a>
+            <% elsif FEATURES_CONFIG['type'] == 'portfolio' %>
+                <a href="/dashboard/projects" class="flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 <%= @req.path.start_with?('/dashboard/projects') ? 'bg-primary text-white shadow-lg shadow-primary/30' : 'text-slate-500 hover:bg-white/5' %>">
+                    <i class="fas fa-palette w-5"></i>
+                    <span class="font-semibold">Projects</span>
+                </a>
+            <% end %>
+
+            <div class="h-px bg-white/5 my-4"></div>
+
+            <form action="/logout" method="POST">
+                <%= csrf_tag %>
+                <button type="submit" class="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-red-400 hover:bg-red-500/10 transition-all duration-300 font-semibold">
+                    <i class="fas fa-door-open w-5"></i>
+                    <span>Logout</span>
+                </button>
+            </form>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="flex-1 space-y-8 w-full pb-20">
+        <div class="glass-card !p-12 bg-gradient-to-br from-primary/10 to-transparent border-primary/20 relative overflow-hidden group">
+            <div class="card-glow !opacity-30"></div>
+            <div class="relative z-10 text-left">
+                <div class="badge-premium">System Operational</div>
+                <h2 class="text-4xl md:text-5xl font-black tracking-tighter text-slate-700 dark:text-white mb-4">
+                    Welcome back, <span class="text-primary"><%= session['username'] || 'Admin' %></span>
+                </h2>
+                <p class="text-slate-500 dark:text-slate-400 text-lg max-w-xl leading-relaxed">
+                    Ready to create something amazing? Your dashboard is optimized and synchronized across all nodes.
+                </p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="glass-card !p-6 md:!p-8 group">
+                <div class="card-glow"></div>
+                <div class="w-14 h-14 rounded-2xl bg-blue-500/10 text-blue-500 flex items-center justify-center mb-6 text-2xl group-hover:scale-110 group-hover:bg-blue-500 group-hover:text-white transition-all duration-500 shadow-lg shadow-blue-500/10">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+                <h4 class="text-xs font-black uppercase tracking-[0.2em] text-slate-400 mb-2">Total Pages</h4>
+                <div class="text-4xl font-black text-slate-700 dark:text-white tracking-tighter truncate"><%= @stats[:pages] %></div>
+            </div>
+
+            <% if @type == 'blog' %>
+            <div class="glass-card !p-6 md:!p-8 group">
+                <div class="card-glow !bg-green-500/10"></div>
+                <div class="w-14 h-14 rounded-2xl bg-green-500/10 text-green-500 flex items-center justify-center mb-6 text-2xl group-hover:scale-110 group-hover:bg-green-500 group-hover:text-white transition-all duration-500 shadow-lg shadow-green-500/10">
+                    <i class="fas fa-pen-nib"></i>
+                </div>
+                <h4 class="text-xs font-black uppercase tracking-[0.2em] text-slate-400 mb-2">Blog Articles</h4>
+                <div class="text-4xl font-black text-slate-700 dark:text-white tracking-tighter truncate"><%= @stats[:posts] %></div>
+            </div>
+            <% elsif @type == 'portfolio' %>
+            <div class="glass-card !p-6 md:!p-8 group">
+                <div class="card-glow !bg-purple-500/10"></div>
+                <div class="w-14 h-14 rounded-2xl bg-purple-500/10 text-purple-500 flex items-center justify-center mb-6 text-2xl group-hover:scale-110 group-hover:bg-purple-500 group-hover:text-white transition-all duration-500 shadow-lg shadow-purple-500/10">
+                    <i class="fas fa-palette"></i>
+                </div>
+                <h4 class="text-xs font-black uppercase tracking-[0.2em] text-slate-400 mb-2">Total Projects</h4>
+                <div class="text-4xl font-black text-slate-700 dark:text-white tracking-tighter truncate"><%= @stats[:projects] %></div>
+            </div>
+            <% end %>
+
+            <div class="glass-card !p-6 md:!p-8 group">
+                <div class="card-glow !bg-orange-500/10"></div>
+                <div class="w-14 h-14 rounded-2xl bg-orange-500/10 text-orange-500 flex items-center justify-center mb-6 text-2xl group-hover:scale-110 group-hover:bg-orange-500 group-hover:text-white transition-all duration-500 shadow-lg shadow-orange-500/10">
+                    <i class="fas fa-cloud-bolt"></i>
+                </div>
+                <h4 class="text-xs font-black uppercase tracking-[0.2em] text-slate-400 mb-2">Cloud Node</h4>
+                <div class="text-lg font-black text-slate-700 dark:text-white uppercase tracking-wider truncate"><%= FEATURES_CONFIG['storage'] || 'Local Cluster' %></div>
+            </div>
+        </div>
+
+        <div class="glass-card !p-12 bg-gradient-to-br from-primary/5 to-transparent border-primary/10 text-left">
+            <div class="max-w-xl">
+                <h3 class="text-3xl font-black tracking-tighter mb-6 text-slate-700 dark:text-white">Start Building Now</h3>
+                <p class="text-slate-600 dark:text-slate-400 mb-10 text-lg leading-relaxed">Your creative workflow is ready. All deployments are optimized for the edge and secured with enterprise-grade encryption.</p>
+                <div class="flex flex-wrap gap-4">
+                    <a href="/dashboard/pages/new" class="btn-premium px-10">
+                        <i class="fas fa-plus mr-2"></i> Create Page
+                    </a>
+                    <% if @type == 'blog' %>
+                        <a href="/dashboard/posts/new" class="px-8 py-3.5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all font-bold text-slate-700 dark:text-white flex items-center gap-2">
+                            <i class="fas fa-pen-fancy mr-2"></i> New Article
+                        </a>
+                    <% elsif @type == 'portfolio' %>
+                        <a href="/dashboard/projects/new" class="px-8 py-3.5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all font-bold text-slate-700 dark:text-white flex items-center gap-2">
+                            <i class="fas fa-wand-magic-sparkles mr-2"></i> New Project
+                        </a>
+                    <% end %>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

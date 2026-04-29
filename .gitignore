@@ -1,0 +1,36 @@
+# Ruby
+*.gem
+*.rbc
+/.bundle/
+/vendor/bundle/
+/lib/bundler/man/
+/coverage/
+/InstalledFiles
+/pkg/
+/spec/reports/
+/spec/examples.txt
+/test/tmp/
+/test/version_tmp/
+/tmp/
+/log/
+
+# Environment
+.env
+.env.test
+.env.production
+.env.local
+
+# Database
+db/*.sqlite3
+db/*.sqlite3-journal
+
+# IDEs
+.idea/
+.vscode/
+.ruby-lsp/
+.DS_Store
+
+# Framework Specific
+public/img/uploads/*
+!public/img/uploads/.gitkeep
+config/database.json

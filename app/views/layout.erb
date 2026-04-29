@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= @title || "One-For-All Framework" %></title>
+    <link rel="icon" type="image/png" href="/images/logo.png">
+    
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Fira+Code&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Anime.js & Prism.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-ruby.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '<%= FEATURES_CONFIG["theme"] == "light_glass" ? "#4f46e5" : "#818cf8" %>',
+                        secondary: '<%= FEATURES_CONFIG["theme"] == "light_glass" ? "#8b5cf6" : "#c084fc" %>',
+                        surface: '<%= FEATURES_CONFIG["theme"] == "light_glass" ? "rgba(255, 255, 255, 0.7)" : "rgba(17, 24, 39, 0.6)" %>',
+                        bg: '<%= FEATURES_CONFIG["theme"] == "light_glass" ? "#f8fafc" : "#030712" %>',
+                    },
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        mono: ['Fira Code', 'monospace'],
+                    },
+                    backdropBlur: {
+                        xs: '2px',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            --primary: <%= FEATURES_CONFIG["theme"] == "light_glass" ? "#4f46e5" : "#818cf8" %>;
+            --secondary: <%= FEATURES_CONFIG["theme"] == "light_glass" ? "#8b5cf6" : "#c084fc" %>;
+            --surface: <%= FEATURES_CONFIG["theme"] == "light_glass" ? "rgba(255, 255, 255, 0.7)" : "rgba(17, 24, 39, 0.6)" %>;
+            --bg-color: <%= FEATURES_CONFIG["theme"] == "light_glass" ? "#f8fafc" : "#030712" %>;
+            --glass-border: <%= FEATURES_CONFIG["theme"] == "light_glass" ? "rgba(0, 0, 0, 0.05)" : "rgba(255, 255, 255, 0.1)" %>;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: 
+                <% if FEATURES_CONFIG['theme'] == 'light_glass' %>
+                radial-gradient(at 0% 0%, hsla(220,100%,95%,1) 0, transparent 50%), 
+                radial-gradient(at 50% 0%, hsla(250,100%,95%,0.8) 0, transparent 50%), 
+                radial-gradient(at 100% 0%, hsla(320,100%,95%,0.8) 0, transparent 50%);
+                <% else %>
+                radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+                radial-gradient(at 50% 0%, hsla(225,39%,30%,0.15) 0, transparent 50%), 
+                radial-gradient(at 100% 0%, hsla(339,49%,30%,0.15) 0, transparent 50%);
+                <% end %>
+            background-attachment: fixed;
+        }
+
+        .glass-panel {
+            background: var(--surface);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 1.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+        }
+
+        .glass-card {
+            background: var(--surface);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--glass-border);
+            border-radius: 2.5rem;
+            padding: 2rem;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.2), 0 0 40px var(--primary);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .card-glow {
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 200px;
+            height: 200px;
+            background: var(--primary);
+            filter: blur(80px);
+            opacity: 0.1;
+            border-radius: 50%;
+            transition: opacity 0.5s;
+            pointer-events: none;
+        }
+
+        .glass-card:hover .card-glow {
+            opacity: 0.2;
+        }
+
+        .btn-premium {
+            background: var(--primary);
+            color: white;
+            padding: 0.85rem 2rem;
+            border-radius: 1rem;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-premium:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.3);
+            filter: brightness(1.1);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-muted);
+            padding: 0.85rem 2rem;
+            border-radius: 1rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--primary);
+            border-color: var(--primary);
+            transform: translateX(-5px);
+        }
+
+        .badge-premium {
+            display: inline-flex;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            background: rgba(79, 70, 229, 0.1);
+            color: var(--primary);
+            font-size: 0.65rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            border: 1px solid rgba(79, 70, 229, 0.2);
+            margin-bottom: 1rem;
+        }
+
+        .nav-item {
+            color: #64748b;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            color: var(--primary);
+        }
+
+        /* Markdown Overrides */
+        .markdown-content { text-align: left; line-height: 1.6; }
+        .markdown-content h1 { font-size: 2.25rem; font-weight: 800; margin: 2rem 0 1rem; color: var(--primary); }
+        .markdown-content p { font-size: 1.125rem; color: #475569; margin-bottom: 1.5rem; }
+        .dark .markdown-content p { color: #cbd5e1; }
+    </style>
+</head>
+<body class="<%= FEATURES_CONFIG['theme'] == 'dark_glass' ? 'dark' : '' %>">
+    
+    <!-- Animated Background Shapes -->
+    <div class="fixed inset-0 -z-10 overflow-hidden opacity-30 pointer-events-none">
+        <div class="absolute -top-24 -left-24 w-96 h-96 bg-primary rounded-full blur-[120px] animate-pulse"></div>
+        <div class="absolute top-1/2 -right-24 w-80 h-80 bg-secondary rounded-full blur-[100px] delay-700 animate-bounce"></div>
+    </div>
+
+    <!-- Navigation -->
+    <header class="w-full flex justify-center p-4 sticky top-0 z-50">
+        <nav class="glass-panel w-full max-w-4xl px-8 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <span class="text-xl font-extrabold tracking-tighter">OFA<span class="text-primary">.framework</span></span>
+            </div>
+            
+            <ul class="hidden md:flex items-center gap-8">
+                <li><a href="/" class="nav-item <%= req.path == '/' ? 'active' : '' %>">Home</a></li>
+                <% Page.where(is_nav: true, is_active: true).all.each do |p| %>
+                    <li><a href="/<%= p.slug %>" class="nav-item <%= req.path == "/#{p.slug}" ? 'active' : '' %>"><%= p.title %></a></li>
+                <% end %>
+                <li><a href="/dashboard" class="nav-item <%= req.path.start_with?('/dashboard') ? 'active' : '' %>">Dashboard</a></li>
+            </ul>
+
+            <div class="flex items-center gap-4">
+                <a href="https://github.com" class="text-slate-400 hover:text-primary transition-colors"><i class="fab fa-github text-xl"></i></a>
+                <button class="md:hidden text-slate-400"><i class="fas fa-bars text-xl"></i></button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto max-w-4xl px-6 py-12">
+        <%= @content %>
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full py-12 mt-20 border-t border-white/5 text-center text-slate-500 text-sm">
+        <p>&copy; <%= Time.now.year %> One-For-All Framework.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initial Page Load Animation
+            anime({
+                targets: 'header nav',
+                translateY: [-50, 0],
+                opacity: [0, 1],
+                duration: 1200,
+                easing: 'easeOutElastic(1, .8)'
+            });
+
+            anime({
+                targets: 'main > *',
+                translateY: [30, 0],
+                opacity: [0, 1],
+                delay: anime.stagger(100, {start: 300}),
+                duration: 1000,
+                easing: 'easeOutCubic'
+            });
+        });
+    </script>
+</body>
+</html>
+
