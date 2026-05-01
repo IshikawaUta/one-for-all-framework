@@ -56,16 +56,36 @@ Your app is now live at `http://localhost:3000` ⚡
 
 The `ofa` CLI is your best friend. Use it to manage your entire application lifecycle:
 
+### Project Management
 | Command | Description |
 | :--- | :--- |
-| `ofa new NAME` | Create a brand new project from scratch. |
-| `ofa g controller Name` | Generate a RESTful controller. |
-| `ofa g model Name` | Generate a database model and migration. |
-| `ofa db migrate` | Sync your database with the latest schema. |
-| `ofa type [blog\|portfolio]` | Switch application mode instantly. |
-| `ofa theme [dark\|light]` | Toggle between premium UI themes. |
-| `ofa storage cloudinary` | Enable automated Cloudinary image hosting. |
-| `ofa reset-password USR PWD`| Securely reset admin credentials. |
+| `ofa new NAME [TYPE]` | Create a new project with automatic bundle install. |
+| `ofa init [TYPE]` | Initialize project in current folder with interactive wizard. |
+| `ofa run` | Start the high-performance development server. |
+| `ofa deploy` | Deploy project to production (Railway/Docker ready). |
+
+### Generators (Scaffolding)
+| Command | Description |
+| :--- | :--- |
+| `ofa g controller NAME` | Generate a RESTful controller in `app/controllers`. |
+| `ofa g model NAME` | Generate a database model and migration. |
+| `ofa g migration NAME` | Generate a new database migration file. |
+| `ofa g post TITLE` | Create a new Markdown post (Supports `--category`, `--author`). |
+
+### Configuration & Features
+| Command | Description |
+| :--- | :--- |
+| `ofa type [TYPE]` | Set app type: `portfolio`, `blog`, or `landing_page`. |
+| `ofa theme [THEME]` | Set UI theme: `light_glass`, `dark_glass`, `cyber_sidebar`, etc. |
+| `ofa feature enable [F]` | Toggle features like `cms` or `auth`. |
+| `ofa storage [local\|cloudinary]` | Set image storage provider. |
+| `ofa reset-password USR PWD`| Reset or create admin account credentials. |
+
+### Database Management
+| Command | Description |
+| :--- | :--- |
+| `ofa db switch [ADAPTER]` | Switch DB: `sqlite`, `mysql`, `postgres`, `mongodb`. |
+| `ofa db migrate` | Run all pending database migrations. |
 
 ---
 

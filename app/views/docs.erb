@@ -1,6 +1,6 @@
 <div class="space-y-12 pb-20">
     <div class="text-left">
-        <div class="badge-premium">Documentation v1.0</div>
+        <div class="badge-premium">Documentation v2.0</div>
         <h1 class="text-5xl font-black tracking-tighter mb-4 text-slate-700 dark:text-white">Framework <span class="text-primary">Guide</span></h1>
         <p class="text-xl text-slate-500 max-w-2xl leading-relaxed">Everything you need to know about building premium web applications with the One-For-All framework.</p>
     </div>
@@ -45,21 +45,58 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-white/5">
+                            <tr class="bg-slate-500/5"><td colspan="2" class="px-6 py-2 text-[10px] font-black uppercase tracking-tighter text-slate-400">Project Management</td></tr>
+                            <tr>
+                                <td class="px-6 py-4 font-mono text-sm text-primary">./ofa new [name]</td>
+                                <td class="px-6 py-4 text-slate-600 dark:text-slate-400">Creates a new project from scratch.</td>
+                            </tr>
                             <tr>
                                 <td class="px-6 py-4 font-mono text-sm text-primary">./ofa init</td>
-                                <td class="px-6 py-4 text-slate-600 dark:text-slate-400">Initializes the project environment and DB.</td>
+                                <td class="px-6 py-4 text-slate-600 dark:text-slate-400">Initializes environment & DB via wizard.</td>
                             </tr>
                             <tr>
                                 <td class="px-6 py-4 font-mono text-sm text-primary">./ofa run</td>
-                                <td class="px-6 py-4 text-slate-600 dark:text-slate-400">Starts the Eksa development server.</td>
+                                <td class="px-6 py-4 text-slate-600 dark:text-slate-400">Starts the development server.</td>
                             </tr>
+                            <tr>
+                                <td class="px-6 py-4 font-mono text-sm text-primary">./ofa deploy</td>
+                                <td class="px-6 py-4 text-slate-600 dark:text-slate-400">Deploys to production environment.</td>
+                            </tr>
+
+                            <tr class="bg-slate-500/5"><td colspan="2" class="px-6 py-2 text-[10px] font-black uppercase tracking-tighter text-slate-400">Generators</td></tr>
                             <tr>
                                 <td class="px-6 py-4 font-mono text-sm text-primary">./ofa g controller [name]</td>
-                                <td class="px-6 py-4 text-slate-600 dark:text-slate-400">Generates a new controller in app/controllers.</td>
+                                <td class="px-6 py-4 text-slate-600 dark:text-slate-400">Generates a RESTful controller.</td>
                             </tr>
                             <tr>
-                                <td class="px-6 py-4 font-mono text-sm text-primary">./ofa theme [light|dark]</td>
-                                <td class="px-6 py-4 text-slate-600 dark:text-slate-400">Instantly toggles between UI themes.</td>
+                                <td class="px-6 py-4 font-mono text-sm text-primary">./ofa g model [name]</td>
+                                <td class="px-6 py-4 text-slate-600 dark:text-slate-400">Generates a model & migration.</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 font-mono text-sm text-primary">./ofa g migration [name]</td>
+                                <td class="px-6 py-4 text-slate-600 dark:text-slate-400">Creates a new schema migration.</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 font-mono text-sm text-primary">./ofa g post [title]</td>
+                                <td class="px-6 py-4 text-slate-600 dark:text-slate-400">Creates a Markdown-based blog post.</td>
+                            </tr>
+
+                            <tr class="bg-slate-500/5"><td colspan="2" class="px-6 py-2 text-[10px] font-black uppercase tracking-tighter text-slate-400">Configuration</td></tr>
+                            <tr>
+                                <td class="px-6 py-4 font-mono text-sm text-primary">./ofa theme [name]</td>
+                                <td class="px-6 py-4 text-slate-600 dark:text-slate-400">Switch between UI themes instantly.</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 font-mono text-sm text-primary">./ofa type [type]</td>
+                                <td class="px-6 py-4 text-slate-600 dark:text-slate-400">Change app mode (blog, portfolio, etc).</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 font-mono text-sm text-primary">./ofa storage [name]</td>
+                                <td class="px-6 py-4 text-slate-600 dark:text-slate-400">Configure Local or Cloudinary storage.</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 font-mono text-sm text-primary">./ofa db switch [name]</td>
+                                <td class="px-6 py-4 text-slate-600 dark:text-slate-400">Switch DB adapter (SQLite, MySQL, etc).</td>
                             </tr>
                         </tbody>
                     </table>
@@ -79,8 +116,10 @@
   /models       # Database entities
   /views        # ERB templates
 /config
-  /database.rb  # DB connections
-  /routes.rb    # URL mapping
+  /database.json # DB configurations
+  /features.json # Feature toggles
+/db
+  /migrations   # Schema versions
 /public
   /images       # Static assets
   /css          # Custom styles

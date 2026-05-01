@@ -9,7 +9,7 @@
     <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Fira+Code&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Fira+Code&family=VT323&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- Tailwind CSS CDN -->
@@ -27,13 +27,13 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '<%= FEATURES_CONFIG["theme"] == "light_glass" ? "#4f46e5" : "#818cf8" %>',
-                        secondary: '<%= FEATURES_CONFIG["theme"] == "light_glass" ? "#8b5cf6" : "#c084fc" %>',
-                        surface: '<%= FEATURES_CONFIG["theme"] == "light_glass" ? "rgba(255, 255, 255, 0.7)" : "rgba(17, 24, 39, 0.6)" %>',
-                        bg: '<%= FEATURES_CONFIG["theme"] == "light_glass" ? "#f8fafc" : "#030712" %>',
+                        primary: '<%= ["light_glass", "light_sidebar"].include?(FEATURES_CONFIG["theme"]) ? "#4f46e5" : (FEATURES_CONFIG["theme"] == "cyber_sidebar" ? "#f0f" : (FEATURES_CONFIG["theme"] == "retro_terminal" ? "#0f0" : "#818cf8")) %>',
+                        secondary: '<%= ["light_glass", "light_sidebar"].include?(FEATURES_CONFIG["theme"]) ? "#8b5cf6" : (FEATURES_CONFIG["theme"] == "cyber_sidebar" ? "#0ff" : (FEATURES_CONFIG["theme"] == "retro_terminal" ? "#040" : "#c084fc")) %>',
+                        surface: '<%= ["light_glass", "light_sidebar"].include?(FEATURES_CONFIG["theme"]) ? "rgba(255, 255, 255, 0.7)" : (FEATURES_CONFIG["theme"] == "cyber_sidebar" ? "rgba(20, 20, 20, 0.8)" : (FEATURES_CONFIG["theme"] == "retro_terminal" ? "#050505" : "rgba(17, 24, 39, 0.6)")) %>',
+                        bg: '<%= ["light_glass", "light_sidebar"].include?(FEATURES_CONFIG["theme"]) ? "#f8fafc" : (FEATURES_CONFIG["theme"] == "cyber_sidebar" ? "#000" : (FEATURES_CONFIG["theme"] == "retro_terminal" ? "#0a0a0a" : "#030712")) %>',
                     },
                     fontFamily: {
-                        sans: ['Outfit', 'sans-serif'],
+                        sans: ['<%= FEATURES_CONFIG["theme"] == "retro_terminal" ? "VT323" : "Outfit" %>', 'sans-serif'],
                         mono: ['Fira Code', 'monospace'],
                     },
                     backdropBlur: {
@@ -46,15 +46,29 @@
 
     <style>
         :root {
-            --primary: <%= FEATURES_CONFIG["theme"] == "light_glass" ? "#4f46e5" : "#818cf8" %>;
-            --secondary: <%= FEATURES_CONFIG["theme"] == "light_glass" ? "#8b5cf6" : "#c084fc" %>;
-            --surface: <%= FEATURES_CONFIG["theme"] == "light_glass" ? "rgba(255, 255, 255, 0.7)" : "rgba(17, 24, 39, 0.6)" %>;
-            --bg-color: <%= FEATURES_CONFIG["theme"] == "light_glass" ? "#f8fafc" : "#030712" %>;
-            --glass-border: <%= FEATURES_CONFIG["theme"] == "light_glass" ? "rgba(0, 0, 0, 0.05)" : "rgba(255, 255, 255, 0.1)" %>;
+            --primary: <%= ["light_glass", "light_sidebar"].include?(FEATURES_CONFIG["theme"]) ? "#4f46e5" : (FEATURES_CONFIG["theme"] == "cyber_sidebar" ? "#f0f" : (FEATURES_CONFIG["theme"] == "retro_terminal" ? "#0f0" : "#818cf8")) %>;
+            --secondary: <%= ["light_glass", "light_sidebar"].include?(FEATURES_CONFIG["theme"]) ? "#8b5cf6" : (FEATURES_CONFIG["theme"] == "cyber_sidebar" ? "#0ff" : (FEATURES_CONFIG["theme"] == "retro_terminal" ? "#040" : "#c084fc")) %>;
+            --surface: <%= ["light_glass", "light_sidebar"].include?(FEATURES_CONFIG["theme"]) ? "rgba(255, 255, 255, 0.7)" : (FEATURES_CONFIG["theme"] == "cyber_sidebar" ? "rgba(20, 20, 20, 0.8)" : (FEATURES_CONFIG["theme"] == "retro_terminal" ? "#050505" : "rgba(17, 24, 39, 0.6)")) %>;
+            --bg-color: <%= ["light_glass", "light_sidebar"].include?(FEATURES_CONFIG["theme"]) ? "#f8fafc" : (FEATURES_CONFIG["theme"] == "cyber_sidebar" ? "#000" : (FEATURES_CONFIG["theme"] == "retro_terminal" ? "#0a0a0a" : "#030712")) %>;
+            --glass-border: <%= ["light_glass", "light_sidebar"].include?(FEATURES_CONFIG["theme"]) ? "rgba(0, 0, 0, 0.05)" : (FEATURES_CONFIG["theme"] == "cyber_sidebar" ? "#f0f" : (FEATURES_CONFIG["theme"] == "retro_terminal" ? "#0f0" : "rgba(255, 255, 255, 0.1)")) %>;
+            --neo-shadow: 8px 8px 0px 0px var(--primary);
         }
 
         body {
             background-color: var(--bg-color);
+            <% if FEATURES_CONFIG['theme'] == 'cyber_sidebar' %>
+            background-image: 
+                linear-gradient(rgba(255, 0, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 0, 255, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            <% elsif FEATURES_CONFIG['theme'] == 'light_sidebar' %>
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(220,100%,95%,1) 0, transparent 50%), 
+                radial-gradient(at 100% 0%, hsla(320,100%,95%,0.8) 0, transparent 50%);
+            <% elsif FEATURES_CONFIG['theme'] == 'retro_terminal' %>
+            background-image: radial-gradient(circle, rgba(0, 255, 0, 0.05) 1px, transparent 1px);
+            background-size: 20px 20px;
+            <% else %>
             background-image: 
                 <% if FEATURES_CONFIG['theme'] == 'light_glass' %>
                 radial-gradient(at 0% 0%, hsla(220,100%,95%,1) 0, transparent 50%), 
@@ -65,7 +79,25 @@
                 radial-gradient(at 50% 0%, hsla(225,39%,30%,0.15) 0, transparent 50%), 
                 radial-gradient(at 100% 0%, hsla(339,49%,30%,0.15) 0, transparent 50%);
                 <% end %>
+            <% end %>
             background-attachment: fixed;
+            <% if FEATURES_CONFIG['theme'] == 'retro_terminal' %>
+            overflow-x: hidden;
+            <% end %>
+        }
+
+        .neo-card {
+            background: var(--surface);
+            border: 3px solid var(--primary);
+            box-shadow: var(--neo-shadow);
+            border-radius: 0px;
+            padding: 2rem;
+            transition: all 0.2s;
+        }
+
+        .neo-card:hover {
+            transform: translate(-4px, -4px);
+            box-shadow: 12px 12px 0px 0px var(--secondary);
         }
 
         .glass-panel {
@@ -184,9 +216,95 @@
         .markdown-content h1 { font-size: 2.25rem; font-weight: 800; margin: 2rem 0 1rem; color: var(--primary); }
         .markdown-content p { font-size: 1.125rem; color: #475569; margin-bottom: 1.5rem; }
         .dark .markdown-content p { color: #cbd5e1; }
+
+        /* Cyber Theme Specifics */
+        .cyber-border {
+            border: 2px solid var(--primary);
+            box-shadow: 4px 4px 0px var(--secondary);
+        }
+        
+        .cyber-btn {
+            background: var(--primary);
+            color: black;
+            font-weight: 900;
+            text-transform: uppercase;
+            padding: 1rem 2rem;
+            border: none;
+            box-shadow: 6px 6px 0px var(--secondary);
+            transition: all 0.1s;
+        }
+        
+        .cyber-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 4px 4px 0px var(--secondary);
+        }
+
+        /* Global Text Color for Dark Themes */
+        .dark {
+            color: #e2e8f0;
+        }
+        
+        .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
+            color: <%= FEATURES_CONFIG['theme'] == 'retro_terminal' ? '#0f0' : '#ffffff' %> !important;
+            <% if FEATURES_CONFIG['theme'] == 'retro_terminal' %>
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            <% end %>
+        }
+
+        .dark p, .dark span, .dark li, .dark a {
+            color: <%= FEATURES_CONFIG['theme'] == 'retro_terminal' ? '#0f0' : 'rgba(255, 255, 255, 0.9)' %>;
+            <% if FEATURES_CONFIG['theme'] == 'retro_terminal' %>
+            font-family: 'VT323', monospace;
+            font-size: 1.25rem;
+            <% end %>
+        }
+        
+        .dark .text-slate-500, .dark .text-slate-600, .dark .text-slate-700 {
+            color: <%= FEATURES_CONFIG['theme'] == 'retro_terminal' ? '#0a0' : 'rgba(255, 255, 255, 0.7)' %> !important;
+        }
+
+        /* Scanlines for Retro Theme */
+        <% if FEATURES_CONFIG['theme'] == 'retro_terminal' %>
+        body::before {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 999;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+        }
+        
+        @keyframes flicker {
+            0% { opacity: 0.97; }
+            5% { opacity: 0.95; }
+            10% { opacity: 0.9; }
+            15% { opacity: 0.95; }
+            20% { opacity: 0.98; }
+            100% { opacity: 1; }
+        }
+        
+        .dark main {
+            animation: flicker 0.15s infinite;
+        }
+
+        /* Fix visibility for buttons with background in Retro theme */
+        .dark .btn-premium, 
+        .dark .bg-primary, 
+        .dark .bg-white,
+        .dark .bg-primary > *,
+        .dark .bg-white > * {
+            color: #000000 !important;
+            text-shadow: none !important;
+        }
+        <% end %>
     </style>
 </head>
-<body class="<%= FEATURES_CONFIG['theme'] == 'dark_glass' ? 'dark' : '' %>">
+<body class="<%= ['dark_glass', 'cyber_sidebar', 'retro_terminal'].include?(FEATURES_CONFIG['theme']) ? 'dark' : '' %>">
     
     <!-- Animated Background Shapes -->
     <div class="fixed inset-0 -z-10 overflow-hidden opacity-30 pointer-events-none">
@@ -194,7 +312,66 @@
         <div class="absolute top-1/2 -right-24 w-80 h-80 bg-secondary rounded-full blur-[100px] delay-700 animate-bounce"></div>
     </div>
 
-    <!-- Navigation -->
+    <% if ['cyber_sidebar', 'light_sidebar'].include?(FEATURES_CONFIG['theme']) %>
+    <!-- Sidebar Layout -->
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <aside class="fixed left-0 top-0 bottom-0 w-64 <%= FEATURES_CONFIG['theme'] == 'light_sidebar' ? 'glass-panel !rounded-none border-r border-black/5' : 'bg-black border-r-4 border-primary' %> p-6 z-50 hidden md:flex flex-col gap-10">
+            <div class="flex items-center gap-3">
+                <% if FEATURES_CONFIG['theme'] == 'light_sidebar' %>
+                    <div class="w-10 h-10 bg-primary text-white flex items-center justify-center font-black text-xl rounded-xl shadow-lg shadow-primary/20">OF</div>
+                    <span class="text-2xl font-black tracking-tighter text-slate-800">SYSTEM</span>
+                <% else %>
+                    <div class="w-10 h-10 bg-primary flex items-center justify-center text-white font-black text-xl">OF</div>
+                    <span class="text-2xl font-black tracking-tighter text-white">SYSTEM</span>
+                <% end %>
+            </div>
+
+            <nav class="flex flex-col gap-2">
+                <a href="/" class="p-4 <%= FEATURES_CONFIG['theme'] == 'light_sidebar' ? (req.path == '/' ? 'bg-primary/10 text-primary rounded-xl' : 'text-slate-600 hover:bg-primary/5 rounded-xl') : (req.path == '/' ? 'bg-primary text-white border-primary border-2 rounded-2xl' : 'border-white/10 text-white hover:border-primary border-2 rounded-2xl') %> font-bold transition-all">
+                    <i class="fas fa-grid-2 mr-3"></i> OVERVIEW
+                </a>
+                <% Page.where(is_nav: true, is_active: true).all.each do |p| %>
+                    <a href="/<%= p.slug %>" class="p-4 <%= FEATURES_CONFIG['theme'] == 'light_sidebar' ? (req.path == "/#{p.slug}" ? 'bg-primary/10 text-primary rounded-xl' : 'text-slate-600 hover:bg-primary/5 rounded-xl') : (req.path == "/#{p.slug}" ? 'bg-primary text-white border-primary border-2 rounded-2xl' : 'border-white/10 text-white hover:border-primary border-2 rounded-2xl') %> font-bold transition-all">
+                        <i class="fas fa-file-code mr-3"></i> <%= p.title.upcase %>
+                    </a>
+                <% end %>
+                <a href="/dashboard" class="p-4 <%= FEATURES_CONFIG['theme'] == 'light_sidebar' ? (req.path.start_with?('/dashboard') ? 'bg-primary/10 text-primary rounded-xl' : 'text-slate-600 hover:bg-primary/5 rounded-xl') : (req.path.start_with?('/dashboard') ? 'bg-primary text-white border-primary border-2 rounded-2xl' : 'border-white/10 text-white hover:border-primary border-2 rounded-2xl') %> font-bold transition-all">
+                    <i class="fas fa-terminal mr-3"></i> CONSOLE
+                </a>
+            </nav>
+
+            <div class="mt-auto space-y-4">
+                <div class="p-4 <%= FEATURES_CONFIG['theme'] == 'light_sidebar' ? 'bg-slate-100/50 border border-slate-200 text-slate-500' : 'bg-white/5 border border-white/10 text-slate-400' %> text-[10px] font-mono rounded-xl">
+                    <% if FEATURES_CONFIG['theme'] == 'light_sidebar' %>
+                        SYSTEM: <span class="text-indigo-600 font-bold">OPERATIONAL</span><br>
+                        LICENSE: <span class="text-slate-800">ENTERPRISE</span>
+                    <% else %>
+                        PROTOCOL: <span class="text-green-500 animate-pulse">SECURED</span><br>
+                        UPLINK: <span class="text-primary">ENCRYPTED</span>
+                    <% end %>
+                </div>
+                <a href="https://github.com/IshikawaUta/one-for-all-framework" class="flex items-center justify-center w-full p-4 <%= FEATURES_CONFIG['theme'] == 'light_sidebar' ? 'bg-slate-900 text-white rounded-xl shadow-lg shadow-slate-200' : 'bg-primary text-black border-2 border-primary rounded-2xl shadow-[4px_4px_0px_var(--secondary)]' %> font-black hover:opacity-90 hover:-translate-y-0.5 transition-all">
+                    <i class="fab fa-github mr-2 text-lg"></i> <%= FEATURES_CONFIG['theme'] == 'light_sidebar' ? 'VIEW SOURCE' : 'ACCESS REPO' %>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Mobile Header for Sidebar Themes -->
+        <header class="md:hidden fixed top-0 left-0 right-0 h-16 <%= FEATURES_CONFIG['theme'] == 'light_sidebar' ? 'glass-panel !rounded-none border-b border-black/5' : 'bg-black border-b-4 border-primary' %> z-[60] flex items-center justify-between px-6">
+            <span class="font-black <%= FEATURES_CONFIG['theme'] == 'light_sidebar' ? 'text-slate-800' : 'text-white' %>">OFA<span class="text-primary">.SYS</span></span>
+            <button id="mobile-menu-btn" class="text-primary"><i class="fas fa-bars text-2xl"></i></button>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 md:ml-64 p-6 md:p-12 pt-24 md:pt-12">
+            <div class="max-w-5xl mx-auto">
+                <%= @content %>
+            </div>
+        </main>
+    </div>
+    <% else %>
+    <!-- Navigation (Original Top Nav) -->
     <header class="w-full flex justify-center p-4 sticky top-0 z-50">
         <nav class="glass-panel w-full max-w-4xl px-8 py-4 flex items-center justify-between">
             <div class="flex items-center gap-3">
@@ -210,15 +387,53 @@
             </ul>
 
             <div class="flex items-center gap-4">
-                <a href="https://github.com" class="text-slate-400 hover:text-primary transition-colors"><i class="fab fa-github text-xl"></i></a>
-                <button class="md:hidden text-slate-400"><i class="fas fa-bars text-xl"></i></button>
+                <a href="https://github.com/IshikawaUta/one-for-all-framework" class="text-slate-400 hover:text-primary transition-colors"><i class="fab fa-github text-xl"></i></a>
+                <button id="mobile-menu-btn" class="md:hidden text-slate-400 hover:text-primary transition-colors">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
             </div>
         </nav>
     </header>
 
+
     <main class="container mx-auto max-w-4xl px-6 py-12">
         <%= @content %>
     </main>
+    <% end %>
+
+    <!-- Mobile Menu Overlay (Shared) -->
+    <div id="mobile-menu" class="fixed inset-0 z-[100] hidden">
+        <div id="mobile-menu-backdrop" class="absolute inset-0 bg-black/40 backdrop-blur-sm opacity-0"></div>
+        <div id="mobile-menu-content" class="absolute right-0 top-0 bottom-0 w-72 glass-panel !rounded-none border-l <%= ['light_sidebar', 'light_glass'].include?(FEATURES_CONFIG['theme']) ? 'border-black/5' : 'border-white/10' %> p-8 flex flex-col translate-x-full">
+            <div class="flex justify-between items-center mb-10">
+                <span class="text-xl font-black tracking-tighter">OFA<span class="text-primary">.menu</span></span>
+                <button id="mobile-menu-close" class="text-slate-400 hover:text-red-400 transition-colors">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+            
+            <nav class="flex flex-col gap-6">
+                <a href="/" class="text-lg font-bold <%= req.path == '/' ? 'text-primary' : 'text-slate-500' %>">
+                    <i class="fas fa-home w-8"></i> Home
+                </a>
+                <% Page.where(is_nav: true, is_active: true).all.each do |p| %>
+                    <a href="/<%= p.slug %>" class="text-lg font-bold <%= req.path == "/#{p.slug}" ? 'text-primary' : 'text-slate-500' %>">
+                        <i class="fas fa-file-alt w-8"></i> <%= p.title %>
+                    </a>
+                <% end %>
+                <div class="h-px <%= ['light_sidebar', 'light_glass'].include?(FEATURES_CONFIG['theme']) ? 'bg-black/10' : 'bg-white/5' %> my-2"></div>
+                <a href="/dashboard" class="text-lg font-bold <%= req.path.start_with?('/dashboard') ? 'text-primary' : (['light_sidebar', 'light_glass'].include?(FEATURES_CONFIG['theme']) ? 'text-slate-600' : 'text-slate-500') %>">
+                    <i class="fas fa-gauge-high w-8"></i> Dashboard
+                </a>
+            </nav>
+
+            <div class="mt-auto pt-10 border-t <%= ['light_sidebar', 'light_glass'].include?(FEATURES_CONFIG['theme']) ? 'border-black/10' : 'border-white/5' %> flex gap-6 justify-center">
+                <a href="#" class="text-slate-400 hover:text-primary text-xl"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="text-slate-400 hover:text-primary text-xl"><i class="fab fa-discord"></i></a>
+                <a href="https://github.com/IshikawaUta/one-for-all-framework" class="text-slate-400 hover:text-primary text-xl"><i class="fab fa-github"></i></a>
+            </div>
+        </div>
+    </div>
 
     <!-- Footer -->
     <footer class="w-full py-12 mt-20 border-t border-white/5 text-center text-slate-500 text-sm">
@@ -244,6 +459,51 @@
                 duration: 1000,
                 easing: 'easeOutCubic'
             });
+
+            // Mobile Menu Logic
+            const menuBtn = document.getElementById('mobile-menu-btn');
+            const menuClose = document.getElementById('mobile-menu-close');
+            const menu = document.getElementById('mobile-menu');
+            const backdrop = document.getElementById('mobile-menu-backdrop');
+            const content = document.getElementById('mobile-menu-content');
+            let isMenuOpen = false;
+
+            const toggleMenu = () => {
+                isMenuOpen = !isMenuOpen;
+                if (isMenuOpen) {
+                    menu.classList.remove('hidden');
+                    anime({
+                        targets: backdrop,
+                        opacity: [0, 1],
+                        duration: 400,
+                        easing: 'easeOutQuad'
+                    });
+                    anime({
+                        targets: content,
+                        translateX: ['100%', '0%'],
+                        duration: 600,
+                        easing: 'easeOutExpo'
+                    });
+                } else {
+                    anime({
+                        targets: backdrop,
+                        opacity: 0,
+                        duration: 300,
+                        easing: 'easeInQuad'
+                    });
+                    anime({
+                        targets: content,
+                        translateX: '100%',
+                        duration: 400,
+                        easing: 'easeInExpo',
+                        complete: () => menu.classList.add('hidden')
+                    });
+                }
+            };
+
+            menuBtn.addEventListener('click', toggleMenu);
+            menuClose.addEventListener('click', toggleMenu);
+            backdrop.addEventListener('click', toggleMenu);
         });
     </script>
 </body>

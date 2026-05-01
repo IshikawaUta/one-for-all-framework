@@ -27,9 +27,9 @@ class DashboardController < ApplicationController
         end
       else
         filename = "#{Time.now.to_i}_#{file[:filename]}"
-        target = File.join(APP_ROOT, 'public/img/uploads', filename)
+        target = File.join(APP_ROOT, 'public/images/uploads', filename)
         FileUtils.cp(file[:tempfile].path, target)
-        @res.body << { url: "/img/uploads/#{filename}" }.to_json
+        @res.body << { url: "/images/uploads/#{filename}" }.to_json
       end
     else
       @res.status = 400

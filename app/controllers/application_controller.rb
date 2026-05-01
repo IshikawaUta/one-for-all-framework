@@ -58,7 +58,7 @@ class ApplicationController
       rescue => e
         puts "⚠ Error deleting from Cloudinary: #{e.message}"
       end
-    elsif url.start_with?('/img/uploads/')
+    elsif url.start_with?('/images/uploads/')
       path = File.join(APP_ROOT, 'public', url)
       FileUtils.rm(path) if File.exist?(path) rescue nil
     end
@@ -71,7 +71,7 @@ class ApplicationController
     urls.each { |url| delete_from_storage(url) }
     
     # Also find local uploads
-    local_urls = content.scan(/\/img\/uploads\/[^\s\)]+/)
+    local_urls = content.scan(/\/images\/uploads\/[^\s\)]+/)
     local_urls.each { |url| delete_from_storage(url) }
   end
 end

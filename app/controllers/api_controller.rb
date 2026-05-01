@@ -9,7 +9,7 @@ class ApiController < ApplicationController
   end
 
   def status
-    render_json({ status: 'ok', version: '1.0.0', type: FEATURES_CONFIG['type'] })
+    render_json({ status: 'ok', version: '2.0.0', type: FEATURES_CONFIG['type'] })
   end
 
   def halt_error(message, status: 400)

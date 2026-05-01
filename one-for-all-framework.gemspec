@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name          = "one-for-all-framework"
-  spec.version       = "1.0.0"
+  spec.version       = "2.0.0"
   spec.authors       = ["Ishikawa Uta"]
   spec.email         = ["komikers09@gmail.com"]
 

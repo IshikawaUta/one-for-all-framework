@@ -17,6 +17,13 @@ rescue LoadError
 end
 
 def help
+  puts "                                            "
+  puts "   ____  _______  ___                       "
+  puts "  / __ \\/ ____/  /   |                      "
+  puts " / / / / /_     / /| |  Framework           "
+  puts "/ /_/ / __/    / ___ |  Premium MVC         "
+  puts "\\____/_/      /_/  |_|  v2.0.0              "
+  puts "                                            "
   puts "✨ One-For-All Framework CLI ✨"
   puts "-----------------------------"
   puts "Usage:"
@@ -28,7 +35,7 @@ def help
   puts "  ofa g post TITLE      - Create a new post [args: --category, --author, --image]"
   puts "  ofa feature ACTION F  - Toggle features: action=enable/disable, F=cms/auth"
   puts "  ofa type NAME         - Set application type: portfolio, blog, landing_page"
-  puts "  ofa theme NAME        - Set UI theme: light_glass, dark_glass"
+  puts "  ofa theme NAME        - Set UI theme: light_glass, dark_glass, cyber_sidebar, retro_terminal, light_sidebar"
   puts "  ofa storage NAME      - Set image storage: local, cloudinary"
   puts "  ofa reset-password USR PWD - Reset admin account password"
   puts "  ofa db switch TYPE [NAME] - Switch DB: sqlite, mysql, mariadb, mongodb, postgres"
@@ -101,6 +108,13 @@ when 'new'
 
 when 'init'
   app_type = ARGV.shift || 'landing_page'
+  puts "                                            "
+  puts "   ____  _______  ___                       "
+  puts "  / __ \\/ ____/  /   |                      "
+  puts " / / / / /_     / /| |  Framework           "
+  puts "/ /_/ / __/    / ___ |  Premium MVC         "
+  puts "\\____/_/      /_/  |_|  v2.0.0              "
+  puts "                                            "
   puts "Initializing One-For-All project as '#{app_type}' in #{PROJECT_ROOT}..."
 
   # --- Interactive Wizard ---
@@ -130,7 +144,7 @@ when 'init'
   puts "-----------------------------\n"
 
   # Create directories
-  dirs = ['app/controllers', 'app/models', 'app/views', 'config', 'db/migrations', 'public/css', 'public/js', 'public/img', 'public/img/uploads']
+  dirs = ['app/controllers', 'app/models', 'app/views', 'config', 'db/migrations', 'public/css', 'public/js', 'public/images', 'public/images/uploads']
   dirs.each { |dir| FileUtils.mkdir_p(File.join(PROJECT_ROOT, dir)) }
   
   # Copy framework core migrations
@@ -263,14 +277,20 @@ when 'init'
     File.write(db_config_path, JSON.pretty_generate(db_default))
   end
 
-  # Premium Scaffolding
-  puts "  Generating premium UI components..."
   # Copy views from framework to project
   framework_views = File.join(FRAMEWORK_ROOT, 'app', 'views')
   project_views = File.join(PROJECT_ROOT, 'app', 'views')
   
   # Recursive copy for views (including cms folder)
   FileUtils.cp_r(File.join(framework_views, '.'), project_views)
+  
+  # Copy public assets from framework to project
+  framework_public = File.join(FRAMEWORK_ROOT, 'public')
+  project_public = File.join(PROJECT_ROOT, 'public')
+  if File.directory?(framework_public)
+    # Use cp_r with '.' to copy contents of public, not the public folder itself
+    FileUtils.cp_r(File.join(framework_public, '.'), project_public)
+  end
   
   # Copy models from framework to project
   framework_models = File.join(FRAMEWORK_ROOT, 'app', 'models')
@@ -389,8 +409,8 @@ when 'type'
 when 'theme'
   ensure_initialized!
   name = ARGV.shift
-  unless %w[light_glass dark_glass].include?(name)
-    puts "❌ Error: Invalid theme '#{name}'. Choose: light_glass, dark_glass."
+  unless %w[light_glass dark_glass cyber_sidebar retro_terminal light_sidebar].include?(name)
+    puts "❌ Error: Invalid theme '#{name}'. Choose: light_glass, dark_glass, cyber_sidebar, retro_terminal, light_sidebar."
     exit 1
   end
   config_path = File.join(PROJECT_ROOT, 'config', 'features.json')
