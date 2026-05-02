@@ -34,7 +34,7 @@ def help
   puts "  ofa g migration NAME  - Generate a new migration"
   puts "  ofa g post TITLE      - Create a new post [args: --category, --author, --image]"
   puts "  ofa feature ACTION F  - Toggle features: action=enable/disable, F=cms/auth"
-  puts "  ofa type NAME         - Set application type: portfolio, blog, landing_page"
+  puts "  ofa type NAME         - Set application type: portfolio, blog, landing_page, e_commerce"
   puts "  ofa theme NAME        - Set UI theme: light_glass, dark_glass, cyber_sidebar, retro_terminal, light_sidebar"
   puts "  ofa storage NAME      - Set image storage: local, cloudinary"
   puts "  ofa reset-password USR PWD - Reset admin account password"
@@ -49,6 +49,7 @@ end
 
 def run_migrations
   Object.const_set(:APP_ROOT, PROJECT_ROOT) unless defined?(APP_ROOT)
+  ENV['SKIP_MODELS'] = '1'
   require File.join(FRAMEWORK_ROOT, 'config', 'boot')
   puts "Running migrations..."
   migration_path = File.join(PROJECT_ROOT, "db/migrations")
@@ -322,6 +323,14 @@ when 'init'
         def index; end
       end
     RUBY
+  when 'e_commerce'
+    puts "  Scaffolding E-Commerce starter..."
+    File.write(File.join(PROJECT_ROOT, 'app/controllers/products_controller.rb'), <<~RUBY)
+      require_relative 'application_controller'
+      class ProductsController < ApplicationController
+        def index; end
+      end
+    RUBY
   end
 
   puts "Done! Run 'ofa run' to start your app."
@@ -396,8 +405,8 @@ when 'feature'
 when 'type'
   ensure_initialized!
   name = ARGV.shift
-  unless %w[landing_page portfolio blog].include?(name)
-    puts "❌ Error: Invalid app type '#{name}'. Choose: landing_page, portfolio, blog."
+  unless %w[landing_page portfolio blog e_commerce].include?(name)
+    puts "❌ Error: Invalid app type '#{name}'. Choose: landing_page, portfolio, blog, e_commerce."
     exit 1
   end
   config_path = File.join(PROJECT_ROOT, 'config', 'features.json')

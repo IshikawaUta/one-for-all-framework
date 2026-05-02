@@ -76,6 +76,7 @@ require_relative 'database'
 # Autoloading (Framework Core first, then APP_ROOT)
 framework_app = File.expand_path('../app', __dir__)
 ['controllers', 'models', 'middleware', 'helpers'].each do |folder|
+  next if folder == 'models' && ENV['SKIP_MODELS']
   loaded = []
   # Load framework core
   Dir.glob(File.join(framework_app, folder, '*.rb')).each do |f| 

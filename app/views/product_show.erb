@@ -1,0 +1,42 @@
+<div class="mb-8">
+    <a href="/products" class="text-slate-400 hover:text-primary transition-colors">
+        <i class="fas fa-arrow-left mr-2"></i> Back to Shop
+    </a>
+</div>
+
+<div class="glass-panel p-8 md:p-12">
+    <div class="flex flex-col md:flex-row gap-12">
+        <div class="w-full md:w-1/2 aspect-square rounded-3xl overflow-hidden bg-slate-900/50 shadow-2xl">
+            <img src="<%= @product.image_url || '/images/logo.png' %>" class="w-full h-full object-cover">
+        </div>
+        
+        <div class="w-full md:w-1/2 flex flex-col justify-center">
+            <div class="badge-premium"><%= @product.category || 'General' %></div>
+            <h1 class="text-4xl md:text-5xl font-black mb-4 tracking-tighter"><%= @product.name %></h1>
+            <div class="text-3xl font-bold text-primary mb-6">$<%= @product.price %></div>
+            
+            <div class="markdown-content mb-10">
+                <%= markdown(@product.description) %>
+            </div>
+
+            <div class="flex items-center gap-6">
+                <form action="/cart/add" method="POST" class="flex items-center gap-4">
+                    <%= csrf_tag %>
+                    <input type="hidden" name="product_id" value="<%= @product.id %>">
+                    <div class="flex items-center glass-panel !rounded-xl overflow-hidden">
+                        <button type="button" onclick="this.nextElementSibling.stepDown()" class="px-4 py-2 hover:bg-white/5">-</button>
+                        <input type="number" name="qty" value="1" min="1" class="w-12 bg-transparent text-center font-bold focus:outline-none">
+                        <button type="button" onclick="this.previousElementSibling.stepUp()" class="px-4 py-2 hover:bg-white/5">+</button>
+                    </div>
+                    <button type="submit" class="btn-premium flex-1">
+                        <i class="fas fa-shopping-cart mr-2"></i> Add to Cart
+                    </button>
+                </form>
+            </div>
+            
+            <div class="mt-8 pt-8 border-t border-white/5 text-sm text-slate-500">
+                <i class="fas fa-cubes mr-2"></i> Stock available: <%= @product.stock %> items
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,6 +1,6 @@
 <div class="space-y-12 pb-20">
     <div class="text-left">
-        <div class="badge-premium">Documentation v2.0</div>
+        <div class="badge-premium">Documentation v3.0.0</div>
         <h1 class="text-5xl font-black tracking-tighter mb-4 text-slate-700 dark:text-white">Framework <span class="text-primary">Guide</span></h1>
         <p class="text-xl text-slate-500 max-w-2xl leading-relaxed">Everything you need to know about building premium web applications with the One-For-All framework.</p>
     </div>
@@ -15,6 +15,8 @@
                 <a href="#structure" class="block px-4 py-2 rounded-xl hover:bg-primary/5 text-slate-600 hover:text-primary transition-all font-semibold border-l-2 border-transparent hover:border-primary">Project Structure</a>
                 <a href="#routing" class="block px-4 py-2 rounded-xl hover:bg-primary/5 text-slate-600 hover:text-primary transition-all font-semibold border-l-2 border-transparent hover:border-primary">Routing System</a>
                 <a href="#cms" class="block px-4 py-2 rounded-xl hover:bg-primary/5 text-slate-600 hover:text-primary transition-all font-semibold border-l-2 border-transparent hover:border-primary">CMS & Features</a>
+                <a href="#ecommerce" class="block px-4 py-2 rounded-xl hover:bg-primary/5 text-slate-600 hover:text-primary transition-all font-semibold border-l-2 border-transparent hover:border-primary">E-Commerce</a>
+                <a href="#deploy" class="block px-4 py-2 rounded-xl hover:bg-primary/5 text-slate-600 hover:text-primary transition-all font-semibold border-l-2 border-transparent hover:border-primary">Deployment</a>
             </nav>
         </aside>
 
@@ -26,7 +28,7 @@
                     <i class="fas fa-star text-primary"></i> Introduction
                 </h2>
                 <div class="markdown-content">
-                    <p><strong>One-For-All (OFA)</strong> is a high-performance Ruby web framework focused on speed and aesthetics. It uses a modular architecture built on top of the <em>Eks-Cent</em> engine, allowing you to scale from simple landing pages to complex CMS-driven sites effortlessly.</p>
+                    <p><strong>One-For-All (OFA)</strong> is a premium, ultra-fast Ruby MVC framework designed for developers who value both high performance and modern aesthetics. Built on the powerful <strong>Eks-Cent</strong> engine and optimized with <strong>Eksa Server</strong>, OFA v3.0 now supports <strong>Full E-Commerce integration</strong> alongside its stunning "Glassmorphism" UI.</p>
                     <p>Our philosophy is "Premium by Default". You shouldn't have to spend hours tweaking CSS just to get a modern look. With OFA, you get Glassmorphism, animations, and responsive layouts baked in.</p>
                 </div>
             </section>
@@ -36,70 +38,113 @@
                 <h2 class="text-3xl font-black tracking-tight flex items-center gap-3 ml-2">
                     <i class="fas fa-terminal text-primary"></i> CLI Power Tools
                 </h2>
-                <div class="glass-panel overflow-hidden">
-                    <table class="w-full text-left border-collapse">
-                        <thead class="bg-primary/5 border-b border-white/10">
+                
+                <!-- Desktop Table View -->
+                <div class="hidden md:block glass-panel overflow-hidden">
+                    <table class="w-full text-left border-collapse text-sm">
+                        <thead class="bg-primary/5 border-b border-white/10 text-xs font-black uppercase text-slate-400">
                             <tr>
-                                <th class="px-6 py-4 text-xs font-black uppercase text-slate-400">Command</th>
-                                <th class="px-6 py-4 text-xs font-black uppercase text-slate-400">Action</th>
+                                <th class="px-6 py-4">Command</th>
+                                <th class="px-6 py-4">Detailed Description</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-white/5">
-                            <tr class="bg-slate-500/5"><td colspan="2" class="px-6 py-2 text-[10px] font-black uppercase tracking-tighter text-slate-400">Project Management</td></tr>
+                            <tr class="bg-slate-500/5"><td colspan="2" class="px-6 py-2 text-[10px] font-black uppercase tracking-tighter text-slate-400">Project Lifecycle</td></tr>
                             <tr>
-                                <td class="px-6 py-4 font-mono text-sm text-primary">./ofa new [name]</td>
-                                <td class="px-6 py-4 text-slate-600 dark:text-slate-400">Creates a new project from scratch.</td>
+                                <td class="px-6 py-4 font-mono text-primary">./ofa new NAME [TYPE]</td>
+                                <td class="px-6 py-4 text-slate-600 dark:text-slate-400">Create a new project. Generates structure and runs bundle install automatically.</td>
                             </tr>
                             <tr>
-                                <td class="px-6 py-4 font-mono text-sm text-primary">./ofa init</td>
-                                <td class="px-6 py-4 text-slate-600 dark:text-slate-400">Initializes environment & DB via wizard.</td>
+                                <td class="px-6 py-4 font-mono text-primary">./ofa init [TYPE]</td>
+                                <td class="px-6 py-4 text-slate-600 dark:text-slate-400">Initialize in current folder via interactive wizard for DB & Cloudinary.</td>
                             </tr>
                             <tr>
-                                <td class="px-6 py-4 font-mono text-sm text-primary">./ofa run</td>
-                                <td class="px-6 py-4 text-slate-600 dark:text-slate-400">Starts the development server.</td>
+                                <td class="px-6 py-4 font-mono text-primary">./ofa run</td>
+                                <td class="px-6 py-4 text-slate-600 dark:text-slate-400">Starts the high-performance Eksa Server on port 3000.</td>
                             </tr>
                             <tr>
-                                <td class="px-6 py-4 font-mono text-sm text-primary">./ofa deploy</td>
-                                <td class="px-6 py-4 text-slate-600 dark:text-slate-400">Deploys to production environment.</td>
-                            </tr>
-
-                            <tr class="bg-slate-500/5"><td colspan="2" class="px-6 py-2 text-[10px] font-black uppercase tracking-tighter text-slate-400">Generators</td></tr>
-                            <tr>
-                                <td class="px-6 py-4 font-mono text-sm text-primary">./ofa g controller [name]</td>
-                                <td class="px-6 py-4 text-slate-600 dark:text-slate-400">Generates a RESTful controller.</td>
-                            </tr>
-                            <tr>
-                                <td class="px-6 py-4 font-mono text-sm text-primary">./ofa g model [name]</td>
-                                <td class="px-6 py-4 text-slate-600 dark:text-slate-400">Generates a model & migration.</td>
-                            </tr>
-                            <tr>
-                                <td class="px-6 py-4 font-mono text-sm text-primary">./ofa g migration [name]</td>
-                                <td class="px-6 py-4 text-slate-600 dark:text-slate-400">Creates a new schema migration.</td>
-                            </tr>
-                            <tr>
-                                <td class="px-6 py-4 font-mono text-sm text-primary">./ofa g post [title]</td>
-                                <td class="px-6 py-4 text-slate-600 dark:text-slate-400">Creates a Markdown-based blog post.</td>
+                                <td class="px-6 py-4 font-mono text-primary">./ofa deploy</td>
+                                <td class="px-6 py-4 text-slate-600 dark:text-slate-400 text-xs italic">Railway/Docker/Git auto-detection for production.</td>
                             </tr>
 
-                            <tr class="bg-slate-500/5"><td colspan="2" class="px-6 py-2 text-[10px] font-black uppercase tracking-tighter text-slate-400">Configuration</td></tr>
+                            <tr class="bg-slate-500/5"><td colspan="2" class="px-6 py-2 text-[10px] font-black uppercase tracking-tighter text-slate-400">Generators (Scaffolding)</td></tr>
                             <tr>
-                                <td class="px-6 py-4 font-mono text-sm text-primary">./ofa theme [name]</td>
-                                <td class="px-6 py-4 text-slate-600 dark:text-slate-400">Switch between UI themes instantly.</td>
+                                <td class="px-6 py-4 font-mono text-primary">./ofa g controller NAME</td>
+                                <td class="px-6 py-4 text-slate-600 dark:text-slate-400">Generates <code>app/controllers/{name}_controller.rb</code>.</td>
                             </tr>
                             <tr>
-                                <td class="px-6 py-4 font-mono text-sm text-primary">./ofa type [type]</td>
-                                <td class="px-6 py-4 text-slate-600 dark:text-slate-400">Change app mode (blog, portfolio, etc).</td>
+                                <td class="px-6 py-4 font-mono text-primary">./ofa g model NAME</td>
+                                <td class="px-6 py-4 text-slate-600 dark:text-slate-400">Creates model & migration linked to Sequel/NoSQL.</td>
                             </tr>
                             <tr>
-                                <td class="px-6 py-4 font-mono text-sm text-primary">./ofa storage [name]</td>
-                                <td class="px-6 py-4 text-slate-600 dark:text-slate-400">Configure Local or Cloudinary storage.</td>
+                                <td class="px-6 py-4 font-mono text-primary">./ofa g migration NAME</td>
+                                <td class="px-6 py-4 text-slate-600 dark:text-slate-400">Creates timestamped migration in <code>db/migrations/</code>.</td>
+                            </tr>
+
+                            <tr class="bg-slate-500/5"><td colspan="2" class="px-6 py-2 text-[10px] font-black uppercase tracking-tighter text-slate-400">Customization</td></tr>
+                            <tr>
+                                <td class="px-6 py-4 font-mono text-primary">./ofa theme NAME</td>
+                                <td class="px-6 py-4 text-slate-600 dark:text-slate-400 text-xs">Switch UI: light_glass, dark_glass, cyber_sidebar, light_sidebar, retro_terminal.</td>
                             </tr>
                             <tr>
-                                <td class="px-6 py-4 font-mono text-sm text-primary">./ofa db switch [name]</td>
-                                <td class="px-6 py-4 text-slate-600 dark:text-slate-400">Switch DB adapter (SQLite, MySQL, etc).</td>
+                                <td class="px-6 py-4 font-mono text-primary">./ofa type NAME</td>
+                                <td class="px-6 py-4 text-slate-600 dark:text-slate-400 text-xs">Change mode: portfolio, blog, landing_page, e_commerce.</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 font-mono text-primary">./ofa storage NAME</td>
+                                <td class="px-6 py-4 text-slate-600 dark:text-slate-400 text-xs">Hot-swap storage: <code>local</code> or <code>cloudinary</code>.</td>
                             </tr>
                         </tbody>
                     </table>
+                </div>
+
+                <!-- Mobile Card View -->
+                <div class="md:hidden space-y-4">
+                    <div class="glass-panel p-6 space-y-4">
+                        <h4 class="text-[10px] font-black uppercase tracking-widest text-primary border-b border-white/5 pb-2">Project Lifecycle</h4>
+                        <div class="space-y-4">
+                            <div>
+                                <code class="text-primary font-bold text-xs">./ofa new NAME [TYPE]</code>
+                                <p class="text-slate-500 text-xs mt-1">Create a new project. Generates structure and runs bundle install automatically.</p>
+                            </div>
+                            <div>
+                                <code class="text-primary font-bold text-xs">./ofa init [TYPE]</code>
+                                <p class="text-slate-500 text-xs mt-1">Initialize in current folder via interactive wizard for DB & Cloudinary.</p>
+                            </div>
+                            <div>
+                                <code class="text-primary font-bold text-xs">./ofa run</code>
+                                <p class="text-slate-500 text-xs mt-1">Starts the high-performance Eksa Server on port 3000.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel p-6 space-y-4">
+                        <h4 class="text-[10px] font-black uppercase tracking-widest text-primary border-b border-white/5 pb-2">Scaffolding</h4>
+                        <div class="space-y-4">
+                            <div>
+                                <code class="text-primary font-bold text-xs">./ofa g controller NAME</code>
+                                <p class="text-slate-500 text-xs mt-1">Generates <code>app/controllers/{name}_controller.rb</code>.</p>
+                            </div>
+                            <div>
+                                <code class="text-primary font-bold text-xs">./ofa g model NAME</code>
+                                <p class="text-slate-500 text-xs mt-1">Creates model & migration linked to Sequel/NoSQL.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel p-6 space-y-4">
+                        <h4 class="text-[10px] font-black uppercase tracking-widest text-primary border-b border-white/5 pb-2">Customization</h4>
+                        <div class="space-y-4">
+                            <div>
+                                <code class="text-primary font-bold text-xs">./ofa theme NAME</code>
+                                <p class="text-slate-500 text-xs mt-1">Switch UI: light_glass, dark_glass, cyber_sidebar, light_sidebar, retro_terminal.</p>
+                            </div>
+                            <div>
+                                <code class="text-primary font-bold text-xs">./ofa type NAME</code>
+                                <p class="text-slate-500 text-xs mt-1">Change mode: portfolio, blog, landing_page, e_commerce.</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -108,24 +153,32 @@
                 <h2 class="text-3xl font-black tracking-tight mb-6 flex items-center gap-3">
                     <i class="fas fa-folder-tree text-primary"></i> Project Structure
                 </h2>
-                <div class="space-y-4">
-                    <div class="p-4 bg-slate-900 rounded-2xl font-mono text-sm text-blue-400 overflow-x-auto">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <p class="text-slate-600 dark:text-slate-400 mb-4 text-sm">OFA follows a strict MVC pattern to keep your code organized and maintainable as your project grows.</p>
+                        <ul class="space-y-2 text-xs">
+                            <li><strong class="text-primary uppercase tracking-widest font-black text-[10px]">/app</strong>: Core logic, models, and UI templates.</li>
+                            <li><strong class="text-primary uppercase tracking-widest font-black text-[10px]">/config</strong>: Routing and application features.</li>
+                            <li><strong class="text-primary uppercase tracking-widest font-black text-[10px]">/db</strong>: Migrations and data store.</li>
+                            <li><strong class="text-primary uppercase tracking-widest font-black text-[10px]">/public</strong>: Optimized assets (CSS/JS).</li>
+                        </ul>
+                    </div>
+                    <div class="p-4 bg-slate-900 rounded-2xl font-mono text-[11px] text-blue-400 overflow-x-auto border border-white/5">
 <pre>
 /app
-  /controllers  # Logic handlers
-  /models       # Database entities
-  /views        # ERB templates
+  /controllers  # Controllers
+  /models       # Models (Sequel/NoSQL)
+  /views        # Views (ERB)
 /config
-  /database.json # DB configurations
-  /features.json # Feature toggles
+  /routes.rb    # URL Mapping
+  /features.json # Feature Management
 /db
-  /migrations   # Schema versions
+  /migrations   # Schema Evolution
 /public
-  /images       # Static assets
-  /css          # Custom styles
+  /images       # Multimedia
+  /css          # Tailwind/Custom
 </pre>
                     </div>
-                    <p class="text-slate-500 text-sm">Most of your work will happen inside the <code>/app</code> directory following the standard MVC pattern.</p>
                 </div>
             </section>
 
@@ -163,6 +216,58 @@ resources :posts
                     <p>Authentication is handled via BCrypt hashing with an 8-hour session sliding expiration window for optimal security.</p>
                 </div>
             </section>
+
+            <!-- E-Commerce -->
+            <section id="ecommerce" class="space-y-6 text-left">
+                <h2 class="text-3xl font-black tracking-tight flex items-center gap-3 ml-2">
+                    <i class="fas fa-shopping-bag text-primary"></i> E-Commerce Module
+                </h2>
+                <div class="glass-panel p-8">
+                    <p class="text-slate-600 dark:text-slate-400 mb-6">Version 3.0.0 introduces a full-featured e-commerce system. Activate it with a single command:</p>
+                    <div class="p-4 bg-slate-900 rounded-2xl font-mono text-sm text-green-400 mb-6">
+                        ./ofa type e_commerce
+                    </div>
+                    <ul class="space-y-3">
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-check-circle text-primary mt-1"></i>
+                            <div><strong class="text-slate-700 dark:text-white">Shopping Cart:</strong> Fully functional cart with real-time quantity updates and session persistence.</div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-check-circle text-primary mt-1"></i>
+                            <div><strong class="text-slate-700 dark:text-white">Product CMS:</strong> Dedicated management interface for products, inventory, and categories.</div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-check-circle text-primary mt-1"></i>
+                            <div><strong class="text-slate-700 dark:text-white">Mobile Optimized:</strong> 100% responsive checkout and product listing pages.</div>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Deployment -->
+            <section id="deploy" class="glass-panel p-8 md:p-12 text-left border-primary/20">
+                <h2 class="text-3xl font-black tracking-tight mb-6 flex items-center gap-3">
+                    <i class="fas fa-rocket text-primary"></i> Deployment Guide
+                </h2>
+                <div class="space-y-8">
+                    <div>
+                        <h4 class="font-bold text-lg mb-2">1. Railway (Recommended)</h4>
+                        <p class="text-slate-500 text-sm mb-4">Run <code>./ofa deploy</code>. The CLI will automatically detect your project and push it to Railway using the included Procfile.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-lg mb-2">2. Docker Support</h4>
+                        <p class="text-slate-500 text-sm mb-4">Use the provided <code>Dockerfile</code> for containerized hosting on any cloud provider.</p>
+                        <div class="p-4 bg-slate-900 rounded-2xl font-mono text-xs text-slate-400">
+                            docker build -t ofa-app .<br>
+                            docker run -p 3000:3000 ofa-app
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-lg mb-2">3. VPS Deployment</h4>
+                        <p class="text-slate-500 text-sm mb-4">On a raw Linux server, use PM2 to manage the process and Nginx as a reverse proxy.</p>
+                    </div>
+                </div>
+            </section>
         </div>
     </div>
 </div>
@@ -171,9 +276,17 @@ resources :posts
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
-            document.querySelector(this.getAttribute('href')).scrollIntoView({
-                behavior: 'smooth'
-            });
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                const headerOffset = 100;
+                const elementPosition = target.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
+            }
         });
     });
 </script>

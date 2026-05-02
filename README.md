@@ -2,13 +2,13 @@
   <img src="public/images/logo.png" width="500" height="500" alt="OFA Framework Logo">
 </p>
 
-# ⚡ One-For-All (OFA) Framework
+# ⚡ One-For-All (OFA) Framework v3.0.0
 
 [![Ruby Version](https://img.shields.io/badge/ruby-%3E%3D%203.0.0-red.svg)](https://www.ruby-lang.org/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Framework](https://img.shields.io/badge/MVC-Lightweight-orange.svg)]()
 
-**One-For-All (OFA)** is a premium, ultra-fast Ruby MVC framework designed for developers who value both high performance and modern aesthetics. Built on the powerful **Eks-Cent** engine and optimized with **Eksa Server**, OFA provides a production-ready foundation with a stunning "Glassmorphism" UI out of the box.
+**One-For-All (OFA)** is a premium, ultra-fast Ruby MVC framework designed for developers who value both high performance and modern aesthetics. Built on the powerful **Eks-Cent** engine and optimized with **Eksa Server**, OFA v3.0 now supports **Full E-Commerce integration** alongside its stunning "Glassmorphism" UI.
 
 ---
 
@@ -52,40 +52,50 @@ Your app is now live at `http://localhost:3000` ⚡
 
 ---
 
-## 🛠️ CLI Power Tools
+## 🛠️ CLI Power Tools (Detailed Reference)
 
-The `ofa` CLI is your best friend. Use it to manage your entire application lifecycle:
+The `ofa` CLI is the heart of the One-For-All framework. It handles everything from project initialization to production deployment.
 
-### Project Management
+### 📁 Project Lifecycle
 | Command | Description |
 | :--- | :--- |
-| `ofa new NAME [TYPE]` | Create a new project with automatic bundle install. |
-| `ofa init [TYPE]` | Initialize project in current folder with interactive wizard. |
-| `ofa run` | Start the high-performance development server. |
-| `ofa deploy` | Deploy project to production (Railway/Docker ready). |
+| `ofa new NAME [TYPE]` | **Create a new project.** Generates a new directory, initializes the framework structure, and automatically runs `bundle install`. <br> *Example:* `./ofa new my_portfolio portfolio` |
+| `ofa init [TYPE]` | **Initialize in current folder.** Ideal if you've already created a folder or cloned a repository. It triggers an **Interactive Wizard** to configure your Database (SQLite/MongoDB) and Image Storage (Local/Cloudinary). |
+| `ofa run` | **Start Development Server.** Boots the high-performance Eksa Server. Your app will be accessible at `http://localhost:3000`. |
+| `ofa deploy` | **Production Deployment.** Automatically detects deployment targets. <br> 1. Checks if it's a Git repository. <br> 2. Detects **Railway CLI** and triggers `railway up`. <br> 3. Supports Docker via the included `Dockerfile`. |
 
-### Generators (Scaffolding)
+---
+
+### 🏗️ Scaffolding & Generators (`ofa g`)
+Automate the creation of boilerplate code with the generator command.
+
 | Command | Description |
 | :--- | :--- |
-| `ofa g controller NAME` | Generate a RESTful controller in `app/controllers`. |
-| `ofa g model NAME` | Generate a database model and migration. |
-| `ofa g migration NAME` | Generate a new database migration file. |
-| `ofa g post TITLE` | Create a new Markdown post (Supports `--category`, `--author`). |
+| `ofa g controller NAME` | Creates a new controller in `app/controllers/{name}_controller.rb` with a default `index` action. |
+| `ofa g model NAME` | Generates a database model in `app/models/{name}.rb` integrated with the Sequel ORM. |
+| `ofa g migration NAME` | Creates a timestamped migration file in `db/migrations/`. Use this to define your schema changes. |
+| `ofa g post TITLE` | Creates a new Markdown/ERB post in `app/views/posts/`. <br> *Args:* `--category`, `--author`, `--image`. <br> *Example:* `./ofa g post "My First Journey" --category Tech --author "John Doe"` |
 
-### Configuration & Features
+---
+
+### 🎨 Configuration & Customization
+Fine-tune your application's behavior and appearance without touching the code.
+
 | Command | Description |
 | :--- | :--- |
-| `ofa type [TYPE]` | Set app type: `portfolio`, `blog`, or `landing_page`. |
-| `ofa theme [THEME]` | Set UI theme: `light_glass`, `dark_glass`, `cyber_sidebar`, etc. |
-| `ofa feature enable [F]` | Toggle features like `cms` or `auth`. |
-| `ofa storage [local\|cloudinary]` | Set image storage provider. |
-| `ofa reset-password USR PWD`| Reset or create admin account credentials. |
+| `ofa type NAME` | **Set Application Type.** Switches the layout logic between `portfolio`, `blog`, `landing_page`, and `e_commerce`. |
+| `ofa theme NAME` | **Change UI Aesthetic.** Instantly swap between premium themes: <br> • `light_glass` / `dark_glass` (Modern Glassmorphism) <br> • `cyber_sidebar` (High-tech) <br> • `retro_terminal` (Old-school hacker vibe) <br> • `light_sidebar` (Professional/Clean) |
+| `ofa feature ACTION FEATURE`| **Toggle Core Features.** Enable or disable system modules. <br> *Usage:* `./ofa feature enable auth` or `./ofa feature disable cms`. |
+| `ofa storage NAME` | **Set Media Storage.** Choose between `local` (uploads folder) or `cloudinary` (Cloud storage). |
 
-### Database Management
+---
+
+### 🔐 Security & Database
 | Command | Description |
 | :--- | :--- |
-| `ofa db switch [ADAPTER]` | Switch DB: `sqlite`, `mysql`, `postgres`, `mongodb`. |
-| `ofa db migrate` | Run all pending database migrations. |
+| `ofa reset-password USR PWD`| **User Management.** Resets a password for an existing admin or creates a new one. <br> *Note:* Enforces strong password rules (8+ chars, 1 uppercase, 1 number). |
+| `ofa db switch ADAPTER` | **Hot-swap Database.** Configure your adapter on the fly: `sqlite`, `mysql`, `mariadb`, `postgres`, or `env` (for MongoDB Atlas). |
+| `ofa db migrate` | **Database Sync.** Runs all pending migrations in `db/migrations/` to keep your schema up to date. |
 
 ---
 
@@ -100,13 +110,41 @@ OFA follows a strict **MVC (Model-View-Controller)** pattern:
 
 ---
 
-## 🚢 Deployment
+## 🚢 Deployment Guide
 
-One-For-All is optimized for modern cloud platforms:
+One-For-All is designed to be cloud-native and "deploy-ready" from day one.
 
--   **Railway / Heroku**: Uses the included `Procfile` for automatic detection.
--   **Docker**: A lightweight `Dockerfile` based on `ruby:3.2-slim` is provided.
--   **VPS**: Can be run behind Nginx/Apache using the `ofa run` command.
+### 🚂 Railway (Recommended)
+Railway is the easiest way to get your OFA app live. The framework includes a `Procfile` that Railway detects automatically.
+1. Install [Railway CLI](https://docs.railway.app/guides/cli).
+2. Run `railway login`.
+3. In your project folder, run:
+   ```bash
+   ./ofa deploy
+   ```
+   *The CLI will automatically trigger `railway up` and handle the build process.*
+
+### 🐳 Docker
+For customized hosting or VPS providers, use the optimized `Dockerfile`.
+1. **Build the image**:
+   ```bash
+   docker build -t my-ofa-app .
+   ```
+2. **Run the container**:
+   ```bash
+   docker run -p 3000:3000 --env-file .env my-ofa-app
+   ```
+   *Note: Ensure your `.env` contains production-ready database credentials.*
+
+### 🖥️ VPS (DigitalOcean, Linode, AWS)
+To run OFA on a raw Linux server:
+1. **Setup**: Clone your repo and run `bundle install --deployment`.
+2. **Database**: Run `./ofa db migrate` to sync your production schema.
+3. **Process Management**: Use [PM2](https://pm2.keymetrics.io/) to keep the server alive:
+   ```bash
+   pm2 start "./ofa run" --name ofa-app
+   ```
+4. **Reverse Proxy**: We recommend using **Nginx** as a reverse proxy to handle SSL and port 80/443 forwarding to port 3000.
 
 ---
 

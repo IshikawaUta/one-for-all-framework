@@ -1,0 +1,89 @@
+<div class="flex flex-col lg:flex-row gap-8 items-start">
+    <!-- CMS Sidebar -->
+    <aside class="glass-panel w-full lg:w-64 p-6 relative lg:sticky lg:top-24">
+        <div class="flex items-center gap-2 mb-8 px-2">
+            <div class="w-6 h-6 bg-primary rounded flex items-center justify-center text-white text-xs">
+                <i class="fas fa-user-shield"></i>
+            </div>
+            <h3 class="font-black tracking-tight text-lg">Admin<span class="text-primary">Panel</span></h3>
+        </div>
+
+        <nav class="space-y-2">
+            <a href="/dashboard" class="flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 text-slate-500 hover:bg-white/5">
+                <i class="fas fa-chart-pie w-5"></i>
+                <span class="font-semibold">Dashboard</span>
+            </a>
+            
+            <a href="/dashboard/products" class="flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 bg-primary text-white shadow-lg shadow-primary/30">
+                <i class="fas fa-tag w-5"></i>
+                <span class="font-semibold">Products</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="flex-1 min-w-0 w-full pb-20">
+        <div class="glass-panel p-6 md:p-12 border-none shadow-2xl">
+            <div class="mb-10">
+                <h2 class="text-3xl font-black tracking-tight"><%= @product.id ? 'Edit Product' : 'New Product' %></h2>
+                <p class="text-slate-500">Fill in the details to list your product in the shop.</p>
+            </div>
+
+            <form action="<%= @product.id ? "/dashboard/products/#{@product.id}/update" : "/dashboard/products" %>" method="POST" class="space-y-8">
+                <%= csrf_tag %>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="space-y-3">
+                        <label class="text-sm font-black uppercase tracking-widest text-slate-400">Product Name</label>
+                        <input type="text" name="product[name]" value="<%= @product.name %>" required 
+                               class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all font-bold">
+                    </div>
+                    <div class="space-y-3">
+                        <label class="text-sm font-black uppercase tracking-widest text-slate-400">Category</label>
+                        <input type="text" name="product[category]" value="<%= @product.category %>" placeholder="e.g. Digital, Physical, Services"
+                               class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all font-bold">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="space-y-3">
+                        <label class="text-sm font-black uppercase tracking-widest text-slate-400">Price ($)</label>
+                        <input type="number" step="0.01" name="product[price]" value="<%= @product.price %>" required 
+                               class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all font-bold">
+                    </div>
+                    <div class="space-y-3">
+                        <label class="text-sm font-black uppercase tracking-widest text-slate-400">Stock Quantity</label>
+                        <input type="number" name="product[stock]" value="<%= @product.stock %>" required 
+                               class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all font-bold">
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <label class="text-sm font-black uppercase tracking-widest text-slate-400">Image URL</label>
+                    <div class="flex gap-4">
+                        <input type="text" name="product[image_url]" id="image_url" value="<%= @product.image_url %>" 
+                               class="flex-1 bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all font-bold">
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <label class="text-sm font-black uppercase tracking-widest text-slate-400">Description (Markdown Supported)</label>
+                    <textarea name="product[description]" rows="8" required 
+                              class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all font-medium"><%= @product.description %></textarea>
+                </div>
+
+                <div class="flex items-center gap-4 p-4 bg-white/5 rounded-2xl border border-white/5">
+                    <input type="checkbox" name="product[is_active]" value="1" <%= @product.is_active ? 'checked' : '' %> class="w-5 h-5 rounded border-white/10 text-primary focus:ring-primary">
+                    <label class="text-sm font-bold text-slate-400">List product immediately in the shop</label>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-4 pt-6">
+                    <button type="submit" class="btn-premium flex-1 !py-5 order-2 sm:order-1">
+                        <i class="fas fa-save mr-2"></i> <%= @product.id ? 'Update Product' : 'Create Product' %>
+                    </button>
+                    <a href="/dashboard/products" class="btn-secondary px-10 order-1 sm:order-2 text-center">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

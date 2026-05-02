@@ -11,9 +11,40 @@ ROUTES = EksCent::Router.new do
     when 'blog'
       posts = Post.where(is_active: true).order(Sequel.desc(:created_at)).all
       res.render 'blog_home', title: "Blog - One-For-All", posts: posts
+    when 'e_commerce'
+      ProductsController.new(req, res).index
     else
       res.render 'index', title: "One-For-All Framework"
     end
+  end
+
+  # --- E-Commerce Routes ---
+  get '/products' do |req, res|
+    ProductsController.new(req, res).index
+  end
+
+  get '/products/:slug' do |req, res|
+    ProductsController.new(req, res).show
+  end
+
+  get '/cart' do |req, res|
+    CartController.new(req, res).index
+  end
+
+  post '/cart/add' do |req, res|
+    CartController.new(req, res).add
+  end
+
+  post '/cart/update' do |req, res|
+    CartController.new(req, res).update
+  end
+
+  post '/cart/remove' do |req, res|
+    CartController.new(req, res).remove
+  end
+
+  post '/cart/clear' do |req, res|
+    CartController.new(req, res).clear
   end
 
   get '/docs' do |req, res|
@@ -33,6 +64,7 @@ ROUTES = EksCent::Router.new do
   resources :pages, prefix: '/dashboard'
   resources :posts, prefix: '/dashboard'
   resources :projects, prefix: '/dashboard'
+  resources :products, prefix: '/dashboard'
 
   # Auth Routes
   get '/login' do |req, res|

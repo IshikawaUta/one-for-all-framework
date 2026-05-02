@@ -29,6 +29,11 @@
                     <i class="fas fa-palette w-5"></i>
                     <span class="font-semibold">Projects</span>
                 </a>
+            <% elsif FEATURES_CONFIG['type'] == 'e_commerce' %>
+                <a href="/dashboard/products" class="flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 <%= @req.path.start_with?('/dashboard/products') ? 'bg-primary text-white shadow-lg shadow-primary/30' : 'text-slate-500 hover:bg-white/5' %>">
+                    <i class="fas fa-tag w-5"></i>
+                    <span class="font-semibold">Products</span>
+                </a>
             <% end %>
 
             <div class="h-px bg-white/5 my-4"></div>
@@ -45,56 +50,64 @@
 
     <!-- Main Content -->
     <div class="flex-1 space-y-6 w-full">
-        <div class="flex justify-between items-center bg-white/5 p-6 rounded-3xl border border-white/5">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white/5 p-6 rounded-3xl border border-white/5">
             <div>
                 <h2 class="text-2xl font-black tracking-tight">Article Management</h2>
                 <p class="text-slate-500 text-sm">Write and manage your blog articles.</p>
             </div>
-            <a href="/dashboard/posts/new" class="btn-premium">
+            <a href="/dashboard/posts/new" class="btn-premium w-full sm:w-auto text-center">
                 <i class="fas fa-plus mr-2 text-sm"></i> New Article
             </a>
         </div>
 
         <div class="glass-panel overflow-hidden border-none shadow-xl">
-            <table class="w-full text-left border-collapse">
-                <thead>
-                    <tr class="bg-white/5">
-                        <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-400">Title</th>
-                        <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-400">Category</th>
-                        <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-400 text-right">Action</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-white/5">
-                    <% if @posts.empty? %>
-                        <tr>
-                            <td colspan="3" class="px-6 py-12 text-center text-slate-500 italic">No articles created yet.</td>
-                        </tr>
-                    <% end %>
-                    <% @posts.each do |post| %>
-                    <tr class="hover:bg-white/[0.02] transition-colors group">
-                        <td class="px-6 py-4">
-                            <span class="font-bold text-slate-700 dark:text-slate-200 group-hover:text-primary transition-colors"><%= post.title %></span>
-                        </td>
-                        <td class="px-6 py-4">
-                            <span class="text-xs bg-primary/10 px-2 py-1 rounded-lg text-primary font-bold"><%= post.category %></span>
-                        </td>
-                        <td class="px-6 py-4 text-right">
-                            <div class="flex justify-end gap-2">
-                                <a href="/dashboard/posts/<%= post.id %>/edit" class="w-9 h-9 flex items-center justify-center rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all shadow-lg shadow-primary/10">
-                                    <i class="fas fa-edit text-sm"></i>
-                                </a>
-                                <form action="/dashboard/posts/<%= post.id %>/delete" method="POST" onsubmit="return confirm('Delete this article?')" class="inline">
-                                    <%= csrf_tag %>
-                                    <button type="submit" class="w-9 h-9 flex items-center justify-center rounded-xl bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all shadow-lg shadow-red-500/10">
-                                        <i class="fas fa-trash-can text-sm"></i>
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                    <% end %>
-                </tbody>
-            </table>
+            <!-- Header (Hidden on Mobile) -->
+            <div class="hidden md:grid grid-cols-12 bg-white/5 border-b border-white/5 text-slate-400 font-bold uppercase text-[10px] tracking-[0.2em] px-8 py-4">
+                <div class="col-span-8">Article Title</div>
+                <div class="col-span-2">Category</div>
+                <div class="col-span-2 text-right">Actions</div>
+            </div>
+
+            <div class="divide-y divide-white/5">
+                <% if @posts.empty? %>
+                    <div class="px-8 py-20 text-center">
+                        <div class="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-pen-nib text-2xl text-slate-600"></i>
+                        </div>
+                        <div class="text-slate-500 italic">No articles created yet.</div>
+                    </div>
+                <% end %>
+                <% @posts.each do |post| %>
+                <div class="grid grid-cols-1 md:grid-cols-12 items-center gap-4 md:gap-0 p-6 md:px-8 md:py-5 hover:bg-white/[0.02] transition-colors relative group">
+                    <!-- Title -->
+                    <div class="col-span-1 md:col-span-8">
+                        <div class="flex flex-col">
+                            <span class="font-black text-slate-700 dark:text-slate-200 group-hover:text-primary transition-colors text-lg md:text-base"><%= post.title %></span>
+                            <span class="md:hidden text-[10px] text-slate-500 uppercase tracking-widest font-black mt-1">Article Title</span>
+                        </div>
+                    </div>
+
+                    <!-- Category -->
+                    <div class="col-span-1 md:col-span-2 flex flex-col">
+                        <span class="text-xs bg-primary/10 px-3 py-1.5 rounded-xl text-primary w-fit font-bold"><%= post.category %></span>
+                        <span class="md:hidden text-[10px] text-slate-500 uppercase tracking-widest font-black mt-2">Category</span>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="col-span-1 md:col-span-2 flex justify-end gap-2 pt-4 md:pt-0 border-t md:border-none border-white/5">
+                        <a href="/dashboard/posts/<%= post.id %>/edit" class="w-10 h-10 flex items-center justify-center rounded-2xl bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all shadow-lg shadow-primary/10">
+                            <i class="fas fa-edit text-sm"></i>
+                        </a>
+                        <form action="/dashboard/posts/<%= post.id %>/delete" method="POST" onsubmit="return confirm('Delete this article?')" class="inline">
+                            <%= csrf_tag %>
+                            <button type="submit" class="w-10 h-10 flex items-center justify-center rounded-2xl bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all shadow-lg shadow-red-500/10">
+                                <i class="fas fa-trash-can text-sm"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                <% end %>
+            </div>
         </div>
     </div>
 </div>
