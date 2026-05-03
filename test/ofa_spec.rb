@@ -83,4 +83,53 @@ describe "Ofa CLI" do
     expect(BCrypt::Password.new(user[:password_hash]) == strong_password).to be_truthy
     test_db.disconnect
   end
+
+  it "dapat meng-generate model baru" do
+    `./bin/ofa g model TestItem`
+    expect(File.exist?("app/models/testitem.rb")).to be_truthy
+    expect(File.read("app/models/testitem.rb")).to include("class Testitem < Sequel::Model")
+    FileUtils.rm("app/models/testitem.rb")
+  end
+
+  it "dapat meng-generate migration baru" do
+    `./bin/ofa g migration create_tests`
+    migrations = Dir.glob("db/migrations/*_create_tests.rb")
+    expect(migrations.any?).to be_truthy
+    migrations.each { |f| FileUtils.rm(f) }
+  end
+
+  it "dapat meng-generate post blog" do
+    `./bin/ofa g post "Testing Post" --author Antigravity --category Tech`
+    expect(File.exist?("app/views/posts/testing_post.erb")).to be_truthy
+    expect(File.read("app/views/posts/testing_post.erb")).to include("Testing Post")
+    FileUtils.rm("app/views/posts/testing_post.erb")
+  end
+
+  it "dapat mengganti konfigurasi storage" do
+    config_path = "config/features.json"
+    `./bin/ofa storage cloudinary`
+    config = JSON.parse(File.read(config_path))
+    expect(config["storage"]).to eq("cloudinary")
+  end
+
+  it "dapat melakukan migrasi data antar database (SQLite)" do
+    source_db_path = "db/source_test.sqlite3"
+    target_db_path = "db/target_test.sqlite3"
+    FileUtils.rm(source_db_path) if File.exist?(source_db_path)
+    FileUtils.rm(target_db_path) if File.exist?(target_db_path)
+    
+    `./bin/ofa db switch sqlite #{source_db_path}`
+    username = "migrator_user"
+    `./bin/ofa reset-password #{username} Secret123`
+    
+    `./bin/ofa db migrate-data sqlite #{target_db_path}`
+    
+    target_db = Sequel.connect("sqlite://#{target_db_path}")
+    user = target_db[:users].first(username: username)
+    expect(user).not_to be_nil
+    target_db.disconnect
+    
+    FileUtils.rm(source_db_path)
+    FileUtils.rm(target_db_path)
+  end
 end

@@ -22,7 +22,7 @@ def help
   puts "  / __ \\/ ____/  /   |                      "
   puts " / / / / /_     / /| |  Framework           "
   puts "/ /_/ / __/    / ___ |  Premium MVC         "
-  puts "\\____/_/      /_/  |_|  v2.0.0              "
+  puts "\\____/_/      /_/  |_|  v4.0.0              "
   puts "                                            "
   puts "✨ One-For-All Framework CLI ✨"
   puts "-----------------------------"
@@ -39,6 +39,7 @@ def help
   puts "  ofa storage NAME      - Set image storage: local, cloudinary"
   puts "  ofa reset-password USR PWD - Reset admin account password"
   puts "  ofa db switch TYPE [NAME] - Switch DB: sqlite, mysql, mariadb, mongodb, postgres"
+  puts "  ofa db migrate-data TYPE [NAME] - Migrate data to another DB"
   puts "  ofa db migrate        - Run database migrations"
   puts "  ofa migrate           - Run database migrations (alias for db migrate)"
   puts "  ofa run               - Start the application server"
@@ -65,6 +66,117 @@ def run_migrations
       puts "Migrations completed."
     end
   end
+end
+
+def perform_db_migration(target_type, target_name)
+  # 1. Initialize source environment
+  Object.const_set(:APP_ROOT, PROJECT_ROOT) unless defined?(APP_ROOT)
+  require File.join(FRAMEWORK_ROOT, 'config', 'boot')
+  source_db = DB
+  
+  puts "📦 Starting data migration: #{DB_CONFIG['adapter']} -> #{target_type}..."
+
+  # 2. Setup target connection
+  target_db = nil
+  target_mongo = nil
+
+  if ['mongodb', 'mongo'].include?(target_type)
+    require 'mongo'
+    target_mongo = Mongo::Client.new(target_name)
+    target_db = Sequel.connect("sqlite://db/data.sqlite3")
+  elsif target_type == 'sqlite'
+    target_db = Sequel.connect("sqlite://#{target_name || 'db/production.sqlite3'}")
+  else
+    target_db = Sequel.connect("#{target_type}://root:@localhost/#{target_name}")
+  end
+
+  # 3. Ensure target tables exist
+  if target_db
+    target_db.extension :pagination
+    # Re-use the schema creation logic by mimicking a mini-boot
+    # For simplicity, we'll just create core tables if they don't exist
+    [:users, :pages, :posts, :projects, :products].each do |table|
+      unless target_db.table_exists?(table)
+        # Copy schema from source (very basic approach)
+        schema = source_db.schema(table)
+        target_db.create_table(table) do
+          schema.each do |col_name, col_info|
+            column col_name, col_info[:db_type], primary_key: col_info[:primary_key], allow_null: col_info[:allow_null]
+          end
+        end
+      end
+    end
+  end
+
+  # 4. Migrate data
+  [:users, :pages, :posts, :projects, :products].each do |table|
+    print "  Migrating #{table}... "
+    rows = []
+    
+    # Try fetching from Mongo if it exists
+    source_mongo = defined?(MONGO_CLIENT) ? MONGO_CLIENT : nil
+    if source_mongo
+      begin
+        mongo_rows = source_mongo[table].find.to_a
+        if mongo_rows.any?
+          rows = mongo_rows.map do |r|
+            r[:id] = r[:_id].to_s if r[:_id]
+            r.delete(:_id)
+            r
+          end
+        end
+      rescue
+        # Collection might not exist in Mongo, fallback to SQL
+      end
+    end
+
+    # Fallback to SQL if no rows found in Mongo
+    if rows.empty?
+      begin
+        rows = source_db[table].all
+      rescue
+        rows = []
+      end
+    end
+
+    # Clear target table before migrating to avoid duplicates
+    if target_db && target_db.table_exists?(table)
+      target_db[table].delete
+    end
+
+    count = 0
+    rows.each do |row|
+      if target_type == 'mongodb' && table == :users
+        # Users go to Mongo in Mongo mode
+        target_mongo[:users].update_one({ username: row[:username] }, { "$set" => row.reject{|k| k == :id} }, { upsert: true })
+      elsif target_db
+        # Deep cleaning and type conversion for SQLite compatibility
+        target_columns = target_db[table].columns
+        clean_row = {}
+        row.each do |k, v|
+          sym_k = k.to_sym
+          if target_columns.include?(sym_k) && sym_k != :id
+            if v.is_a?(BSON::ObjectId)
+              clean_row[sym_k] = v.to_s
+            elsif v.is_a?(Time)
+              clean_row[sym_k] = v.strftime('%Y-%m-%d %H:%M:%S')
+            else
+              clean_row[sym_k] = v
+            end
+          end
+        end
+        target_db[table].insert(clean_row)
+      end
+      count += 1
+    end
+    puts "#{count} rows."
+  end
+
+  # 5. Update configuration to point to new DB
+  absolute_ofa_path = File.expand_path(__FILE__)
+  system("ruby #{absolute_ofa_path} db switch #{target_type} #{target_name}")
+
+  puts "✅ Migration successful!"
 end
 
 def ensure_initialized!
@@ -114,7 +226,7 @@ when 'init'
   puts "  / __ \\/ ____/  /   |                      "
   puts " / / / / /_     / /| |  Framework           "
   puts "/ /_/ / __/    / ___ |  Premium MVC         "
-  puts "\\____/_/      /_/  |_|  v2.0.0              "
+  puts "\\____/_/      /_/  |_|  v4.0.0              "
   puts "                                            "
   puts "Initializing One-For-All project as '#{app_type}' in #{PROJECT_ROOT}..."
 
@@ -442,8 +554,10 @@ when 'storage'
   puts "Application storage set to '#{name}'."
 
 when 'reset-password'
+  ENV['SKIP_MODELS'] = '1'
   Object.const_set(:APP_ROOT, PROJECT_ROOT) unless defined?(APP_ROOT)
   require File.join(FRAMEWORK_ROOT, 'config', 'boot')
+  require File.join(FRAMEWORK_ROOT, 'app', 'models', 'user.rb')
   user_name = ARGV.shift
   new_pwd = ARGV.shift
   if user_name.nil? || new_pwd.nil?
@@ -479,8 +593,16 @@ when 'db'
     type = ARGV.shift
     db_name = ARGV.shift
     case type
-    when 'env'
+    when 'env', 'mongo', 'mongodb'
       config = { "adapter" => "env" }
+      if db_name && db_name.start_with?('mongodb')
+        env_path = File.join(PROJECT_ROOT, '.env')
+        env_lines = File.exist?(env_path) ? File.readlines(env_path) : []
+        env_lines.reject! { |l| l.start_with?('DATABASE_URL=') }
+        env_lines << "DATABASE_URL=#{db_name}\n"
+        File.write(env_path, env_lines.join)
+        puts "✅ Connection string saved to .env"
+      end
     when 'sqlite'
       config = { "adapter" => "sqlite", "database" => db_name || "db/development.sqlite3" }
     else
@@ -490,6 +612,14 @@ when 'db'
     puts "Switched to #{type} mode."
   when 'migrate'
     run_migrations
+  when 'migrate-data'
+    target_type = ARGV.shift
+    target_name = ARGV.shift
+    if target_type.nil?
+      puts "Usage: ofa db migrate-data TYPE [NAME/URL]"
+      exit 1
+    end
+    perform_db_migration(target_type, target_name)
   end
 
 when 'run'

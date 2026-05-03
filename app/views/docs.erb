@@ -1,6 +1,6 @@
 <div class="space-y-12 pb-20">
     <div class="text-left">
-        <div class="badge-premium">Documentation v3.0.0</div>
+        <div class="badge-premium">Documentation v4.0.0</div>
         <h1 class="text-5xl font-black tracking-tighter mb-4 text-slate-700 dark:text-white">Framework <span class="text-primary">Guide</span></h1>
         <p class="text-xl text-slate-500 max-w-2xl leading-relaxed">Everything you need to know about building premium web applications with the One-For-All framework.</p>
     </div>
@@ -94,6 +94,27 @@
                                 <td class="px-6 py-4 font-mono text-primary">./ofa storage NAME</td>
                                 <td class="px-6 py-4 text-slate-600 dark:text-slate-400 text-xs">Hot-swap storage: <code>local</code> or <code>cloudinary</code>.</td>
                             </tr>
+                            <tr class="bg-slate-500/5"><td colspan="2" class="px-6 py-2 text-[10px] font-black uppercase tracking-tighter text-slate-400">Database & Security</td></tr>
+                            <tr>
+                                <td class="px-6 py-4 font-mono text-primary">./ofa db migrate-data TYPE [NAME]</td>
+                                <td class="px-6 py-4 text-slate-600 dark:text-slate-400 text-xs">
+                                    Migrate all data from current DB to a new destination (SQL/Mongo).
+                                    <div class="mt-2 p-2 bg-slate-900 rounded font-mono text-[10px] text-green-400 border border-white/5">
+                                        📦 Starting data migration: sqlite -> mongo...<br>
+                                        Migrating users... 12 rows.<br>
+                                        ✅ Migration successful!
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 font-mono text-primary">./ofa reset-password USR PWD</td>
+                                <td class="px-6 py-4 text-slate-600 dark:text-slate-400 text-xs">
+                                    Reset admin password (min 8 chars, 1 upper, 1 num).
+                                    <div class="mt-2 p-2 bg-slate-900 rounded font-mono text-[10px] text-green-400 border border-white/5">
+                                        ✅ Password for 'admin' updated successfully.
+                                    </div>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -142,6 +163,20 @@
                             <div>
                                 <code class="text-primary font-bold text-xs">./ofa type NAME</code>
                                 <p class="text-slate-500 text-xs mt-1">Change mode: portfolio, blog, landing_page, e_commerce.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel p-6 space-y-4">
+                        <h4 class="text-[10px] font-black uppercase tracking-widest text-primary border-b border-white/5 pb-2">Database & Security</h4>
+                        <div class="space-y-4">
+                            <div>
+                                <code class="text-primary font-bold text-xs">./ofa db migrate-data TYPE [NAME]</code>
+                                <p class="text-slate-500 text-xs mt-1">Migrate data to new DB destination.</p>
+                            </div>
+                            <div>
+                                <code class="text-primary font-bold text-xs">./ofa reset-password USR PWD</code>
+                                <p class="text-slate-500 text-xs mt-1">Manage admin credentials.</p>
                             </div>
                         </div>
                     </div>

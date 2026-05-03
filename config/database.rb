@@ -114,6 +114,22 @@ if DB
     end
   end
 
+  unless DB.table_exists?(:products)
+    DB.create_table :products do
+      primary_key :id
+      String :name, null: false
+      String :slug, null: false, unique: true
+      String :description, text: true
+      Float :price, default: 0.0
+      Integer :stock, default: 0
+      String :image_url
+      String :category
+      TrueClass :is_active, default: true
+      DateTime :created_at, default: Sequel::CURRENT_TIMESTAMP
+      DateTime :updated_at, default: Sequel::CURRENT_TIMESTAMP
+    end
+  end
+
   # Quick Migration for existing tables
   if DB.table_exists?(:pages)
     DB.alter_table(:pages) { add_column :is_active, TrueClass, default: true unless DB[:pages].columns.include?(:is_active) }

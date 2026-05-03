@@ -2,7 +2,7 @@
   <img src="public/images/logo.png" width="500" height="500" alt="OFA Framework Logo">
 </p>
 
-# ⚡ One-For-All (OFA) Framework v3.0.0
+# ⚡ One-For-All (OFA) Framework v4.0.0
 
 [![Ruby Version](https://img.shields.io/badge/ruby-%3E%3D%203.0.0-red.svg)](https://www.ruby-lang.org/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -16,7 +16,7 @@
 
 -   **💎 Premium Aesthetics**: Beautiful Glassmorphism design system included by default with smooth dark/light mode transitions.
 -   **🚀 Blazing Fast**: Built on a modular Nio4r-powered engine for minimal overhead and instant boot times.
--   **📂 Multi-Database**: Seamlessly switch between SQLite, MySQL, MariaDB, and MongoDB Atlas.
+-   **📂 Multi-Database**: Seamlessly switch and migrate data between SQLite, MySQL, MariaDB, and MongoDB Atlas.
 -   **🛠️ Developer First**: A robust CLI (`ofa`) that handles everything from scaffolding to deployment.
 -   **🔐 Enterprise Ready**: Built-in CSRF protection, secure session management, and input validation.
 -   **🌐 Global Support**: Multi-language (I18n) support and SEO optimization ready.
@@ -52,9 +52,75 @@ Your app is now live at `http://localhost:3000` ⚡
 
 ---
 
-## 🛠️ CLI Power Tools (Detailed Reference)
+## 🛠️ CLI Deep Dive & Expected Outputs
 
-The `ofa` CLI is the heart of the One-For-All framework. It handles everything from project initialization to production deployment.
+The `ofa` CLI is designed to be interactive and informative. Below is a detailed breakdown of all available commands and the visual feedback they provide.
+
+### 📦 Project & Environment
+#### `ofa init [TYPE]`
+Initialize your workspace. Triggers an interactive wizard for Database and Storage setup.
+*   **Output Example:**
+    ```text
+    🛠️ Project Configuration
+    💾 Choose Database [1. SQLite, 2. MongoDB Atlas]: 2
+    🔗 Enter MongoDB Connection String: mongodb+srv://...
+    🖼️ Choose Image Storage [1. Local, 2. Cloudinary]: 1
+    ✅ Connection string saved to .env
+    ✅ Project structure initialized.
+    ```
+
+#### `ofa run`
+Boots the high-performance Eksa Server engine.
+*   **Output Example:**
+    ```text
+    Starting One-For-All server...
+    [INFO] Mendengarkan di TCP: 0.0.0.0:3000
+    [EksCent] 2026-05-03 14:40:52 | GET / | Status: 200
+    ```
+
+### 🏗️ Generators (Scaffolding)
+#### `ofa g controller NAME`
+*   **Output:** `✅ Created app/controllers/blog_controller.rb`
+#### `ofa g model NAME`
+*   **Output:** `✅ Created app/models/product.rb`
+#### `ofa g post TITLE [args]`
+Creates a SEO-optimized blog post with metadata.
+*   **Example:** `./ofa g post "Hello World" --author Antigravity`
+*   **Output:** `✅ Created app/views/posts/hello_world.erb`
+
+### 📂 Database Management
+#### `ofa db switch TYPE [URL]`
+Switches your database adapter on the fly.
+*   **Output:** `Switched to mongodb mode.`
+
+#### `ofa db migrate-data TYPE [URL]`
+**The most powerful tool.** Moves all data from your current DB to a new one (SQL or MongoDB Atlas).
+*   **Output Example:**
+    ```text
+    📦 Starting data migration: sqlite -> mongodb...
+      Migrating users... 12 rows.
+      Migrating posts... 45 rows.
+    ✅ Migration successful!
+    ```
+
+#### `ofa db migrate` (or `ofa migrate`)
+Runs pending database migrations in `db/migrations/`.
+*   **Output:** `✅ Migrations completed.`
+
+### 🎨 Customization & Security
+#### `ofa theme NAME`
+Changes the entire UI skin (Modern Glass, Retro, Cyber).
+*   **Output:** `✅ Theme set to: retro_terminal`
+
+#### `ofa storage NAME`
+Switches between local disk and Cloudinary cloud storage.
+*   **Output:** `✅ Storage set to: cloudinary`
+
+#### `ofa reset-password USR PWD`
+Securely manages admin credentials.
+*   **Output:** `✅ Password for 'admin' updated successfully.`
+
+---
 
 ### 📁 Project Lifecycle
 | Command | Description |
@@ -93,9 +159,10 @@ Fine-tune your application's behavior and appearance without touching the code.
 ### 🔐 Security & Database
 | Command | Description |
 | :--- | :--- |
-| `ofa reset-password USR PWD`| **User Management.** Resets a password for an existing admin or creates a new one. <br> *Note:* Enforces strong password rules (8+ chars, 1 uppercase, 1 number). |
-| `ofa db switch ADAPTER` | **Hot-swap Database.** Configure your adapter on the fly: `sqlite`, `mysql`, `mariadb`, `postgres`, or `env` (for MongoDB Atlas). |
-| `ofa db migrate` | **Database Sync.** Runs all pending migrations in `db/migrations/` to keep your schema up to date. |
+| `ofa reset-password USR PWD`| **Enterprise Recovery.** Resets admin credentials with strict enforcement: 8+ chars, uppercase, and numbers. Powered by BCrypt hashing. |
+| `ofa db migrate-data TYPE [NAME]`| **Zero-Loss Migration.** The ultimate tool to move data (Users, Posts, Products) from SQLite to MongoDB Atlas or other SQL DBs without losing a single record. |
+| `ofa db switch ADAPTER` | **Hot-swap Engine.** Instantly change your database adapter. Supports `sqlite`, `mysql`, `mariadb`, `postgres`, and `mongodb`. |
+| `ofa db migrate` | **Schema Evolution.** Runs all pending migrations. OFA automatically handles table creation for core models during boot for maximum reliability. |
 
 ---
 
