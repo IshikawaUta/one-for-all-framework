@@ -52,31 +52,35 @@ ROUTES = EksCent::Router.new do
   end
 
   # --- CMS Dashboard ---
-  get '/dashboard' do |req, res|
-    DashboardController.new(req, res).index
-  end
-  
-  post '/dashboard/upload' do |req, res|
-    DashboardController.new(req, res).upload
-  end
+  if FEATURES_CONFIG['cms']
+    get '/dashboard' do |req, res|
+      DashboardController.new(req, res).index
+    end
+    
+    post '/dashboard/upload' do |req, res|
+      DashboardController.new(req, res).upload
+    end
 
-  # Resourceful CMS Routes
-  resources :pages, prefix: '/dashboard'
-  resources :posts, prefix: '/dashboard'
-  resources :projects, prefix: '/dashboard'
-  resources :products, prefix: '/dashboard'
+    # Resourceful CMS Routes
+    resources :pages, prefix: '/dashboard'
+    resources :posts, prefix: '/dashboard'
+    resources :projects, prefix: '/dashboard'
+    resources :products, prefix: '/dashboard'
+  end
 
   # Auth Routes
-  get '/login' do |req, res|
-    AuthController.new(req, res).show_login
-  end
+  if FEATURES_CONFIG['auth']
+    get '/login' do |req, res|
+      AuthController.new(req, res).show_login
+    end
 
-  post '/login' do |req, res|
-    AuthController.new(req, res).login
-  end
+    post '/login' do |req, res|
+      AuthController.new(req, res).login
+    end
 
-  post '/logout' do |req, res|
-    AuthController.new(req, res).logout
+    post '/logout' do |req, res|
+      AuthController.new(req, res).logout
+    end
   end
 
   # API Namespace

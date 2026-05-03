@@ -94,14 +94,16 @@
 
                 <div class="space-y-2">
                     <div class="flex justify-between items-center px-1">
-                        <label class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Article Content (Markdown)</label>
+                        <label class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Article Content (<%= FEATURES_CONFIG['rich_text'] ? 'Rich Text' : 'Markdown' %>)</label>
                         <div class="flex gap-4">
                             <button type="button" class="text-xs font-bold text-primary hover:underline flex items-center gap-2" onclick="openUploader('thumbnail')">
                                 <i class="fas fa-image"></i> Set Thumbnail
                             </button>
-                            <button type="button" class="text-xs font-bold text-primary hover:underline flex items-center gap-2" onclick="openUploader('content')">
-                                <i class="fas fa-file-image"></i> Insert Image
-                            </button>
+                            <% unless FEATURES_CONFIG['rich_text'] %>
+                                <button type="button" class="text-xs font-bold text-primary hover:underline flex items-center gap-2" onclick="openUploader('content')">
+                                    <i class="fas fa-file-image"></i> Insert Image
+                                </button>
+                            <% end %>
                         </div>
                     </div>
 
@@ -111,8 +113,13 @@
                     </div>
                     
                     <input type="hidden" name="post[image_url]" id="thumbnail-url" value="<%= @post.image_url %>">
-                    <textarea name="post[content]" rows="15" placeholder="Start writing your story..."
-                        class="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all text-slate-700 dark:text-slate-300 font-mono leading-relaxed text-left"><%= @post.content %></textarea>
+                    <% if FEATURES_CONFIG['rich_text'] %>
+                        <input id="post_content" type="hidden" name="post[content]" value="<%= h(@post.content) %>">
+                        <trix-editor input="post_content" placeholder="Mulai menulis cerita Anda..." class="trix-content"></trix-editor>
+                    <% else %>
+                        <textarea name="post[content]" rows="15" placeholder="Start writing your story..."
+                            class="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all text-slate-700 dark:text-slate-300 font-mono leading-relaxed text-left"><%= @post.content %></textarea>
+                    <% end %>
                     <input type="file" id="image-upload" class="hidden" onchange="handleImageUpload(this)">
                 </div>
 
@@ -165,8 +172,13 @@
                     preview.src = data.url;
                     container.style.display = 'block';
                 } else {
-                    const textarea = document.querySelector('textarea');
-                    textarea.value += `\n![image](${data.url})\n`;
+                    const trixEditor = document.querySelector('trix-editor');
+                    if (trixEditor) {
+                        trixEditor.editor.insertHTML(`<img src="${data.url}" style="max-width: 100%; border-radius: 1rem; margin: 1rem 0;">`);
+                    } else {
+                        const textarea = document.querySelector('textarea');
+                        textarea.value += `\n![image](${data.url})\n`;
+                    }
                 }
                 alert('Image uploaded successfully! Don\'t forget to click PUBLISH/SAVE below.');
             } else {

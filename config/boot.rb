@@ -47,6 +47,14 @@ module EksCent
       context.define_singleton_method(:csrf_tag) { "<input type='hidden' name='csrf_token' value='#{req.env['eks_cent.csrf_token']}'>" }
       context.define_singleton_method(:csrf_token) { req ? req.env['eks_cent.csrf_token'] : nil }
       context.define_singleton_method(:markdown) { |text| Kramdown::Document.new(text.to_s, input: 'GFM').to_html }
+      context.define_singleton_method(:strip_tags) { |text| text.to_s.gsub(/<[^>]*>/, ' ').gsub(/\s+/, ' ').strip }
+      context.define_singleton_method(:preview_text) do |text, length = 160|
+        plain = text.to_s.gsub(/<[^>]*>/, ' ') # Hapus HTML tags
+        plain = plain.gsub(/!\[.*?\]\(.*?\)/, '') # Hapus Markdown Images
+        plain = plain.gsub(/\[(.*?)\]\(.*?\)/, '\1') # Ambil teks dari Markdown Links
+        plain = plain.gsub(/\s+/, ' ').strip
+        plain.length > length ? "#{plain[0...length]}..." : plain
+      end
       
       context.define_singleton_method(:session) { req ? (req.env['eks_cent.session'] || req.env['rack.session'] || {}) : {} }
       context.define_singleton_method(:h) { |s| CGI.escapeHTML(s.to_s) }

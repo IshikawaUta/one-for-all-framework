@@ -22,7 +22,7 @@ def help
   puts "  / __ \\/ ____/  /   |                      "
   puts " / / / / /_     / /| |  Framework           "
   puts "/ /_/ / __/    / ___ |  Premium MVC         "
-  puts "\\____/_/      /_/  |_|  v4.0.0              "
+  puts "\\____/_/      /_/  |_|  v4.1.0              "
   puts "                                            "
   puts "✨ One-For-All Framework CLI ✨"
   puts "-----------------------------"
@@ -33,7 +33,7 @@ def help
   puts "  ofa g model NAME      - Generate a new model"
   puts "  ofa g migration NAME  - Generate a new migration"
   puts "  ofa g post TITLE      - Create a new post [args: --category, --author, --image]"
-  puts "  ofa feature ACTION F  - Toggle features: action=enable/disable, F=cms/auth"
+  puts "  ofa feature ACTION F  - Toggle features: action=enable/disable, F=cms/auth/rich_text"
   puts "  ofa type NAME         - Set application type: portfolio, blog, landing_page, e_commerce"
   puts "  ofa theme NAME        - Set UI theme: light_glass, dark_glass, cyber_sidebar, retro_terminal, light_sidebar"
   puts "  ofa storage NAME      - Set image storage: local, cloudinary"
@@ -226,7 +226,7 @@ when 'init'
   puts "  / __ \\/ ____/  /   |                      "
   puts " / / / / /_     / /| |  Framework           "
   puts "/ /_/ / __/    / ___ |  Premium MVC         "
-  puts "\\____/_/      /_/  |_|  v4.0.0              "
+  puts "\\____/_/      /_/  |_|  v4.1.0              "
   puts "                                            "
   puts "Initializing One-For-All project as '#{app_type}' in #{PROJECT_ROOT}..."
 
@@ -513,6 +513,12 @@ when 'feature'
   config[feature] = (action == 'enable')
   File.write(config_path, JSON.pretty_generate(config))
   puts "Feature '#{feature}' has been #{action}d."
+  
+  if action == 'enable' && feature == 'cms' && !config['auth']
+    puts "\n⚠️  [WARNING]: You have enabled CMS but 'auth' is disabled."
+    puts "   It is highly recommended to enable 'auth' feature to secure your dashboard."
+    puts "   Run: ./ofa feature enable auth"
+  end
 
 when 'type'
   ensure_initialized!

@@ -33,4 +33,3 @@ db/*.sqlite3-journal
 # Framework Specific
 public/img/uploads/*
 !public/img/uploads/.gitkeep
-config/database.json

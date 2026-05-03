@@ -3,5 +3,6 @@
   "cms": true,
   "type": "landing_page",
   "theme": "light_sidebar",
-  "storage": "cloudinary"
+  "storage": "cloudinary",
+  "rich_text": true
 }

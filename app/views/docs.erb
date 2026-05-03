@@ -1,6 +1,6 @@
 <div class="space-y-12 pb-20">
     <div class="text-left">
-        <div class="badge-premium">Documentation v4.0.0</div>
+        <div class="badge-premium">Documentation v4.1.0</div>
         <h1 class="text-5xl font-black tracking-tighter mb-4 text-slate-700 dark:text-white">Framework <span class="text-primary">Guide</span></h1>
         <p class="text-xl text-slate-500 max-w-2xl leading-relaxed">Everything you need to know about building premium web applications with the One-For-All framework.</p>
     </div>
@@ -249,6 +249,17 @@ resources :posts
                         ./ofa feature enable cms
                     </div>
                     <p>Authentication is handled via BCrypt hashing with an 8-hour session sliding expiration window for optimal security.</p>
+                    
+                    <h4 class="font-bold text-lg mt-8 mb-4">🖋️ Rich Text Editor (Trix)</h4>
+                    <p class="text-sm text-slate-500 mb-4">Version 4.1.0 introduces a premium WYSIWYG editor integration. Enable it to transform your CMS experience:</p>
+                    <div class="p-4 bg-white/5 border border-white/10 rounded-2xl mb-4 font-mono text-sm">
+                        ./ofa feature enable rich_text
+                    </div>
+                    <ul class="text-xs space-y-2 text-slate-600 dark:text-slate-400">
+                        <li>• <strong>Visual Editing:</strong> No more Markdown syntax. Format text, quotes, and lists visually.</li>
+                        <li>• <strong>Image Handling:</strong> Drag-and-drop images directly into the editor with auto-storage sync.</li>
+                        <li>• <strong>Code Blocks:</strong> Native support for code blocks with one-click "Copy" functionality.</li>
+                    </ul>
                 </div>
             </section>
 

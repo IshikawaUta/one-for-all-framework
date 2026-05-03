@@ -21,6 +21,80 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-ruby.min.js"></script>
     
+    <% if FEATURES_CONFIG['rich_text'] %>
+        <link rel="stylesheet" type="text/css" href="https://unpkg.com/trix@2.0.8/dist/trix.css">
+        <script type="text/javascript" src="https://unpkg.com/trix@2.0.8/dist/trix.umd.min.js"></script>
+        <style>
+            trix-editor {
+                min-height: 400px !important;
+                background: rgba(255, 255, 255, 0.03) !important;
+                border: 1px solid rgba(255, 255, 255, 0.1) !important;
+                border-radius: 1.25rem !important;
+                padding: 1.25rem !important;
+                color: inherit !important;
+                font-family: inherit !important;
+                line-height: 1.6 !important;
+            }
+            trix-toolbar {
+                margin-bottom: 0.5rem !important;
+            }
+            .dark trix-toolbar .trix-button-group {
+                border-color: rgba(255, 255, 255, 0.1) !important;
+                background: rgba(255, 255, 255, 0.05) !important;
+            }
+            .dark trix-toolbar .trix-button {
+                border-bottom: none !important;
+            }
+            .dark trix-toolbar .trix-button--active {
+                background: var(--primary) !important;
+            }
+            .trix-content {
+                font-size: 1.1rem !important;
+            }
+        </style>
+        <script type="text/javascript">
+            (function() {
+                document.addEventListener("trix-attachment-add", function(event) {
+                    var attachment = event.attachment;
+                    if (attachment.file) {
+                        return uploadFileAttachment(attachment);
+                    }
+                });
+
+                function uploadFileAttachment(attachment) {
+                    var file = attachment.file;
+                    var form = new FormData();
+                    form.append("file", file);
+                    form.append("csrf_token", "<%= csrf_token %>");
+
+                    var xhr = new XMLHttpRequest();
+                    xhr.open("POST", "/dashboard/upload", true);
+
+                    xhr.upload.onprogress = function(event) {
+                        var progress = (event.loaded / event.total) * 100;
+                        attachment.setUploadProgress(progress);
+                    };
+
+                    xhr.onload = function() {
+                        if (xhr.status === 200) {
+                            try {
+                                var data = JSON.parse(xhr.responseText);
+                                if (data.url) {
+                                    return attachment.setAttributes({
+                                        url: data.url,
+                                        href: data.url
+                                    });
+                                }
+                            } catch (e) {}
+                        }
+                    };
+
+                    return xhr.send(form);
+                }
+            })();
+        </script>
+    <% end %>
+    
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -215,7 +289,56 @@
         .markdown-content { text-align: left; line-height: 1.6; }
         .markdown-content h1 { font-size: 2.25rem; font-weight: 800; margin: 2rem 0 1rem; color: var(--primary); }
         .markdown-content p { font-size: 1.125rem; color: #475569; margin-bottom: 1.5rem; }
+        .markdown-content ul { list-style-type: disc !important; margin-left: 1.5rem !important; margin-bottom: 1.5rem !important; display: block !important; }
+        .markdown-content ol { list-style-type: decimal !important; margin-left: 1.5rem !important; margin-bottom: 1.5rem !important; display: block !important; }
+        .markdown-content li { margin-bottom: 0.5rem !important; display: list-item !important; }
+        .markdown-content blockquote { border-left: 4px solid var(--primary); padding: 1rem 0 1rem 1.5rem; font-style: italic; margin: 1.5rem 0; color: #64748b; background: rgba(255, 255, 255, 0.03); }
+        .markdown-content pre { background: rgba(0,0,0,0.05); padding: 1.25rem; border-radius: 1rem; overflow-x: auto; font-family: 'Fira Code', monospace; margin: 1.5rem 0; line-height: 1.4; border: 1px solid rgba(0,0,0,0.1); }
+        .markdown-content code { background: rgba(0,0,0,0.05); padding: 0.2rem 0.4rem; border-radius: 0.4rem; font-family: 'Fira Code', monospace; font-size: 0.9em; }
+        .markdown-content figcaption { text-align: center; color: #64748b; opacity: 0.6; font-size: 0.85rem; margin-top: 0.75rem; font-style: italic; line-height: 1.4; }
+        .markdown-content a { color: var(--primary); font-weight: 700; text-decoration: none; border-bottom: 1px dashed var(--primary); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .markdown-content a:hover { color: var(--secondary); border-bottom: 1px solid var(--secondary); opacity: 0.8; }
+        
         .dark .markdown-content p { color: #cbd5e1; }
+        .dark .markdown-content ul, .dark .markdown-content ol { color: #cbd5e1; }
+        .dark .markdown-content blockquote { color: #94a3b8; background: rgba(255, 255, 255, 0.03); }
+        .dark .markdown-content pre { background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.1); color: #e2e8f0; }
+        .dark .markdown-content code { background: rgba(255,255,255,0.1); color: var(--primary); }
+
+        /* Code Copy Button */
+        .code-wrapper { position: relative; margin: 1.5rem 0; }
+        .copy-btn {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.75rem;
+            padding: 0.4rem 0.8rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.75rem;
+            color: #94a3b8;
+            font-size: 0.7rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s;
+            backdrop-filter: blur(8px);
+            z-index: 10;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .copy-btn:hover { 
+            background: var(--primary); 
+            color: white; 
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .copy-btn.copied { 
+            background: #10b981; 
+            color: white; 
+            border-color: #10b981;
+        }
+
+        .markdown-content pre { margin: 0 !important; }
 
         /* Cyber Theme Specifics */
         .cyber-border {
@@ -523,6 +646,34 @@
             menuBtn.addEventListener('click', toggleMenu);
             menuClose.addEventListener('click', toggleMenu);
             backdrop.addEventListener('click', toggleMenu);
+
+            // Code Copy Implementation
+            document.querySelectorAll('pre').forEach(pre => {
+                // Skip if already wrapped or inside trix-editor
+                if (pre.closest('trix-editor') || pre.parentElement.classList.contains('code-wrapper')) return;
+
+                const wrapper = document.createElement('div');
+                wrapper.className = 'code-wrapper group';
+                pre.parentNode.insertBefore(wrapper, pre);
+                wrapper.appendChild(pre);
+
+                const btn = document.createElement('button');
+                btn.className = 'copy-btn opacity-0 group-hover:opacity-100 transition-opacity duration-300';
+                btn.innerHTML = '<i class="fas fa-copy mr-1"></i> Copy';
+                wrapper.appendChild(btn);
+
+                btn.addEventListener('click', () => {
+                    const code = pre.innerText;
+                    navigator.clipboard.writeText(code).then(() => {
+                        btn.innerHTML = '<i class="fas fa-check mr-1"></i> Copied!';
+                        btn.classList.add('copied');
+                        setTimeout(() => {
+                            btn.innerHTML = '<i class="fas fa-copy mr-1"></i> Copy';
+                            btn.classList.remove('copied');
+                        }, 2000);
+                    });
+                });
+            });
         });
     </script>
 </body>

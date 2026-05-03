@@ -2,7 +2,7 @@
   <img src="public/images/logo.png" width="500" height="500" alt="OFA Framework Logo">
 </p>
 
-# ⚡ One-For-All (OFA) Framework v4.0.0
+# ⚡ One-For-All (OFA) Framework v4.1.0
 
 [![Ruby Version](https://img.shields.io/badge/ruby-%3E%3D%203.0.0-red.svg)](https://www.ruby-lang.org/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -20,6 +20,7 @@
 -   **🛠️ Developer First**: A robust CLI (`ofa`) that handles everything from scaffolding to deployment.
 -   **🔐 Enterprise Ready**: Built-in CSRF protection, secure session management, and input validation.
 -   **🌐 Global Support**: Multi-language (I18n) support and SEO optimization ready.
+-   **🖋️ Rich Text Editor**: Integrated Trix Editor for seamless post and page creation with image upload support.
 
 ---
 
@@ -151,7 +152,7 @@ Fine-tune your application's behavior and appearance without touching the code.
 | :--- | :--- |
 | `ofa type NAME` | **Set Application Type.** Switches the layout logic between `portfolio`, `blog`, `landing_page`, and `e_commerce`. |
 | `ofa theme NAME` | **Change UI Aesthetic.** Instantly swap between premium themes: <br> • `light_glass` / `dark_glass` (Modern Glassmorphism) <br> • `cyber_sidebar` (High-tech) <br> • `retro_terminal` (Old-school hacker vibe) <br> • `light_sidebar` (Professional/Clean) |
-| `ofa feature ACTION FEATURE`| **Toggle Core Features.** Enable or disable system modules. <br> *Usage:* `./ofa feature enable auth` or `./ofa feature disable cms`. |
+| `ofa feature ACTION FEATURE`| **Toggle Core Features.** Enable or disable system modules. <br> *Usage:* `./ofa feature enable auth`, `enable cms`, or `enable rich_text`. |
 | `ofa storage NAME` | **Set Media Storage.** Choose between `local` (uploads folder) or `cloudinary` (Cloud storage). |
 
 ---
