@@ -22,7 +22,7 @@ def help
   puts "  / __ \\/ ____/  /   |                      "
   puts " / / / / /_     / /| |  Framework           "
   puts "/ /_/ / __/    / ___ |  Premium MVC         "
-  puts "\\____/_/      /_/  |_|  v4.1.0              "
+  puts "\\____/_/      /_/  |_|  v4.2.0              "
   puts "                                            "
   puts "✨ One-For-All Framework CLI ✨"
   puts "-----------------------------"
@@ -42,6 +42,9 @@ def help
   puts "  ofa db migrate-data TYPE [NAME] - Migrate data to another DB"
   puts "  ofa db migrate        - Run database migrations"
   puts "  ofa migrate           - Run database migrations (alias for db migrate)"
+  puts "  ofa console           - Start interactive REPL session"
+  puts "  ofa doctor            - Check system health (DB, config, gems)"
+  puts "  ofa routes            - List all registered routes"
   puts "  ofa run               - Start the application server"
   puts "  ofa deploy            - Deploy project to production"
   puts "-----------------------------"
@@ -226,7 +229,7 @@ when 'init'
   puts "  / __ \\/ ____/  /   |                      "
   puts " / / / / /_     / /| |  Framework           "
   puts "/ /_/ / __/    / ___ |  Premium MVC         "
-  puts "\\____/_/      /_/  |_|  v4.1.0              "
+  puts "\\____/_/      /_/  |_|  v4.2.0              "
   puts "                                            "
   puts "Initializing One-For-All project as '#{app_type}' in #{PROJECT_ROOT}..."
 
@@ -627,6 +630,111 @@ when 'db'
     end
     perform_db_migration(target_type, target_name)
   end
+
+when 'doctor'
+  puts "🩺 One-For-All Doctor - System Health Check"
+  puts "------------------------------------------"
+  
+  # 1. Environment Check
+  print "Checking .env file... "
+  if File.exist?('.env')
+    puts "✅ Found."
+    env_content = File.read('.env')
+    if env_content.include?('DATABASE_URL')
+      puts "  - DATABASE_URL: Defined"
+    end
+  else
+    puts "❌ Missing! Create a .env file based on .env.example."
+  end
+
+  # 2. Database Check
+  print "Checking Database connection... "
+  begin
+    Object.const_set(:APP_ROOT, PROJECT_ROOT) unless defined?(APP_ROOT)
+    ENV['EKS_ENV'] = 'test' # Silence some output
+    require File.join(FRAMEWORK_ROOT, 'config', 'boot')
+    if defined?(DB) && DB.test_connection
+      puts "✅ Connected (#{DB_CONFIG['adapter']})"
+    else
+      puts "❌ Failed!"
+    end
+    
+    if defined?(MONGO_CLIENT)
+      print "Checking MongoDB connection... "
+      begin
+        MONGO_CLIENT.database_names
+        puts "✅ Connected"
+      rescue => e
+        puts "❌ Failed: #{e.message}"
+      end
+    end
+  rescue => e
+    puts "❌ Error during boot: #{e.message}"
+  end
+
+  # 3. Ruby Version
+  print "Checking Ruby version... "
+  puts "✅ #{RUBY_VERSION}"
+
+  # 4. Gems Check
+  print "Checking dependencies... "
+  if File.exist?('Gemfile.lock')
+    puts "✅ Gemfile.lock exists."
+  else
+    puts "⚠️  Gemfile.lock not found. Run 'bundle install'."
+  end
+
+  # 5. Features Config
+  print "Checking features.json... "
+  if File.exist?('config/features.json')
+    puts "✅ Found."
+  else
+    puts "❌ Missing! Run 'ofa init'."
+  end
+
+  puts "------------------------------------------"
+  puts "Doctor check complete! ✨"
+
+when 'console'
+  ensure_initialized!
+  puts "                                            "
+  puts "   ____  _______  ___                       "
+  puts "  / __ \\/ ____/  /   |                      "
+  puts " / / / / /_     / /| |  Framework           "
+  puts "/ /_/ / __/    / ___ |  Console (REPL)      "
+  puts "\\____/_/      /_/  |_|  v4.2.0              "
+  puts "                                            "
+  puts "✨ Loading environment... (Type 'exit' to quit)"
+  
+  Object.const_set(:APP_ROOT, PROJECT_ROOT) unless defined?(APP_ROOT)
+  require File.join(FRAMEWORK_ROOT, 'config', 'boot')
+  
+  require 'irb'
+  ARGV.clear
+  IRB.start
+
+when 'routes'
+  ensure_initialized!
+  puts "🗺️  Registered Routes"
+  puts "--------------------------------------------------------"
+  printf "%-8s | %-40s\n", "Verb", "Path"
+  puts "--------------------------------------------------------"
+  
+  Object.const_set(:APP_ROOT, PROJECT_ROOT) unless defined?(APP_ROOT)
+  ENV['EKS_ENV'] = 'test'
+  require File.join(FRAMEWORK_ROOT, 'config', 'boot')
+  
+  if defined?(ROUTES)
+    routes_hash = ROUTES.instance_variable_get(:@routes)
+    routes_hash.each do |verb, list|
+      list.each do |r|
+        printf "%-8s | %-40s\n", verb, r[:path]
+      end
+    end
+  else
+    puts "❌ No routes found."
+  end
+  puts "--------------------------------------------------------"
 
 when 'run'
   ensure_initialized!

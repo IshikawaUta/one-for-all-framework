@@ -1,6 +1,6 @@
 <div class="space-y-12 pb-20">
     <div class="text-left">
-        <div class="badge-premium">Documentation v4.1.0</div>
+        <div class="badge-premium">Documentation v4.2.0</div>
         <h1 class="text-5xl font-black tracking-tighter mb-4 text-slate-700 dark:text-white">Framework <span class="text-primary">Guide</span></h1>
         <p class="text-xl text-slate-500 max-w-2xl leading-relaxed">Everything you need to know about building premium web applications with the One-For-All framework.</p>
     </div>
@@ -61,6 +61,18 @@
                             <tr>
                                 <td class="px-6 py-4 font-mono text-primary">./ofa run</td>
                                 <td class="px-6 py-4 text-slate-600 dark:text-slate-400">Starts the high-performance Eksa Server on port 3000.</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 font-mono text-primary">./ofa console</td>
+                                <td class="px-6 py-4 text-slate-600 dark:text-slate-400 text-xs">Interactive REPL pre-loaded with your DB & Models.</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 font-mono text-primary">./ofa doctor</td>
+                                <td class="px-6 py-4 text-slate-600 dark:text-slate-400 text-xs">Check system health (DB, Env, Gems, Config).</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 font-mono text-primary">./ofa routes</td>
+                                <td class="px-6 py-4 text-slate-600 dark:text-slate-400 text-xs">List all registered routes in a clean table.</td>
                             </tr>
                             <tr>
                                 <td class="px-6 py-4 font-mono text-primary">./ofa deploy</td>
@@ -135,6 +147,14 @@
                             <div>
                                 <code class="text-primary font-bold text-xs">./ofa run</code>
                                 <p class="text-slate-500 text-xs mt-1">Starts the high-performance Eksa Server on port 3000.</p>
+                            </div>
+                            <div>
+                                <code class="text-primary font-bold text-xs">./ofa console</code>
+                                <p class="text-slate-500 text-xs mt-1">Interactive REPL session.</p>
+                            </div>
+                            <div>
+                                <code class="text-primary font-bold text-xs">./ofa doctor</code>
+                                <p class="text-slate-500 text-xs mt-1">System health check tool.</p>
                             </div>
                         </div>
                     </div>
@@ -251,7 +271,7 @@ resources :posts
                     <p>Authentication is handled via BCrypt hashing with an 8-hour session sliding expiration window for optimal security.</p>
                     
                     <h4 class="font-bold text-lg mt-8 mb-4">🖋️ Rich Text Editor (Trix)</h4>
-                    <p class="text-sm text-slate-500 mb-4">Version 4.1.0 introduces a premium WYSIWYG editor integration. Enable it to transform your CMS experience:</p>
+                    <p class="text-sm text-slate-500 mb-4">Version 4.1.0 introduced a premium WYSIWYG editor integration. Enable it to transform your CMS experience:</p>
                     <div class="p-4 bg-white/5 border border-white/10 rounded-2xl mb-4 font-mono text-sm">
                         ./ofa feature enable rich_text
                     </div>

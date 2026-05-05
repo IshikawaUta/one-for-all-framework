@@ -2,7 +2,7 @@
   <img src="public/images/logo.png" width="500" height="500" alt="OFA Framework Logo">
 </p>
 
-# ⚡ One-For-All (OFA) Framework v4.1.0
+# ⚡ One-For-All (OFA) Framework v4.2.0
 
 [![Ruby Version](https://img.shields.io/badge/ruby-%3E%3D%203.0.0-red.svg)](https://www.ruby-lang.org/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -126,10 +126,13 @@ Securely manages admin credentials.
 ### 📁 Project Lifecycle
 | Command | Description |
 | :--- | :--- |
-| `ofa new NAME [TYPE]` | **Create a new project.** Generates a new directory, initializes the framework structure, and automatically runs `bundle install`. <br> *Example:* `./ofa new my_portfolio portfolio` |
+| `ofa new NAME [TYPE]` | **Create a new project.** Generates a new directory, initializes the framework structure, and automatically runs `bundle install`. |
 | `ofa init [TYPE]` | **Initialize in current folder.** Ideal if you've already created a folder or cloned a repository. It triggers an **Interactive Wizard** to configure your Database (SQLite/MongoDB) and Image Storage (Local/Cloudinary). |
 | `ofa run` | **Start Development Server.** Boots the high-performance Eksa Server. Your app will be accessible at `http://localhost:3000`. |
-| `ofa deploy` | **Production Deployment.** Automatically detects deployment targets. <br> 1. Checks if it's a Git repository. <br> 2. Detects **Railway CLI** and triggers `railway up`. <br> 3. Supports Docker via the included `Dockerfile`. |
+| `ofa console` | **Interactive REPL.** Starts a Ruby console pre-loaded with your application environment and models for testing and debugging. |
+| `ofa doctor` | **System Health Check.** Validates `.env` config, database connectivity (SQL/MongoDB), Ruby version, and dependencies. |
+| `ofa routes` | **Route Inspection.** Lists all registered routes in your application in a clean tabular format. |
+| `ofa deploy` | **Production Deployment.** Automatically detects deployment targets (Railway/Docker/Git). |
 
 ---
 
