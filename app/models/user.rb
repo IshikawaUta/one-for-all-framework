@@ -18,6 +18,11 @@ class User < Sequel::Model
   # Override find for Mongo support
   def self.find(params)
     if mongo?
+      # Map :id to :_id and handle ObjectId conversion
+      if params[:id]
+        id_val = params.delete(:id)
+        params[:_id] = BSON::ObjectId.from_string(id_val) rescue id_val
+      end
       doc = MONGO_CLIENT[:users].find(params).first
       return nil unless doc
       user = User.new

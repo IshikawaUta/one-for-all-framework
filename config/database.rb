@@ -130,6 +130,18 @@ if DB
     end
   end
 
+  unless DB.table_exists?(:activity_logs)
+    DB.create_table :activity_logs do
+      primary_key :id
+      String :user_id
+      String :action, null: false
+      String :target_type
+      String :target_id
+      Text :details
+      DateTime :created_at, default: Sequel::CURRENT_TIMESTAMP
+    end
+  end
+
   # Quick Migration for existing tables
   if DB.table_exists?(:pages)
     DB.alter_table(:pages) { add_column :is_active, TrueClass, default: true unless DB[:pages].columns.include?(:is_active) }

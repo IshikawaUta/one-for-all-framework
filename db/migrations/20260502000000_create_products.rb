@@ -1,6 +1,6 @@
 Sequel.migration do
   change do
-    create_table(:products) do
+    create_table?(:products) do
       primary_key :id
       String :name, null: false
       String :slug, null: false, unique: true

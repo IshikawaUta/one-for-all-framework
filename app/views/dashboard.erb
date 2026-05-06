@@ -35,6 +35,11 @@
                     <span class="font-semibold">Products</span>
                 </a>
             <% end %>
+            
+            <a href="/dashboard/logs" class="flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 <%= @req.path.start_with?('/dashboard/logs') ? 'bg-primary text-white shadow-lg shadow-primary/30' : 'text-slate-500 hover:bg-white/5' %>">
+                <i class="fas fa-history w-5"></i>
+                <span class="font-semibold">Activity Logs</span>
+            </a>
 
             <div class="h-px bg-white/5 my-4"></div>
 

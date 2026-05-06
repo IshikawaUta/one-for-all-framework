@@ -1,0 +1,177 @@
+<div class="glass-card">
+    <div class="card-header flex justify-between items-center">
+        <div>
+            <h2 class="card-title">Activity Logs (Audit Trail)</h2>
+            <p class="card-subtitle">Keep track of who did what in the CMS dashboard.</p>
+        </div>
+        <a href="/dashboard" class="btn-premium !py-2 !px-4 text-sm flex items-center gap-2">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+
+    <div class="table-container">
+        <table class="premium-table">
+            <thead>
+                <tr>
+                    <th>Time</th>
+                    <th>User</th>
+                    <th>Action</th>
+                    <th>Target</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if @logs.any? %>
+                    <% @logs.each do |log| %>
+                        <tr>
+                            <td data-label="Time" class="text-sm opacity-70">
+                                <%= log.created_at.strftime('%Y-%m-%d %H:%M:%S') %>
+                            </td>
+                            <td data-label="User">
+                                <div class="flex items-center gap-2">
+                                    <div class="avatar-mini">
+                                        <%= log.user ? log.user.username[0].upcase : '?' %>
+                                    </div>
+                                    <span><%= log.user ? log.user.username : 'Unknown' %></span>
+                                </div>
+                            </td>
+                            <td data-label="Action">
+                                <span class="badge badge-primary">
+                                    <%= log.action %>
+                                </span>
+                            </td>
+                            <td data-label="Target">
+                                <% if log.target_type %>
+                                    <span class="text-xs opacity-60"><%= log.target_type %></span>
+                                    <code class="text-xs">#<%= log.target_id %></code>
+                                <% else %>
+                                    -
+                                <% end %>
+                            </td>
+                            <td data-label="Details" class="text-xs opacity-80 max-w-xs truncate">
+                                <%= log.details || '-' %>
+                            </td>
+                        </tr>
+                    <% end %>
+                <% else %>
+                    <tr>
+                        <td colspan="5" class="text-center py-8 opacity-50">
+                            No logs found yet.
+                        </td>
+                    </tr>
+                <% end %>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    .avatar-mini {
+        width: 24px;
+        height: 24px;
+        background: var(--primary);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.7rem;
+        font-weight: 600;
+    }
+
+    .premium-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .premium-table th {
+        text-align: left;
+        padding: 1rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        opacity: 0.7;
+    }
+
+    .premium-table td {
+        padding: 1rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        font-size: 0.9rem;
+    }
+
+    .premium-table tr:hover {
+        background: rgba(255, 255, 255, 0.02);
+    }
+
+    .badge {
+        padding: 0.2rem 0.6rem;
+        border-radius: 99px;
+        font-size: 0.75rem;
+        font-weight: 500;
+    }
+
+    .badge-primary {
+        background: rgba(99, 102, 241, 0.2);
+        color: #818cf8;
+        border: 1px solid rgba(99, 102, 241, 0.3);
+    }
+
+    .table-container {
+        overflow-x: auto;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .card-header {
+            flex-direction: column;
+            align-items: flex-start !important;
+            gap: 1rem;
+        }
+
+        .premium-table thead {
+            display: none;
+        }
+
+        .premium-table tr {
+            display: block;
+            margin-bottom: 1.5rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 0.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .premium-table td {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            text-align: right;
+        }
+
+        .premium-table td:last-child {
+            border-bottom: none;
+        }
+
+        .premium-table td::before {
+            content: attr(data-label);
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            opacity: 0.5;
+            text-align: left;
+            margin-right: 1rem;
+        }
+
+        .premium-table td .flex {
+            justify-content: flex-end;
+        }
+        
+        .truncate {
+            white-space: normal;
+            max-width: 60%;
+        }
+    }
+</style>

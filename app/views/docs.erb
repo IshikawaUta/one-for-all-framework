@@ -1,6 +1,6 @@
 <div class="space-y-12 pb-20">
     <div class="text-left">
-        <div class="badge-premium">Documentation v4.4.0</div>
+        <div class="badge-premium">Documentation v4.5.0</div>
         <h1 class="text-5xl font-black tracking-tighter mb-4 text-slate-700 dark:text-white">Framework <span class="text-primary">Guide</span></h1>
         <p class="text-xl text-slate-500 max-w-2xl leading-relaxed">Everything you need to know about building premium web applications with the One-For-All framework.</p>
     </div>
@@ -19,6 +19,7 @@
                 <a href="#api" class="block px-4 py-2 rounded-xl hover:bg-primary/5 text-slate-600 hover:text-primary transition-all font-semibold border-l-2 border-transparent hover:border-primary">API & Modern Web</a>
                 <a href="#advanced" class="block px-4 py-2 rounded-xl hover:bg-primary/5 text-slate-600 hover:text-primary transition-all font-semibold border-l-2 border-transparent hover:border-primary">Mailers & Background Jobs</a>
                 <a href="#testing" class="block px-4 py-2 rounded-xl hover:bg-primary/5 text-slate-600 hover:text-primary transition-all font-semibold border-l-2 border-transparent hover:border-primary">Automated Testing</a>
+                <a href="#plugins" class="block px-4 py-2 rounded-xl hover:bg-primary/5 text-slate-600 hover:text-primary transition-all font-semibold border-l-2 border-transparent hover:border-primary">Plugin System</a>
                 <a href="#deploy" class="block px-4 py-2 rounded-xl hover:bg-primary/5 text-slate-600 hover:text-primary transition-all font-semibold border-l-2 border-transparent hover:border-primary">Deployment</a>
             </nav>
         </aside>
@@ -114,6 +115,10 @@
                              <tr>
                                  <td class="px-6 py-4 font-mono text-primary">./ofa g test NAME</td>
                                  <td class="px-6 py-4 text-slate-600 dark:text-slate-400 text-xs">Generates a Minitest unit test file.</td>
+                             </tr>
+                             <tr>
+                                 <td class="px-6 py-4 font-mono text-primary">./ofa g plugin NAME</td>
+                                 <td class="px-6 py-4 text-slate-600 dark:text-slate-400 text-xs">Scaffolds a new plugin structure in <code>/plugins</code>.</td>
                              </tr>
 
                             <tr class="bg-slate-500/5"><td colspan="2" class="px-6 py-2 text-[10px] font-black uppercase tracking-tighter text-slate-400">Customization</td></tr>
@@ -303,6 +308,26 @@ resources :posts
                         <li>• <strong>Image Handling:</strong> Drag-and-drop images directly into the editor with auto-storage sync.</li>
                         <li>• <strong>Code Blocks:</strong> Native support for code blocks with one-click "Copy" functionality.</li>
                     </ul>
+
+                    <h4 class="font-bold text-lg mt-8 mb-4">🔍 Activity Logs (Audit Trail)</h4>
+                    <p class="text-sm text-slate-500 mb-4">Track every action taken by users in the CMS. Automatically logs creation, updates, and deletions of pages and posts.</p>
+                    <ul class="text-xs space-y-2 text-slate-600 dark:text-slate-400">
+                        <li>• <strong>User Identification:</strong> Logs include the username and avatar of the person who performed the action.</li>
+                        <li>• <strong>Detailed Context:</strong> Records specific changes, such as new slugs or modified categories.</li>
+                        <li>• <strong>Database Agnostic:</strong> Works seamlessly with both SQL and MongoDB storage.</li>
+                    </ul>
+
+                    <h4 class="font-bold text-lg mt-8 mb-4">🚧 Maintenance Mode</h4>
+                    <p class="text-sm text-slate-500 mb-4">Instantly activate a professional "Under Construction" page for your visitors using the CLI. Perfect for updates or migrations.</p>
+                    <div class="p-4 bg-white/5 border border-white/10 rounded-2xl mb-4 font-mono text-sm">
+                        ./ofa maintenance on<br>
+                        ./ofa maintenance off
+                    </div>
+                    <ul class="text-xs space-y-2 text-slate-600 dark:text-slate-400">
+                        <li>• <strong>Admin Bypass:</strong> Logged-in administrators can still view and manage the site while maintenance is active.</li>
+                        <li>• <strong>Premium Design:</strong> Features a high-quality Glassmorphism roket animation to keep your brand looking professional even when offline.</li>
+                        <li>• <strong>Dynamic Updates:</strong> Changes take effect instantly without requiring a server restart.</li>
+                    </ul>
                 </div>
             </section>
 
@@ -401,6 +426,33 @@ resources :posts
                     <p class="text-sm text-slate-500">To create a new test file:</p>
                     <div class="p-4 bg-white/5 border border-white/10 rounded-2xl mt-2 font-mono text-sm">
                         ./ofa g test user_profile
+                    </div>
+                </div>
+            </section>
+
+            <!-- Plugin System -->
+            <section id="plugins" class="glass-panel p-8 md:p-12 text-left bg-gradient-to-br from-primary/10 to-transparent">
+                <h2 class="text-3xl font-black tracking-tight mb-6 flex items-center gap-3">
+                    <i class="fas fa-plug text-primary"></i> Plugin System
+                </h2>
+                <div class="markdown-content">
+                    <p>OFA v4.5.0 introduces a powerful <strong>Plugin System</strong> that allows you to extend the framework without modifying the core files. Plugins are located in the <code>/plugins</code> directory.</p>
+                    
+                    <h4 class="font-bold text-lg mt-8 mb-4">🛠️ Working with Plugins</h4>
+                    <div class="p-4 bg-white/5 border border-white/10 rounded-2xl mb-4 font-mono text-sm">
+                        ./ofa g plugin my_awesome_feature
+                    </div>
+                    <p class="text-sm text-slate-500 mb-4">Each plugin has an <code>init.rb</code> file where you can register hooks and routes:</p>
+                    <div class="p-4 bg-slate-900 rounded-2xl font-mono text-xs text-green-400 mb-6">
+<pre>
+OFA.on_boot do
+  puts "Plugin Loaded!"
+end
+
+OFA.add_route(:get, "/my-plugin") do |req, res|
+  res.body << "Hello from Plugin!"
+end
+</pre>
                     </div>
                 </div>
             </section>

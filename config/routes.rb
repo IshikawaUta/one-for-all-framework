@@ -61,6 +61,10 @@ ROUTES = EksCent::Router.new do
       DashboardController.new(req, res).upload
     end
 
+    get '/dashboard/logs' do |req, res|
+      ActivityLogsController.new(req, res).index
+    end
+
     # Resourceful CMS Routes
     resources :pages, prefix: '/dashboard'
     resources :posts, prefix: '/dashboard'

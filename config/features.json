@@ -4,5 +4,6 @@
   "type": "landing_page",
   "theme": "light_sidebar",
   "storage": "cloudinary",
-  "rich_text": true
+  "rich_text": true,
+  "maintenance": false
 }

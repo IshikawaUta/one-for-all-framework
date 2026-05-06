@@ -9,6 +9,8 @@ begin
 rescue LoadError
 end
 
+require_relative '../lib/plugin_helper'
+
 # Basic project structure constants
 APP_ROOT ||= File.expand_path('..', __dir__)
 
@@ -110,6 +112,14 @@ framework_app = File.expand_path('../app', __dir__)
   end
 end
 
+# Load Plugins
+plugins_dir = File.join(APP_ROOT, 'plugins')
+if File.directory?(plugins_dir)
+  Dir.glob(File.join(plugins_dir, '**', '*.rb')).each do |plugin_file|
+    require plugin_file
+  end
+end
+
 # ─── Routes DSL Extensions ─────────────────────────────────────────────────────
 # Extends EksCent::Router with a `resources` helper that auto-generates RESTful
 # routes (index, show, new, create, edit, update, destroy) for a given resource.
@@ -151,3 +161,6 @@ end
 
 # Load routes
 require_relative 'routes'
+
+# Run Plugin Boot Hooks
+OFA.run_boot_hooks if defined?(OFA)

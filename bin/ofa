@@ -33,7 +33,7 @@ def help
   puts "  / __ \\/ ____/  /   |                      "
   puts " / / / / /_     / /| |  Framework           "
   puts "/ /_/ / __/    / ___ |  Premium MVC         "
-  puts "\\____/_/      /_/  |_|  v4.4.0              "
+  puts "\\____/_/      /_/  |_|  v4.5.0              "
   puts "                                            "
   puts "✨ One-For-All Framework CLI ✨"
   puts "-----------------------------"
@@ -61,6 +61,7 @@ def help
   puts "  ofa doctor            - Check system health (DB, config, gems)"
   puts "  ofa routes            - List all registered routes"
   puts "  ofa swagger           - Auto-generate OpenAPI/Swagger documentation"
+  puts "  ofa maintenance ACTION - Toggle maintenance mode (on/off)"
   puts "  ofa task NAME         - Run a background task"
   puts "  ofa test              - Run all application tests"
   puts "  ofa run               - Start the application server"
@@ -247,7 +248,7 @@ when 'init'
   puts "  / __ \\/ ____/  /   |                      "
   puts " / / / / /_     / /| |  Framework           "
   puts "/ /_/ / __/    / ___ |  Premium MVC         "
-  puts "\\____/_/      /_/  |_|  v4.4.0              "
+  puts "\\____/_/      /_/  |_|  v4.5.0              "
   puts "                                            "
   puts "Initializing One-For-All project as '#{app_type}' in #{PROJECT_ROOT}..."
 
@@ -327,11 +328,15 @@ when 'init'
     # Middleware setup
     use EksCent::Middleware::ShowExceptions
     use EksCent::Middleware::Session, secret: EksCent.secret_key_base
+    use MaintenanceMiddleware
     use AuthMiddleware
     use JwtMiddleware
     use CSRFMiddleware
     use EksCent::Middleware::Static, root: 'public'
     use EksCent::Middleware::Logger
+    
+    # Apply plugin routes
+    OFA.apply_pending_routes(ROUTES) if defined?(OFA)
     
     run ROUTES
   RUBY
@@ -619,8 +624,28 @@ when 'g'
     content = "<h1>#{name}</h1>\n<p>Author: #{options[:author] || 'Admin'}</p>\n<p>Category: #{options[:category] || 'General'}</p>"
     File.write(file_name, content)
     puts "Created post: #{file_name}"
+  elsif sub == 'plugin' && name
+    dir_path = File.join(PROJECT_ROOT, "plugins/#{name.downcase}")
+    FileUtils.mkdir_p(dir_path)
+    file_name = File.join(dir_path, "init.rb")
+    content = <<~RUBY
+      # Plugin: #{name.capitalize}
+      # Created at: #{Time.now}
+
+      OFA.on_boot do
+        puts "🚀 Plugin #{name.capitalize} loaded!"
+      end
+
+      # Example route added by plugin
+      # OFA.add_route(:get, '/#{name.downcase}') do |req, res|
+      #   res.body << "Hello from #{name.capitalize} Plugin!"
+      # end
+    RUBY
+    File.write(file_name, content)
+    puts "Created Plugin: #{dir_path}"
+    puts "💡 Edit #{file_name} to start building your plugin."
   else
-    puts "Usage: ofa g [controller|api|model|migration|mailer|task|test|post] NAME"
+    puts "Usage: ofa g [controller|api|model|migration|mailer|task|test|post|plugin] NAME"
   end
 
 when 'feature'
@@ -680,6 +705,19 @@ when 'storage'
   config['storage'] = name
   File.write(config_path, JSON.pretty_generate(config))
   puts "Application storage set to '#{name}'."
+
+when 'maintenance'
+  ensure_initialized!
+  action = ARGV.shift
+  unless %w[on off].include?(action)
+    puts "Usage: ofa maintenance [on|off]"
+    exit 1
+  end
+  config_path = File.join(PROJECT_ROOT, 'config', 'features.json')
+  config = JSON.parse(File.read(config_path))
+  config['maintenance'] = (action == 'on')
+  File.write(config_path, JSON.pretty_generate(config))
+  puts "Maintenance mode has been turned #{action}."
 
 when 'reset-password'
   ENV['SKIP_MODELS'] = '1'
@@ -823,7 +861,7 @@ when 'console'
   puts "  / __ \\/ ____/  /   |                      "
   puts " / / / / /_     / /| |  Framework           "
   puts "/ /_/ / __/    / ___ |  Console (REPL)      "
-  puts "\\____/_/      /_/  |_|  v4.4.0              "
+  puts "\\____/_/      /_/  |_|  v4.5.0              "
   puts "                                            "
   puts "✨ Loading environment... (Type 'exit' to quit)"
   

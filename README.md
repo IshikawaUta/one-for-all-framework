@@ -2,7 +2,7 @@
   <img src="public/images/logo.png" width="500" height="500" alt="OFA Framework Logo">
 </p>
 
-# ⚡ One-For-All (OFA) Framework v4.4.0
+# ⚡ One-For-All (OFA) Framework v4.5.0
 
 [![Ruby Version](https://img.shields.io/badge/ruby-%3E%3D%203.0.0-red.svg)](https://www.ruby-lang.org/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -22,6 +22,9 @@
 -   **🌐 Global Support**: Multi-language (I18n) support and SEO optimization ready.
 -   **🖋️ Rich Text Editor**: Integrated Trix Editor for seamless post and page creation with image upload support.
 -   **📡 Modern API**: Built-in JWT support and automated Swagger/OpenAPI documentation.
+-   **🚧 Maintenance Mode**: Instantly toggle "Under Construction" mode via CLI.
+-   **🔍 Activity Logs**: Full audit trail in CMS to monitor user actions and security.
+-   **🔌 Plugin System**: Modular architecture to extend the framework with custom add-ons.
 
 ---
 
@@ -129,6 +132,10 @@ Switches between local disk and Cloudinary cloud storage.
 Securely manages admin credentials.
 *   **Output:** `✅ Password for 'admin' updated successfully.`
 
+#### `ofa maintenance [on|off]`
+Instantly toggles a premium "Under Construction" page for visitors while allowing admin access.
+*   **Output:** `✅ Maintenance mode has been turned on.`
+
 ---
 
 ### 📁 Project Lifecycle
@@ -143,6 +150,7 @@ Securely manages admin credentials.
 | `ofa swagger` | **OpenAPI Generation.** Auto-generates `openapi.json` for your entire application. |
 | `ofa task NAME` | **Run Background Task.** Executes a task defined in `lib/tasks/`. |
 | `ofa test` | **Run Test Suite.** Executes all unit tests in the `test/` directory using Minitest. |
+| `ofa maintenance on/off` | **Toggle Site Access.** Activates a beautiful maintenance page. Admins can still bypass it to work. |
 | `ofa deploy` | **Production Deployment.** Automatically detects deployment targets (Railway/Docker/Git). |
 
 ---
@@ -159,6 +167,7 @@ Automate the creation of boilerplate code with the generator command.
 | `ofa g mailer NAME ACTION` | Generates a new mailer in `app/mailers/` and an ERB template in `app/views/mailers/`. |
 | `ofa g task NAME` | Creates a new background task file in `lib/tasks/`. |
 | `ofa g test NAME` | Generates a new Minitest unit test in `test/`. |
+| `ofa g plugin NAME` | **Plugin Scaffolding.** Creates a new plugin structure in the `plugins/` directory. |
 | `ofa g post TITLE` | Creates a new Markdown/ERB post in `app/views/posts/`. <br> *Args:* `--category`, `--author`, `--image`. <br> *Example:* `./ofa g post "My First Journey" --category Tech --author "John Doe"` |
 
 ---

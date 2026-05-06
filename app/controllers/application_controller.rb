@@ -46,6 +46,15 @@ class ApplicationController
     @req.env['eks_cent.csrf_token']
   end
 
+  # Activity Logger
+  def log_activity(action, target = nil, details = nil)
+    user_id = session['user_id'] || session[:user_id]
+    return unless user_id
+    ActivityLog.log(user_id, action, target, details)
+  end
+
+  private
+
   def boolean_param(val)
     ['1', 'true', 'on'].include?(val.to_s)
   end
