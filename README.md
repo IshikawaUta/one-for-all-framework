@@ -2,7 +2,7 @@
   <img src="public/images/logo.png" width="500" height="500" alt="OFA Framework Logo">
 </p>
 
-# ⚡ One-For-All (OFA) Framework v4.3.0
+# ⚡ One-For-All (OFA) Framework v4.4.0
 
 [![Ruby Version](https://img.shields.io/badge/ruby-%3E%3D%203.0.0-red.svg)](https://www.ruby-lang.org/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -141,6 +141,8 @@ Securely manages admin credentials.
 | `ofa doctor` | **System Health Check.** Validates `.env` config, database connectivity (SQL/MongoDB), Ruby version, and dependencies. |
 | `ofa routes` | **Route Inspection.** Lists all registered routes in your application in a clean tabular format. |
 | `ofa swagger` | **OpenAPI Generation.** Auto-generates `openapi.json` for your entire application. |
+| `ofa task NAME` | **Run Background Task.** Executes a task defined in `lib/tasks/`. |
+| `ofa test` | **Run Test Suite.** Executes all unit tests in the `test/` directory using Minitest. |
 | `ofa deploy` | **Production Deployment.** Automatically detects deployment targets (Railway/Docker/Git). |
 
 ---
@@ -154,6 +156,9 @@ Automate the creation of boilerplate code with the generator command.
 | `ofa g api NAME` | Creates a JSON-based controller in `app/controllers/{name}_controller.rb` inheriting from `ApiController`. |
 | `ofa g model NAME` | Generates a database model in `app/models/{name}.rb` integrated with the Sequel ORM. |
 | `ofa g migration NAME` | Creates a timestamped migration file in `db/migrations/`. Use this to define your schema changes. |
+| `ofa g mailer NAME ACTION` | Generates a new mailer in `app/mailers/` and an ERB template in `app/views/mailers/`. |
+| `ofa g task NAME` | Creates a new background task file in `lib/tasks/`. |
+| `ofa g test NAME` | Generates a new Minitest unit test in `test/`. |
 | `ofa g post TITLE` | Creates a new Markdown/ERB post in `app/views/posts/`. <br> *Args:* `--category`, `--author`, `--image`. <br> *Example:* `./ofa g post "My First Journey" --category Tech --author "John Doe"` |
 
 ---

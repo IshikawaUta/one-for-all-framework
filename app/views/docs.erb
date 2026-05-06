@@ -1,6 +1,6 @@
 <div class="space-y-12 pb-20">
     <div class="text-left">
-        <div class="badge-premium">Documentation v4.3.0</div>
+        <div class="badge-premium">Documentation v4.4.0</div>
         <h1 class="text-5xl font-black tracking-tighter mb-4 text-slate-700 dark:text-white">Framework <span class="text-primary">Guide</span></h1>
         <p class="text-xl text-slate-500 max-w-2xl leading-relaxed">Everything you need to know about building premium web applications with the One-For-All framework.</p>
     </div>
@@ -17,7 +17,8 @@
                 <a href="#cms" class="block px-4 py-2 rounded-xl hover:bg-primary/5 text-slate-600 hover:text-primary transition-all font-semibold border-l-2 border-transparent hover:border-primary">CMS & Features</a>
                 <a href="#ecommerce" class="block px-4 py-2 rounded-xl hover:bg-primary/5 text-slate-600 hover:text-primary transition-all font-semibold border-l-2 border-transparent hover:border-primary">E-Commerce</a>
                 <a href="#api" class="block px-4 py-2 rounded-xl hover:bg-primary/5 text-slate-600 hover:text-primary transition-all font-semibold border-l-2 border-transparent hover:border-primary">API & Modern Web</a>
-                <a href="#deploy" class="block px-4 py-2 rounded-xl hover:bg-primary/5 text-slate-600 hover:text-primary transition-all font-semibold border-l-2 border-transparent hover:border-primary">Deployment</a>
+                <a href="#advanced" class="block px-4 py-2 rounded-xl hover:bg-primary/5 text-slate-600 hover:text-primary transition-all font-semibold border-l-2 border-transparent hover:border-primary">Mailers & Background Jobs</a>
+                <a href="#testing" class="block px-4 py-2 rounded-xl hover:bg-primary/5 text-slate-600 hover:text-primary transition-all font-semibold border-l-2 border-transparent hover:border-primary">Automated Testing</a>
                 <a href="#deploy" class="block px-4 py-2 rounded-xl hover:bg-primary/5 text-slate-600 hover:text-primary transition-all font-semibold border-l-2 border-transparent hover:border-primary">Deployment</a>
             </nav>
         </aside>
@@ -98,10 +99,22 @@
                                 <td class="px-6 py-4 font-mono text-primary">./ofa g model NAME</td>
                                 <td class="px-6 py-4 text-slate-600 dark:text-slate-400">Creates model & migration linked to Sequel/NoSQL.</td>
                             </tr>
-                            <tr>
-                                <td class="px-6 py-4 font-mono text-primary">./ofa g migration NAME</td>
-                                <td class="px-6 py-4 text-slate-600 dark:text-slate-400">Creates timestamped migration in <code>db/migrations/</code>.</td>
-                            </tr>
+                             <tr>
+                                 <td class="px-6 py-4 font-mono text-primary">./ofa g migration NAME</td>
+                                 <td class="px-6 py-4 text-slate-600 dark:text-slate-400 text-xs">Creates timestamped migration in <code>db/migrations/</code>.</td>
+                             </tr>
+                             <tr>
+                                 <td class="px-6 py-4 font-mono text-primary">./ofa g mailer NAME</td>
+                                 <td class="px-6 py-4 text-slate-600 dark:text-slate-400 text-xs">Generates mailer class and ERB templates.</td>
+                             </tr>
+                             <tr>
+                                 <td class="px-6 py-4 font-mono text-primary">./ofa g task NAME</td>
+                                 <td class="px-6 py-4 text-slate-600 dark:text-slate-400 text-xs">Creates a background task in <code>lib/tasks/</code>.</td>
+                             </tr>
+                             <tr>
+                                 <td class="px-6 py-4 font-mono text-primary">./ofa g test NAME</td>
+                                 <td class="px-6 py-4 text-slate-600 dark:text-slate-400 text-xs">Generates a Minitest unit test file.</td>
+                             </tr>
 
                             <tr class="bg-slate-500/5"><td colspan="2" class="px-6 py-2 text-[10px] font-black uppercase tracking-tighter text-slate-400">Customization</td></tr>
                             <tr>
@@ -346,6 +359,48 @@ resources :posts
                         <div class="p-4 bg-white/5 border border-white/10 rounded-2xl mt-4 font-mono text-sm">
                             ./ofa swagger
                         </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Advanced Features -->
+            <section id="advanced" class="glass-panel p-8 md:p-12 text-left bg-gradient-to-br from-primary/10 to-transparent">
+                <h2 class="text-3xl font-black tracking-tight mb-6 flex items-center gap-3">
+                    <i class="fas fa-envelope text-primary"></i> Mailers & Tasks
+                </h2>
+                <div class="markdown-content space-y-8">
+                    <div>
+                        <h4 class="font-bold text-lg mb-2">📧 Email Mailers</h4>
+                        <p class="text-sm text-slate-600 dark:text-slate-400">Send transactional emails with ease using ERB templates. Mailers are stored in <code>app/mailers</code> and templates in <code>app/views/mailers</code>.</p>
+                        <div class="p-4 bg-white/5 border border-white/10 rounded-2xl mt-4 font-mono text-sm">
+                            ./ofa g mailer welcome signup
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 class="font-bold text-lg mb-2">⚙️ Background Tasks</h4>
+                        <p class="text-sm text-slate-600 dark:text-slate-400">Run long-running processes or scheduled jobs using the Task runner. Defined in <code>lib/tasks/</code>.</p>
+                        <div class="p-4 bg-white/5 border border-white/10 rounded-2xl mt-4 font-mono text-sm">
+                            ./ofa g task sync_data<br>
+                            ./ofa task sync_data
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Testing -->
+            <section id="testing" class="glass-panel p-8 md:p-12 text-left">
+                <h2 class="text-3xl font-black tracking-tight mb-6 flex items-center gap-3">
+                    <i class="fas fa-vial text-primary"></i> Automated Testing
+                </h2>
+                <div class="markdown-content">
+                    <p class="text-slate-600 dark:text-slate-400 mb-6">OFA integrates <strong>Minitest</strong> out-of-the-box for reliable application testing. Run all your tests with a single command.</p>
+                    <div class="p-4 bg-slate-900 rounded-2xl font-mono text-sm text-green-400 mb-6">
+                        ./ofa test
+                    </div>
+                    <p class="text-sm text-slate-500">To create a new test file:</p>
+                    <div class="p-4 bg-white/5 border border-white/10 rounded-2xl mt-2 font-mono text-sm">
+                        ./ofa g test user_profile
                     </div>
                 </div>
             </section>

@@ -13,6 +13,8 @@ gem 'mongo'
 gem 'dotenv'
 gem 'kramdown'
 gem 'kramdown-parser-gfm'
+gem 'mail'
+gem 'minitest'
 
 group :test do
   gem 'eksa-mination'

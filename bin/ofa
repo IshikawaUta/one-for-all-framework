@@ -1,5 +1,16 @@
 #!/usr/bin/env ruby
 
+# --- Bundler Setup ---
+# This ensures that if we are in a project with a Gemfile, we use the correct 
+# gem versions specified in Gemfile.lock, preventing conflicts with system gems.
+if File.exist?(File.join(Dir.pwd, 'Gemfile'))
+  begin
+    require 'bundler/setup'
+  rescue LoadError
+    # Bundler not installed, proceed without it
+  end
+end
+
 require 'fileutils'
 require 'optparse'
 require 'json'
@@ -22,7 +33,7 @@ def help
   puts "  / __ \\/ ____/  /   |                      "
   puts " / / / / /_     / /| |  Framework           "
   puts "/ /_/ / __/    / ___ |  Premium MVC         "
-  puts "\\____/_/      /_/  |_|  v4.3.0              "
+  puts "\\____/_/      /_/  |_|  v4.4.0              "
   puts "                                            "
   puts "✨ One-For-All Framework CLI ✨"
   puts "-----------------------------"
@@ -33,6 +44,9 @@ def help
   puts "  ofa g api NAME        - Generate a new API controller (JSON)"
   puts "  ofa g model NAME      - Generate a new model"
   puts "  ofa g migration NAME  - Generate a new migration"
+  puts "  ofa g mailer NAME ACTION - Generate a new mailer and template"
+  puts "  ofa g task NAME       - Generate a new background task"
+  puts "  ofa g test NAME       - Generate a new unit test"
   puts "  ofa g post TITLE      - Create a new post [args: --category, --author, --image]"
   puts "  ofa feature ACTION F  - Toggle features: action=enable/disable, F=cms/auth/rich_text"
   puts "  ofa type NAME         - Set application type: portfolio, blog, landing_page, e_commerce"
@@ -47,6 +61,8 @@ def help
   puts "  ofa doctor            - Check system health (DB, config, gems)"
   puts "  ofa routes            - List all registered routes"
   puts "  ofa swagger           - Auto-generate OpenAPI/Swagger documentation"
+  puts "  ofa task NAME         - Run a background task"
+  puts "  ofa test              - Run all application tests"
   puts "  ofa run               - Start the application server"
   puts "  ofa deploy            - Deploy project to production"
   puts "-----------------------------"
@@ -231,7 +247,7 @@ when 'init'
   puts "  / __ \\/ ____/  /   |                      "
   puts " / / / / /_     / /| |  Framework           "
   puts "/ /_/ / __/    / ___ |  Premium MVC         "
-  puts "\\____/_/      /_/  |_|  v4.3.0              "
+  puts "\\____/_/      /_/  |_|  v4.4.0              "
   puts "                                            "
   puts "Initializing One-For-All project as '#{app_type}' in #{PROJECT_ROOT}..."
 
@@ -262,7 +278,7 @@ when 'init'
   puts "-----------------------------\n"
 
   # Create directories
-  dirs = ['app/controllers', 'app/models', 'app/views', 'config', 'db/migrations', 'public/css', 'public/js', 'public/images', 'public/images/uploads']
+  dirs = ['app/controllers', 'app/models', 'app/views', 'app/mailers', 'lib/tasks', 'test', 'config', 'db/migrations', 'public/css', 'public/js', 'public/images', 'public/images/uploads']
   dirs.each { |dir| FileUtils.mkdir_p(File.join(PROJECT_ROOT, dir)) }
   
   # Copy framework core migrations
@@ -271,6 +287,21 @@ when 'init'
   if File.directory?(framework_migrations)
     Dir.glob(File.join(framework_migrations, '*.rb')).each do |mig|
       FileUtils.cp(mig, project_migrations)
+    end
+  end
+
+  # Copy framework core helpers and test assets
+  ['lib/task_helper.rb', 'app/mailers/application_mailer.rb', 'test/test_helper.rb'].each do |file|
+    src = File.join(FRAMEWORK_ROOT, file)
+    dest = File.join(PROJECT_ROOT, file)
+    FileUtils.mkdir_p(File.dirname(dest))
+    if File.exist?(src)
+      content = File.read(src)
+      # Inject FRAMEWORK_ROOT into test_helper.rb
+      if file == 'test/test_helper.rb'
+        content.gsub!("require_relative '../config/boot'", "$LOAD_PATH.unshift '#{FRAMEWORK_ROOT}'\nrequire 'config/boot'")
+      end
+      File.write(dest, content)
     end
   end
 
@@ -321,6 +352,8 @@ when 'init'
     gem 'mysql2'
     gem 'kramdown'
     gem 'kramdown-parser-gfm'
+    gem 'mail'
+    gem 'minitest'
   RUBY
   File.write(File.join(PROJECT_ROOT, 'Gemfile'), gemfile_content)
 
@@ -499,6 +532,58 @@ when 'g'
     File.write(file_name, content)
     puts "Created API Controller: #{file_name}"
     puts "💡 Don't forget to register it in config/routes.rb"
+  elsif sub == 'mailer' && name
+    action = ARGV.shift || 'welcome'
+    class_name = name.capitalize + "Mailer"
+    file_name = File.join(PROJECT_ROOT, "app/mailers/#{name.downcase}_mailer.rb")
+    content = <<~RUBY
+      class #{class_name} < ApplicationMailer
+        def #{action}(user)
+          mail(
+            to: user.email,
+            subject: "Welcome to our platform!",
+            template: "#{name.downcase}_mailer/#{action}",
+            locals: { user: user }
+          )
+        end
+      end
+    RUBY
+    File.write(file_name, content)
+    
+    # Create template
+    template_dir = File.join(PROJECT_ROOT, "app/views/mailers/#{name.downcase}_mailer")
+    FileUtils.mkdir_p(template_dir)
+    template_file = File.join(template_dir, "#{action}.erb")
+    File.write(template_file, "<h1>Hello <%= @user.username %></h1>\n<p>Welcome to One-For-All Framework!</p>")
+    
+    puts "Created Mailer: #{file_name}"
+    puts "Created Template: #{template_file}"
+  elsif sub == 'task' && name
+    dir_path = File.join(PROJECT_ROOT, "lib/tasks")
+    FileUtils.mkdir_p(dir_path)
+    file_name = File.join(dir_path, "#{name.downcase}.rb")
+    content = <<~RUBY
+      desc "Description for #{name} task"
+      task :#{name.downcase} do
+        puts "Running task: #{name}"
+        # Your background job logic here
+      end
+    RUBY
+    File.write(file_name, content)
+    puts "Created Task: #{file_name}"
+  elsif sub == 'test' && name
+    file_name = File.join(PROJECT_ROOT, "test/#{name.downcase}_test.rb")
+    content = <<~RUBY
+      require_relative 'test_helper'
+
+      class #{name.capitalize}Test < Minitest::Test
+        def test_example
+          assert true
+        end
+      end
+    RUBY
+    File.write(file_name, content)
+    puts "Created Test: #{file_name}"
   elsif sub == 'model' && name
     class_name = name.capitalize
     file_name = File.join(PROJECT_ROOT, "app/models/#{name.downcase}.rb")
@@ -535,7 +620,7 @@ when 'g'
     File.write(file_name, content)
     puts "Created post: #{file_name}"
   else
-    puts "Usage: ofa g [controller|model|migration|post] NAME"
+    puts "Usage: ofa g [controller|api|model|migration|mailer|task|test|post] NAME"
   end
 
 when 'feature'
@@ -545,7 +630,8 @@ when 'feature'
   config_path = File.join(PROJECT_ROOT, 'config', 'features.json')
   config = JSON.parse(File.read(config_path))
   config[feature] = (action == 'enable')
-  File.write(config_path, JSON.pretty_generate(config))
+  File.open("#{config_path}.tmp", 'w') { |f| f.write(JSON.pretty_generate(config)) }
+  File.rename("#{config_path}.tmp", config_path)
   puts "Feature '#{feature}' has been #{action}d."
   
   if action == 'enable' && feature == 'cms' && !config['auth']
@@ -564,7 +650,8 @@ when 'type'
   config_path = File.join(PROJECT_ROOT, 'config', 'features.json')
   config = JSON.parse(File.read(config_path))
   config['type'] = name
-  File.write(config_path, JSON.pretty_generate(config))
+  File.open("#{config_path}.tmp", 'w') { |f| f.write(JSON.pretty_generate(config)) }
+  File.rename("#{config_path}.tmp", config_path)
   puts "Application type set to '#{name}'."
 
 when 'theme'
@@ -577,7 +664,8 @@ when 'theme'
   config_path = File.join(PROJECT_ROOT, 'config', 'features.json')
   config = JSON.parse(File.read(config_path))
   config['theme'] = name
-  File.write(config_path, JSON.pretty_generate(config))
+  File.open("#{config_path}.tmp", 'w') { |f| f.write(JSON.pretty_generate(config)) }
+  File.rename("#{config_path}.tmp", config_path)
   puts "Application theme set to '#{name}'."
 
 when 'storage'
@@ -640,7 +728,8 @@ when 'db'
         env_lines = File.exist?(env_path) ? File.readlines(env_path) : []
         env_lines.reject! { |l| l.start_with?('DATABASE_URL=') }
         env_lines << "DATABASE_URL=#{db_name}\n"
-        File.write(env_path, env_lines.join)
+        File.open("#{env_path}.tmp", 'w') { |f| f.write(env_lines.join) }
+        File.rename("#{env_path}.tmp", env_path)
         puts "✅ Connection string saved to .env"
       end
     when 'sqlite'
@@ -648,7 +737,8 @@ when 'db'
     else
       config = { "adapter" => type, "host" => "localhost", "user" => "root", "password" => "", "database" => db_name || "one_for_all" }
     end
-    File.write(config_path, JSON.pretty_generate(config))
+    File.open("#{config_path}.tmp", 'w') { |f| f.write(JSON.pretty_generate(config)) }
+    File.rename("#{config_path}.tmp", config_path)
     puts "Switched to #{type} mode."
   when 'migrate'
     run_migrations
@@ -733,7 +823,7 @@ when 'console'
   puts "  / __ \\/ ____/  /   |                      "
   puts " / / / / /_     / /| |  Framework           "
   puts "/ /_/ / __/    / ___ |  Console (REPL)      "
-  puts "\\____/_/      /_/  |_|  v4.3.0              "
+  puts "\\____/_/      /_/  |_|  v4.4.0              "
   puts "                                            "
   puts "✨ Loading environment... (Type 'exit' to quit)"
   
@@ -844,6 +934,63 @@ when 'deploy'
     puts "   Suggestion: Install Railway CLI or prepare a Dockerfile for VPS."
     puts "   This framework supports deployment via Docker or Git Push."
   end
+
+when 'task'
+  ensure_initialized!
+  name = ARGV.shift
+  if name.nil?
+    puts "Usage: ofa task NAME"
+    # List available tasks
+    tasks_dir = File.join(PROJECT_ROOT, 'lib/tasks')
+    if Dir.exist?(tasks_dir)
+      puts "\nAvailable tasks:"
+      Dir.glob(File.join(tasks_dir, '*.rb')).each do |f|
+        puts "  - #{File.basename(f, '.rb')}"
+      end
+    end
+    exit 1
+  end
+  
+  # Load framework & app
+  Object.const_set(:APP_ROOT, PROJECT_ROOT) unless defined?(APP_ROOT)
+  require File.join(FRAMEWORK_ROOT, 'config', 'boot')
+  require File.join(FRAMEWORK_ROOT, 'lib', 'task_helper')
+  
+  # Load all tasks in lib/tasks
+  Dir.glob(File.join(PROJECT_ROOT, 'lib/tasks/*.rb')).each { |f| require f }
+  
+  run_task(name)
+
+when 'test'
+  ensure_initialized!
+  puts "🧪 Running tests..."
+  puts "------------------------------------------"
+  
+  # Set environment to test
+  ENV['EKS_ENV'] = 'test'
+  Object.const_set(:APP_ROOT, PROJECT_ROOT) unless defined?(APP_ROOT)
+  
+  # Add project root to load path
+  $LOAD_PATH.unshift PROJECT_ROOT
+  $LOAD_PATH.unshift File.join(PROJECT_ROOT, 'test')
+  
+  # Find all tests (support both _test.rb and _spec.rb)
+  if ARGV.empty?
+    test_files = Dir.glob(File.join(PROJECT_ROOT, 'test/**/{*_test.rb,*_spec.rb}'))
+  else
+    test_files = ARGV.map { |arg| File.expand_path(arg, PROJECT_ROOT) }
+  end
+  
+  if test_files.empty?
+    puts "❌ No tests found in test/ directory."
+    exit 1
+  end
+  
+  # Run them by requiring
+  test_files.each { |f| require f }
+
+  # Trigger EksaMination execution if available
+  EksaMination.run if defined?(EksaMination)
 
 else
   help

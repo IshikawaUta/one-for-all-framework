@@ -124,13 +124,14 @@ describe "Ofa CLI" do
     
     `./bin/ofa db migrate-data sqlite #{target_db_path}`
     
+    expect(File.exist?(target_db_path)).to be_truthy
     target_db = Sequel.connect("sqlite://#{target_db_path}")
     user = target_db[:users].first(username: username)
     expect(user).not_to be_nil
     target_db.disconnect
     
-    FileUtils.rm(source_db_path)
-    FileUtils.rm(target_db_path)
+    FileUtils.rm(source_db_path) if File.exist?(source_db_path)
+    FileUtils.rm(target_db_path) if File.exist?(target_db_path)
   end
 
   it "dapat meng-generate API controller baru" do
@@ -162,5 +163,43 @@ describe "Ofa CLI" do
     expect(output).to include("One-For-All Doctor")
     expect(output).to include("Checking .env file")
     expect(output).to include("Checking Database connection")
+  end
+
+  it "dapat meng-generate mailer baru" do
+    `./bin/ofa g mailer Welcome signup`
+    expect(File.exist?("app/mailers/welcome_mailer.rb")).to be_truthy
+    expect(File.exist?("app/views/mailers/welcome_mailer/signup.erb")).to be_truthy
+    FileUtils.rm("app/mailers/welcome_mailer.rb")
+    FileUtils.rm_rf("app/views/mailers/welcome_mailer")
+  end
+
+  it "dapat meng-generate task baru" do
+    `./bin/ofa g task Cleanup`
+    expect(File.exist?("lib/tasks/cleanup.rb")).to be_truthy
+    FileUtils.rm("lib/tasks/cleanup.rb")
+  end
+
+  it "dapat menjalankan task yang didefinisikan" do
+    File.write("lib/tasks/hello.rb", "task :hello do; puts 'Hello Task'; end")
+    output = `./bin/ofa task hello`
+    expect(output).to include("Running task: hello")
+    expect(output).to include("Hello Task")
+    FileUtils.rm("lib/tasks/hello.rb")
+  end
+
+  it "dapat meng-generate test baru" do
+    `./bin/ofa g test unit`
+    expect(File.exist?("test/unit_test.rb")).to be_truthy
+    FileUtils.rm("test/unit_test.rb")
+  end
+
+  it "dapat menjalankan perintah test suite" do
+    # Buat dummy test agar tidak error 'No tests found'
+    dummy_file = "test/z_dummy_test.rb"
+    File.write(dummy_file, "require_relative 'test_helper'\nclass DummyTest < Minitest::Test; def test_pass; assert true; end; end")
+    output = `./bin/ofa test #{dummy_file}`
+    expect(output).to include("Running tests")
+    expect(output).to include("1 runs, 1 assertions")
+    FileUtils.rm(dummy_file) if File.exist?(dummy_file)
   end
 end
