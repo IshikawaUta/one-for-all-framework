@@ -1,6 +1,6 @@
 <div class="space-y-12 pb-20">
     <div class="text-left">
-        <div class="badge-premium">Documentation v4.2.0</div>
+        <div class="badge-premium">Documentation v4.3.0</div>
         <h1 class="text-5xl font-black tracking-tighter mb-4 text-slate-700 dark:text-white">Framework <span class="text-primary">Guide</span></h1>
         <p class="text-xl text-slate-500 max-w-2xl leading-relaxed">Everything you need to know about building premium web applications with the One-For-All framework.</p>
     </div>
@@ -16,6 +16,8 @@
                 <a href="#routing" class="block px-4 py-2 rounded-xl hover:bg-primary/5 text-slate-600 hover:text-primary transition-all font-semibold border-l-2 border-transparent hover:border-primary">Routing System</a>
                 <a href="#cms" class="block px-4 py-2 rounded-xl hover:bg-primary/5 text-slate-600 hover:text-primary transition-all font-semibold border-l-2 border-transparent hover:border-primary">CMS & Features</a>
                 <a href="#ecommerce" class="block px-4 py-2 rounded-xl hover:bg-primary/5 text-slate-600 hover:text-primary transition-all font-semibold border-l-2 border-transparent hover:border-primary">E-Commerce</a>
+                <a href="#api" class="block px-4 py-2 rounded-xl hover:bg-primary/5 text-slate-600 hover:text-primary transition-all font-semibold border-l-2 border-transparent hover:border-primary">API & Modern Web</a>
+                <a href="#deploy" class="block px-4 py-2 rounded-xl hover:bg-primary/5 text-slate-600 hover:text-primary transition-all font-semibold border-l-2 border-transparent hover:border-primary">Deployment</a>
                 <a href="#deploy" class="block px-4 py-2 rounded-xl hover:bg-primary/5 text-slate-600 hover:text-primary transition-all font-semibold border-l-2 border-transparent hover:border-primary">Deployment</a>
             </nav>
         </aside>
@@ -74,16 +76,24 @@
                                 <td class="px-6 py-4 font-mono text-primary">./ofa routes</td>
                                 <td class="px-6 py-4 text-slate-600 dark:text-slate-400 text-xs">List all registered routes in a clean table.</td>
                             </tr>
-                            <tr>
-                                <td class="px-6 py-4 font-mono text-primary">./ofa deploy</td>
-                                <td class="px-6 py-4 text-slate-600 dark:text-slate-400 text-xs italic">Railway/Docker/Git auto-detection for production.</td>
-                            </tr>
+                             <tr>
+                                 <td class="px-6 py-4 font-mono text-primary">./ofa deploy</td>
+                                 <td class="px-6 py-4 text-slate-600 dark:text-slate-400 text-xs italic">Railway/Docker/Git auto-detection for production.</td>
+                             </tr>
+                             <tr>
+                                 <td class="px-6 py-4 font-mono text-primary">./ofa swagger</td>
+                                 <td class="px-6 py-4 text-slate-600 dark:text-slate-400 text-xs">Generate <code>openapi.json</code> for Swagger UI.</td>
+                             </tr>
 
                             <tr class="bg-slate-500/5"><td colspan="2" class="px-6 py-2 text-[10px] font-black uppercase tracking-tighter text-slate-400">Generators (Scaffolding)</td></tr>
-                            <tr>
-                                <td class="px-6 py-4 font-mono text-primary">./ofa g controller NAME</td>
-                                <td class="px-6 py-4 text-slate-600 dark:text-slate-400">Generates <code>app/controllers/{name}_controller.rb</code>.</td>
-                            </tr>
+                             <tr>
+                                 <td class="px-6 py-4 font-mono text-primary">./ofa g controller NAME</td>
+                                 <td class="px-6 py-4 text-slate-600 dark:text-slate-400">Generates <code>app/controllers/{name}_controller.rb</code>.</td>
+                             </tr>
+                             <tr>
+                                 <td class="px-6 py-4 font-mono text-primary">./ofa g api NAME</td>
+                                 <td class="px-6 py-4 text-slate-600 dark:text-slate-400 text-xs">JSON-based controller inheriting from ApiController.</td>
+                             </tr>
                             <tr>
                                 <td class="px-6 py-4 font-mono text-primary">./ofa g model NAME</td>
                                 <td class="px-6 py-4 text-slate-600 dark:text-slate-400">Creates model & migration linked to Sequel/NoSQL.</td>
@@ -307,6 +317,36 @@ resources :posts
                             <div><strong class="text-slate-700 dark:text-white">Mobile Optimized:</strong> 100% responsive checkout and product listing pages.</div>
                         </li>
                     </ul>
+                </div>
+            </section>
+
+            <!-- API & Modern Web -->
+            <section id="api" class="glass-panel p-8 md:p-12 text-left bg-gradient-to-br from-primary/10 to-transparent">
+                <h2 class="text-3xl font-black tracking-tight mb-6 flex items-center gap-3">
+                    <i class="fas fa-network-wired text-primary"></i> API & Modern Web
+                </h2>
+                <div class="markdown-content space-y-8">
+                    <div>
+                        <h4 class="font-bold text-lg mb-2">📡 JSON API Support</h4>
+                        <p class="text-sm text-slate-600 dark:text-slate-400">Build high-performance backends for mobile apps or SPAs. OFA provides a specialized <code>ApiController</code> and JSON rendering helpers.</p>
+                        <div class="p-4 bg-white/5 border border-white/10 rounded-2xl mt-4 font-mono text-sm">
+                            ./ofa g api order
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 class="font-bold text-lg mb-2">🔐 JWT Authentication</h4>
+                        <p class="text-sm text-slate-600 dark:text-slate-400">Decoupled frontends require token-based auth. OFA automatically generates a <code>JWT_SECRET</code> during initialization and includes a <code>JwtMiddleware</code> to verify incoming requests.</p>
+                        <p class="text-[10px] text-slate-500 mt-2 italic">Note: Tokens are expected in the 'Authorization: Bearer <TOKEN>' header.</p>
+                    </div>
+
+                    <div>
+                        <h4 class="font-bold text-lg mb-2">📝 Swagger/OpenAPI Documentation</h4>
+                        <p class="text-sm text-slate-600 dark:text-slate-400">Keep your API documentation in sync with your code. The <code>ofa swagger</code> command scans your routes and generates a <code>openapi.json</code> file.</p>
+                        <div class="p-4 bg-white/5 border border-white/10 rounded-2xl mt-4 font-mono text-sm">
+                            ./ofa swagger
+                        </div>
+                    </div>
                 </div>
             </section>
 

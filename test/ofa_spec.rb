@@ -132,4 +132,35 @@ describe "Ofa CLI" do
     FileUtils.rm(source_db_path)
     FileUtils.rm(target_db_path)
   end
+
+  it "dapat meng-generate API controller baru" do
+    `./bin/ofa g api Shop`
+    expect(File.exist?("app/controllers/shop_controller.rb")).to be_truthy
+    content = File.read("app/controllers/shop_controller.rb")
+    expect(content).to include("class ShopController < ApiController")
+    expect(content).to include("render_json")
+    FileUtils.rm("app/controllers/shop_controller.rb")
+  end
+
+  it "dapat meng-generate dokumentasi Swagger/OpenAPI" do
+    `./bin/ofa swagger`
+    expect(File.exist?("openapi.json")).to be_truthy
+    config = JSON.parse(File.read("openapi.json"))
+    expect(config["openapi"]).to eq("3.0.0")
+    expect(config["paths"].any?).to be_truthy
+    FileUtils.rm("openapi.json")
+  end
+
+  it "dapat menampilkan daftar rute" do
+    output = `./bin/ofa routes`
+    expect(output).to include("Registered Routes")
+    expect(output).to include("/api/status")
+  end
+
+  it "dapat menjalankan pemeriksaan kesehatan sistem (doctor)" do
+    output = `./bin/ofa doctor`
+    expect(output).to include("One-For-All Doctor")
+    expect(output).to include("Checking .env file")
+    expect(output).to include("Checking Database connection")
+  end
 end

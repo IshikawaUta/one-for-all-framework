@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name          = "one-for-all-framework"
-  spec.version       = "4.2.0"
+  spec.version       = "4.3.0"
   spec.authors       = ["Ishikawa Uta"]
   spec.email         = ["komikers09@gmail.com"]
 
@@ -30,4 +30,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency "mysql2", "~> 0.5"
   spec.add_dependency "kramdown", "~> 2.5"
   spec.add_dependency "kramdown-parser-gfm", "~> 1.1"
+  spec.add_dependency "jwt", "~> 2.10"
 end

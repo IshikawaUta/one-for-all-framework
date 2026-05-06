@@ -4,6 +4,10 @@ Bundler.require(:default)
 require 'eks-cent'
 require 'json'
 require 'kramdown'
+begin
+  require 'jwt'
+rescue LoadError
+end
 
 # Basic project structure constants
 APP_ROOT ||= File.expand_path('..', __dir__)
@@ -74,6 +78,12 @@ module EksCent
 
       @headers['Content-Type'] ||= 'text/html'
       @body << result
+    end
+
+    def json(data, status: 200)
+      @status = status
+      @headers['Content-Type'] = 'application/json'
+      @body << data.to_json
     end
   end
 end

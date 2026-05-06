@@ -2,7 +2,7 @@
   <img src="public/images/logo.png" width="500" height="500" alt="OFA Framework Logo">
 </p>
 
-# ⚡ One-For-All (OFA) Framework v4.2.0
+# ⚡ One-For-All (OFA) Framework v4.3.0
 
 [![Ruby Version](https://img.shields.io/badge/ruby-%3E%3D%203.0.0-red.svg)](https://www.ruby-lang.org/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -21,6 +21,7 @@
 -   **🔐 Enterprise Ready**: Built-in CSRF protection, secure session management, and input validation.
 -   **🌐 Global Support**: Multi-language (I18n) support and SEO optimization ready.
 -   **🖋️ Rich Text Editor**: Integrated Trix Editor for seamless post and page creation with image upload support.
+-   **📡 Modern API**: Built-in JWT support and automated Swagger/OpenAPI documentation.
 
 ---
 
@@ -82,12 +83,19 @@ Boots the high-performance Eksa Server engine.
 ### 🏗️ Generators (Scaffolding)
 #### `ofa g controller NAME`
 *   **Output:** `✅ Created app/controllers/blog_controller.rb`
+#### `ofa g api NAME`
+*   **Output:** `✅ Created app/controllers/shop_controller.rb`
 #### `ofa g model NAME`
 *   **Output:** `✅ Created app/models/product.rb`
 #### `ofa g post TITLE [args]`
 Creates a SEO-optimized blog post with metadata.
 *   **Example:** `./ofa g post "Hello World" --author Antigravity`
 *   **Output:** `✅ Created app/views/posts/hello_world.erb`
+
+### 📡 API & Documentation
+#### `ofa swagger`
+Generates a standards-compliant `openapi.json` file.
+*   **Output:** `✅ Documentation saved to: openapi.json`
 
 ### 📂 Database Management
 #### `ofa db switch TYPE [URL]`
@@ -132,6 +140,7 @@ Securely manages admin credentials.
 | `ofa console` | **Interactive REPL.** Starts a Ruby console pre-loaded with your application environment and models for testing and debugging. |
 | `ofa doctor` | **System Health Check.** Validates `.env` config, database connectivity (SQL/MongoDB), Ruby version, and dependencies. |
 | `ofa routes` | **Route Inspection.** Lists all registered routes in your application in a clean tabular format. |
+| `ofa swagger` | **OpenAPI Generation.** Auto-generates `openapi.json` for your entire application. |
 | `ofa deploy` | **Production Deployment.** Automatically detects deployment targets (Railway/Docker/Git). |
 
 ---
@@ -142,6 +151,7 @@ Automate the creation of boilerplate code with the generator command.
 | Command | Description |
 | :--- | :--- |
 | `ofa g controller NAME` | Creates a new controller in `app/controllers/{name}_controller.rb` with a default `index` action. |
+| `ofa g api NAME` | Creates a JSON-based controller in `app/controllers/{name}_controller.rb` inheriting from `ApiController`. |
 | `ofa g model NAME` | Generates a database model in `app/models/{name}.rb` integrated with the Sequel ORM. |
 | `ofa g migration NAME` | Creates a timestamped migration file in `db/migrations/`. Use this to define your schema changes. |
 | `ofa g post TITLE` | Creates a new Markdown/ERB post in `app/views/posts/`. <br> *Args:* `--category`, `--author`, `--image`. <br> *Example:* `./ofa g post "My First Journey" --category Tech --author "John Doe"` |

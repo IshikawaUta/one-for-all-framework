@@ -27,6 +27,10 @@ class ApplicationController
     @res.headers['Location'] = path
   end
 
+  def render_json(data, status: 200)
+    @res.json(data, status: status)
+  end
+
   # Validation Helper
   def validate!(required_params)
     missing = required_params.select { |p| params[p.to_s].nil? || params[p.to_s].empty? }
