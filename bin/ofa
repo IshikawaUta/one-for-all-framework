@@ -33,7 +33,7 @@ def help
   puts "  / __ \\/ ____/  /   |                      "
   puts " / / / / /_     / /| |  Framework           "
   puts "/ /_/ / __/    / ___ |  Premium MVC         "
-  puts "\\____/_/      /_/  |_|  v5.0.0              "
+  puts "\\____/_/      /_/  |_|  v5.2.0              "
   puts "                                            "
   puts "✨ One-For-All Framework CLI ✨"
   puts "-----------------------------"
@@ -93,6 +93,7 @@ end
 def perform_db_migration(target_type, target_name)
   # 1. Initialize source environment
   Object.const_set(:APP_ROOT, PROJECT_ROOT) unless defined?(APP_ROOT)
+  ENV['SKIP_MODELS'] = '1'
   require File.join(FRAMEWORK_ROOT, 'config', 'boot')
   source_db = DB
   
@@ -196,7 +197,7 @@ def perform_db_migration(target_type, target_name)
 
   # 5. Update configuration to point to new DB
   absolute_ofa_path = File.expand_path(__FILE__)
-  system("ruby #{absolute_ofa_path} db switch #{target_type} #{target_name}")
+  system("ruby #{absolute_ofa_path} db switch #{target_type} \"#{target_name}\"")
 
   puts "✅ Migration successful!"
 end
@@ -248,7 +249,7 @@ when 'init'
   puts "  / __ \\/ ____/  /   |                      "
   puts " / / / / /_     / /| |  Framework           "
   puts "/ /_/ / __/    / ___ |  Premium MVC         "
-  puts "\\____/_/      /_/  |_|  v5.0.0              "
+  puts "\\____/_/      /_/  |_|  v5.2.0              "
   puts "                                            "
   puts "Initializing One-For-All project as '#{app_type}' in #{PROJECT_ROOT}..."
 
@@ -861,7 +862,7 @@ when 'console'
   puts "  / __ \\/ ____/  /   |                      "
   puts " / / / / /_     / /| |  Framework           "
   puts "/ /_/ / __/    / ___ |  Console (REPL)      "
-  puts "\\____/_/      /_/  |_|  v5.0.0              "
+  puts "\\____/_/      /_/  |_|  v5.2.0              "
   puts "                                            "
   puts "✨ Loading environment... (Type 'exit' to quit)"
   
