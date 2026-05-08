@@ -116,6 +116,97 @@
                 <div class="text-lg font-black text-slate-700 dark:text-white uppercase tracking-wider truncate"><%= FEATURES_CONFIG['storage'] || 'Local Cluster' %></div>
             </div>
         </div>
+        
+        <!-- System Analytics Chart -->
+        <div class="glass-card !p-8 group">
+            <div class="card-glow !bg-primary/5"></div>
+            <div class="flex items-center justify-between mb-8">
+                <div>
+                    <h3 class="text-2xl font-black tracking-tighter text-slate-700 dark:text-white">System Analytics</h3>
+                    <p class="text-slate-500 text-sm">Real-time content distribution and user growth</p>
+                </div>
+                <div class="flex gap-2">
+                    <span class="w-3 h-3 rounded-full bg-primary animate-pulse"></span>
+                    <span class="text-[10px] font-bold text-primary uppercase tracking-widest">Live Data</span>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="relative h-[300px] w-full">
+                    <canvas id="statsChart"></canvas>
+                </div>
+                <div class="space-y-6">
+                    <div class="p-6 rounded-3xl bg-white/5 border border-white/10 hover:border-primary/30 transition-all group/stat">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-slate-500 font-bold text-xs uppercase tracking-widest">Active Users</span>
+                            <i class="fas fa-users text-primary"></i>
+                        </div>
+                        <div class="text-3xl font-black text-slate-700 dark:text-white tracking-tighter"><%= @stats[:users] %></div>
+                    </div>
+                    <div class="p-6 rounded-3xl bg-white/5 border border-white/10 hover:border-primary/30 transition-all group/stat">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-slate-500 font-bold text-xs uppercase tracking-widest">Total Assets</span>
+                            <i class="fas fa-database text-secondary"></i>
+                        </div>
+                        <div class="text-3xl font-black text-slate-700 dark:text-white tracking-tighter"><%= @stats[:pages] + @stats[:posts] + @stats[:projects] + @stats[:products] %></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const ctx = document.getElementById('statsChart').getContext('2d');
+                
+                const stats = {
+                    pages: <%= @stats[:pages] %>,
+                    posts: <%= @stats[:posts] %>,
+                    projects: <%= @stats[:projects] %>,
+                    products: <%= @stats[:products] %>,
+                    users: <%= @stats[:users] %>
+                };
+
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Pages', 'Posts', 'Projects', 'Products', 'Users'],
+                        datasets: [{
+                            data: [stats.pages, stats.posts, stats.projects, stats.products, stats.users],
+                            backgroundColor: [
+                                '#4f46e5', // Primary (Indigo)
+                                '#8b5cf6', // Secondary (Purple)
+                                '#10b981', // Green
+                                '#f59e0b', // Orange
+                                '#ec4899'  // Pink
+                            ],
+                            borderWidth: 0,
+                            hoverOffset: 20
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '75%',
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'bottom',
+                                labels: {
+                                    color: document.documentElement.classList.contains('dark') ? '#94a3b8' : '#64748b',
+                                    font: {
+                                        family: 'Outfit',
+                                        weight: '600',
+                                        size: 12
+                                    },
+                                    padding: 20,
+                                    usePointStyle: true
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+        </script>
 
         <div class="glass-card !p-12 bg-gradient-to-br from-primary/5 to-transparent border-primary/10 text-left">
             <div class="max-w-xl">

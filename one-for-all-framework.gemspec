@@ -1,10 +1,10 @@
 Gem::Specification.new do |spec|
   spec.name          = "one-for-all-framework"
-  spec.version       = "4.5.0"
+  spec.version       = "5.0.0"
   spec.authors       = ["Ishikawa Uta"]
   spec.email         = ["komikers09@gmail.com"]
 
-  spec.summary       = "A premium, ultra-fast Ruby MVC framework with Glassmorphism UI."
+  spec.summary       = "Modern & Powerfull web application framework."
   spec.description   = "One-For-All is a high-performance Ruby web framework built for speed and aesthetics. It features a built-in CMS, premium Glassmorphism design, and supports multiple databases including SQLite, MySQL, and MongoDB."
   spec.homepage      = "https://github.com/ishikawauta/one-for-all-framework"
   spec.license       = "MIT"

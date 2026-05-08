@@ -8,7 +8,8 @@ class DashboardController < ApplicationController
       pages: Page.count,
       posts: Post.count,
       projects: Project.count,
-      products: defined?(Product) ? Product.count : 0
+      products: defined?(Product) ? Product.count : 0,
+      users: User.count
     }
     render 'dashboard'
   end

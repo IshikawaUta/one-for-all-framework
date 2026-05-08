@@ -2,13 +2,13 @@
   <img src="public/images/logo.png" width="500" height="500" alt="OFA Framework Logo">
 </p>
 
-# ⚡ One-For-All (OFA) Framework v4.5.0
+# ⚡ One-For-All (OFA) Framework v5.0.0
 
 [![Ruby Version](https://img.shields.io/badge/ruby-%3E%3D%203.0.0-red.svg)](https://www.ruby-lang.org/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Framework](https://img.shields.io/badge/MVC-Lightweight-orange.svg)]()
 
-**One-For-All (OFA)** is a premium, ultra-fast Ruby MVC framework designed for developers who value both high performance and modern aesthetics. Built on the powerful **Eks-Cent** engine and optimized with **Eksa Server**, OFA v3.0 now supports **Full E-Commerce integration** alongside its stunning "Glassmorphism" UI.
+**One-For-All (OFA)** is a modern and powerful web application framework designed for developers who value high performance, scalability, and premium aesthetics. Built on the high-performance **Eksa Server** engine, OFA v5.0.0 introduces advanced dashboard analytics, native Lucide icon support, and a robust plugin architecture.
 
 ---
 
@@ -24,6 +24,8 @@
 -   **📡 Modern API**: Built-in JWT support and automated Swagger/OpenAPI documentation.
 -   **🚧 Maintenance Mode**: Instantly toggle "Under Construction" mode via CLI.
 -   **🔍 Activity Logs**: Full audit trail in CMS to monitor user actions and security.
+-   **📊 Dashboard Analytics**: Integrated Chart.js for real-time content and user statistics.
+-   **🎨 Lucide Icons**: Native support for modern, lightweight Lucide icon set.
 -   **🔌 Plugin System**: Modular architecture to extend the framework with custom add-ons.
 
 ---

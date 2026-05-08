@@ -1,6 +1,6 @@
 <div class="space-y-12 pb-20">
     <div class="text-left">
-        <div class="badge-premium">Documentation v4.5.0</div>
+        <div class="badge-premium">Documentation v5.0.0</div>
         <h1 class="text-5xl font-black tracking-tighter mb-4 text-slate-700 dark:text-white">Framework <span class="text-primary">Guide</span></h1>
         <p class="text-xl text-slate-500 max-w-2xl leading-relaxed">Everything you need to know about building premium web applications with the One-For-All framework.</p>
     </div>
@@ -15,6 +15,7 @@
                 <a href="#structure" class="block px-4 py-2 rounded-xl hover:bg-primary/5 text-slate-600 hover:text-primary transition-all font-semibold border-l-2 border-transparent hover:border-primary">Project Structure</a>
                 <a href="#routing" class="block px-4 py-2 rounded-xl hover:bg-primary/5 text-slate-600 hover:text-primary transition-all font-semibold border-l-2 border-transparent hover:border-primary">Routing System</a>
                 <a href="#cms" class="block px-4 py-2 rounded-xl hover:bg-primary/5 text-slate-600 hover:text-primary transition-all font-semibold border-l-2 border-transparent hover:border-primary">CMS & Features</a>
+                <a href="#uiux" class="block px-4 py-2 rounded-xl hover:bg-primary/5 text-slate-600 hover:text-primary transition-all font-semibold border-l-2 border-transparent hover:border-primary">UI/UX & Analytics</a>
                 <a href="#ecommerce" class="block px-4 py-2 rounded-xl hover:bg-primary/5 text-slate-600 hover:text-primary transition-all font-semibold border-l-2 border-transparent hover:border-primary">E-Commerce</a>
                 <a href="#api" class="block px-4 py-2 rounded-xl hover:bg-primary/5 text-slate-600 hover:text-primary transition-all font-semibold border-l-2 border-transparent hover:border-primary">API & Modern Web</a>
                 <a href="#advanced" class="block px-4 py-2 rounded-xl hover:bg-primary/5 text-slate-600 hover:text-primary transition-all font-semibold border-l-2 border-transparent hover:border-primary">Mailers & Background Jobs</a>
@@ -32,7 +33,7 @@
                     <i class="fas fa-star text-primary"></i> Introduction
                 </h2>
                 <div class="markdown-content">
-                    <p><strong>One-For-All (OFA)</strong> is a premium, ultra-fast Ruby MVC framework designed for developers who value both high performance and modern aesthetics. Built on the powerful <strong>Eks-Cent</strong> engine and optimized with <strong>Eksa Server</strong>, OFA v3.0 now supports <strong>Full E-Commerce integration</strong> alongside its stunning "Glassmorphism" UI.</p>
+                    <p><strong>One-For-All (OFA)</strong> is a modern and powerful web application framework designed for developers who value high performance, scalability, and premium aesthetics. Built on the high-performance <strong>Eksa Server</strong> engine, OFA v5.0.0 introduces advanced dashboard analytics, native Lucide icon support, and a robust plugin architecture.</p>
                     <p>Our philosophy is "Premium by Default". You shouldn't have to spend hours tweaking CSS just to get a modern look. With OFA, you get Glassmorphism, animations, and responsive layouts baked in.</p>
                 </div>
             </section>
@@ -327,6 +328,36 @@ resources :posts
                         <li>• <strong>Admin Bypass:</strong> Logged-in administrators can still view and manage the site while maintenance is active.</li>
                         <li>• <strong>Premium Design:</strong> Features a high-quality Glassmorphism roket animation to keep your brand looking professional even when offline.</li>
                         <li>• <strong>Dynamic Updates:</strong> Changes take effect instantly without requiring a server restart.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- UI/UX & Analytics -->
+            <section id="uiux" class="glass-panel p-8 md:p-12 text-left bg-gradient-to-br from-secondary/10 to-transparent">
+                <h2 class="text-3xl font-black tracking-tight mb-6 flex items-center gap-3">
+                    <i class="fas fa-wand-magic-sparkles text-primary"></i> UI/UX & Analytics
+                </h2>
+                <div class="markdown-content">
+                    <p>Version 5.0.0 brings significant enhancements to the visual and analytical capabilities of the framework.</p>
+                    
+                    <h4 class="font-bold text-lg mt-8 mb-4">📊 Dashboard Analytics (Chart.js)</h4>
+                    <p class="text-sm text-slate-500 mb-4">The CMS dashboard now includes real-time visualizations of your application's data. Powered by Chart.js, the analytics widget provides a clear overview of your content distribution and user growth.</p>
+                    <ul class="text-xs space-y-2 text-slate-600 dark:text-slate-400">
+                        <li>• <strong>Doughnut Chart:</strong> Visualizes the ratio of pages, posts, projects, products, and users.</li>
+                        <li>• <strong>Live Stats:</strong> Real-time counters for "Active Users" and "Total Assets".</li>
+                        <li>• <strong>Theme-Aware:</strong> The chart's colors and legend automatically adjust to match your chosen theme (Light/Dark).</li>
+                    </ul>
+
+                    <h4 class="font-bold text-lg mt-8 mb-4">🎨 Lucide Icons Integration</h4>
+                    <p class="text-sm text-slate-500 mb-4">In addition to FontAwesome, OFA now natively supports **Lucide Icons**. Lucide provides a modern, lightweight, and consistent set of SVG icons that fit perfectly with the framework's minimalist aesthetic.</p>
+                    <div class="p-4 bg-white/5 border border-white/10 rounded-2xl mb-4">
+                        <p class="text-xs text-slate-500 mb-2">Usage Example:</p>
+                        <code class="text-primary">&lt;i data-lucide="rocket"&gt;&lt;/i&gt;</code>
+                    </div>
+                    <ul class="text-xs space-y-2 text-slate-600 dark:text-slate-400">
+                        <li>• <strong>Automatic Replacement:</strong> Icons are automatically initialized and rendered on page load.</li>
+                        <li>• <strong>SVG Based:</strong> Scalable and CSS-stylable icons without the overhead of webfonts.</li>
+                        <li>• <strong>Vast Library:</strong> Access to hundreds of modern icons for any use case.</li>
                     </ul>
                 </div>
             </section>

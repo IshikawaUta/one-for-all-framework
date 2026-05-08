@@ -15,6 +15,15 @@ class User < Sequel::Model
     defined?(MONGO_CLIENT) && MONGO_CLIENT
   end
 
+  # Override count for Mongo support
+  def self.count
+    if mongo?
+      MONGO_CLIENT[:users].count_documents
+    else
+      super
+    end
+  end
+
   # Override find for Mongo support
   def self.find(params)
     if mongo?

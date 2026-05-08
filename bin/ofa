@@ -33,7 +33,7 @@ def help
   puts "  / __ \\/ ____/  /   |                      "
   puts " / / / / /_     / /| |  Framework           "
   puts "/ /_/ / __/    / ___ |  Premium MVC         "
-  puts "\\____/_/      /_/  |_|  v4.5.0              "
+  puts "\\____/_/      /_/  |_|  v5.0.0              "
   puts "                                            "
   puts "✨ One-For-All Framework CLI ✨"
   puts "-----------------------------"
@@ -248,7 +248,7 @@ when 'init'
   puts "  / __ \\/ ____/  /   |                      "
   puts " / / / / /_     / /| |  Framework           "
   puts "/ /_/ / __/    / ___ |  Premium MVC         "
-  puts "\\____/_/      /_/  |_|  v4.5.0              "
+  puts "\\____/_/      /_/  |_|  v5.0.0              "
   puts "                                            "
   puts "Initializing One-For-All project as '#{app_type}' in #{PROJECT_ROOT}..."
 
@@ -861,7 +861,7 @@ when 'console'
   puts "  / __ \\/ ____/  /   |                      "
   puts " / / / / /_     / /| |  Framework           "
   puts "/ /_/ / __/    / ___ |  Console (REPL)      "
-  puts "\\____/_/      /_/  |_|  v4.5.0              "
+  puts "\\____/_/      /_/  |_|  v5.0.0              "
   puts "                                            "
   puts "✨ Loading environment... (Type 'exit' to quit)"
   
