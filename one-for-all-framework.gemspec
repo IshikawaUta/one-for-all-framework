@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name          = "one-for-all-framework"
-  spec.version       = "5.0.0"
+  spec.version       = "5.1.0"
   spec.authors       = ["Ishikawa Uta"]
   spec.email         = ["komikers09@gmail.com"]
 
@@ -14,7 +14,7 @@ Gem::Specification.new do |spec|
   spec.metadata["bug_tracker_uri"] = "#{spec.homepage}/issues"
 
   # Specify which files should be added to the gem when it is released.
-  spec.files = Dir.glob("{app,bin,config,db,public}/**/*") + ["LICENSE", "README.md", "ofa", "config.ru", "config.eks", "Gemfile", "Procfile", "Dockerfile", ".env.example", ".gitignore"]
+  spec.files = Dir.glob("{app,bin,config,db,lib,public}/**/*") + ["LICENSE", "README.md", "ofa", "config.ru", "config.eks", "Gemfile", "Procfile", "Dockerfile", ".env.example", ".gitignore"]
   spec.bindir        = "bin"
   spec.executables   = ["ofa"]
   spec.require_paths = ["lib"]
