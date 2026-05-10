@@ -1,1 +1,1 @@
-web: ./ofa run
+web: bundle exec ofa run

@@ -283,33 +283,100 @@
 
         .nav-item {
             color: #64748b;
-            font-weight: 600;
-            transition: color 0.3s;
+            font-weight: 700;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            padding: 0.5rem 0;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .nav-item::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transition: width 0.3s ease;
+            border-radius: 99px;
+        }
+
+        .nav-item:hover::after, .nav-item.active::after {
+            width: 100%;
         }
 
         .nav-item:hover, .nav-item.active {
             color: var(--primary);
+            transform: translateY(-1px);
         }
 
         /* Markdown Overrides */
-        .markdown-content { text-align: left; line-height: 1.6; }
-        .markdown-content h1 { font-size: 2.25rem; font-weight: 800; margin: 2rem 0 1rem; color: var(--primary); }
-        .markdown-content p { font-size: 1.125rem; color: #475569; margin-bottom: 1.5rem; }
+        .markdown-content { text-align: left; line-height: 1.8; color: #475569; overflow-x: auto; }
+        .markdown-content h1 { font-size: 2.5rem; font-weight: 900; margin: 2.5rem 0 1.5rem; color: var(--primary); letter-spacing: -0.02em; line-height: 1.2; }
+        .markdown-content h2 { font-size: 2rem; font-weight: 800; margin: 2.5rem 0 1.25rem; color: var(--primary); letter-spacing: -0.01em; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 0.5rem; }
+        .markdown-content h3 { font-size: 1.5rem; font-weight: 800; margin: 2rem 0 1rem; color: var(--secondary); }
+        .markdown-content h4 { font-size: 1.25rem; font-weight: 700; margin: 1.5rem 0 0.75rem; color: var(--primary); }
+        .markdown-content p { font-size: 1.1rem; margin-bottom: 1.5rem; }
         .markdown-content ul { list-style-type: disc !important; margin-left: 1.5rem !important; margin-bottom: 1.5rem !important; display: block !important; }
         .markdown-content ol { list-style-type: decimal !important; margin-left: 1.5rem !important; margin-bottom: 1.5rem !important; display: block !important; }
         .markdown-content li { margin-bottom: 0.5rem !important; display: list-item !important; }
-        .markdown-content blockquote { border-left: 4px solid var(--primary); padding: 1rem 0 1rem 1.5rem; font-style: italic; margin: 1.5rem 0; color: #64748b; background: rgba(255, 255, 255, 0.03); }
-        .markdown-content pre { background: rgba(0,0,0,0.05); padding: 1.25rem; border-radius: 1rem; overflow-x: auto; font-family: 'Fira Code', monospace; margin: 1.5rem 0; line-height: 1.4; border: 1px solid rgba(0,0,0,0.1); }
-        .markdown-content code { background: rgba(0,0,0,0.05); padding: 0.2rem 0.4rem; border-radius: 0.4rem; font-family: 'Fira Code', monospace; font-size: 0.9em; }
-        .markdown-content figcaption { text-align: center; color: #64748b; opacity: 0.6; font-size: 0.85rem; margin-top: 0.75rem; font-style: italic; line-height: 1.4; }
-        .markdown-content a { color: var(--primary); font-weight: 700; text-decoration: none; border-bottom: 1px dashed var(--primary); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .markdown-content a:hover { color: var(--secondary); border-bottom: 1px solid var(--secondary); opacity: 0.8; }
+        .markdown-content blockquote { border-left: 4px solid var(--primary); padding: 1rem 1.5rem; font-style: italic; margin: 2rem 0; color: #64748b; background: rgba(var(--primary-rgb), 0.05); border-radius: 0 1rem 1rem 0; }
+        .markdown-content pre { background: #0f172a; padding: 1.5rem; border-radius: 1.25rem; overflow-x: auto; font-family: 'Fira Code', monospace; margin: 2rem 0; line-height: 1.5; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5); }
+        .markdown-content code { background: rgba(0,0,0,0.05); padding: 0.2rem 0.4rem; border-radius: 0.4rem; font-family: 'Fira Code', monospace; font-size: 0.9em; color: var(--primary); font-weight: 600; }
+        .markdown-content img { border-radius: 1.5rem; margin: 2rem auto; display: block; border: 1px solid rgba(0,0,0,0.05); transition: transform 0.3s ease; }
+        .markdown-content img:hover { transform: scale(1.01); }
+        .markdown-content table { 
+            width: 100%; 
+            border-collapse: separate; 
+            border-spacing: 0; 
+            margin: 2.5rem 0; 
+            border: 1px solid rgba(0,0,0,0.1); 
+            border-radius: 1.5rem; 
+            overflow: hidden; 
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.1);
+        }
+        .markdown-content th { 
+            background: linear-gradient(135deg, var(--primary), var(--secondary)); 
+            color: white !important; 
+            padding: 1.25rem 1.5rem; 
+            font-weight: 800; 
+            text-transform: uppercase; 
+            font-size: 0.7rem; 
+            text-align: left !important; 
+            letter-spacing: 0.1em; 
+            border: none;
+        }
+        .markdown-content td { 
+            padding: 1.25rem 1.5rem; 
+            border-bottom: 1px solid rgba(0,0,0,0.05); 
+            font-size: 0.9rem; 
+            color: #475569; 
+            vertical-align: top;
+            line-height: 1.6;
+        }
+        .markdown-content tr:last-child td { border-bottom: none; }
+        .markdown-content tr:nth-child(even) { background: rgba(0,0,0,0.02); }
+        .markdown-content tr:hover { background: rgba(0,0,0,0.04); transition: background 0.3s; }
+        .markdown-content code { white-space: pre-wrap; word-break: break-word; }
+        .markdown-content pre code { white-space: pre; word-break: normal; }
+        .markdown-content a { color: var(--primary); font-weight: 700; text-decoration: none; border-bottom: 1px dashed var(--primary); transition: all 0.3s; }
+        .markdown-content a:hover { color: var(--secondary); border-bottom-style: solid; }
         
-        .dark .markdown-content p { color: #cbd5e1; }
-        .dark .markdown-content ul, .dark .markdown-content ol { color: #cbd5e1; }
-        .dark .markdown-content blockquote { color: #94a3b8; background: rgba(255, 255, 255, 0.03); }
-        .dark .markdown-content pre { background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.1); color: #e2e8f0; }
-        .dark .markdown-content code { background: rgba(255,255,255,0.1); color: var(--primary); }
+        .dark .markdown-content table { 
+            background: rgba(15, 23, 42, 0.6); 
+            border-color: rgba(255,255,255,0.1); 
+            box-shadow: 0 20px 40px -12px rgba(0,0,0,0.5);
+        }
+        .dark .markdown-content td { 
+            border-color: rgba(255,255,255,0.05); 
+            color: #94a3b8; 
+        }
+        .dark .markdown-content tr:nth-child(even) { background: rgba(255,255,255,0.03); }
+        .dark .markdown-content tr:hover { background: rgba(255,255,255,0.05); }
 
         /* Code Copy Button */
         .code-wrapper { position: relative; margin: 1.5rem 0; }
@@ -498,7 +565,7 @@
         </header>
 
         <!-- Main Content Area -->
-        <main class="flex-1 md:ml-64 p-6 md:p-12 pt-24 md:pt-12">
+        <main class="flex-1 md:ml-64 p-4 md:p-12 pt-24 md:pt-12 min-w-0 w-full">
             <div class="max-w-5xl mx-auto">
                 <%= @content %>
             </div>
@@ -518,14 +585,14 @@
             </div>
             
             <ul class="hidden md:flex items-center gap-8">
-                <li><a href="/" class="nav-item <%= req.path == '/' ? 'active' : '' %>">Home</a></li>
+                <li><a href="/" class="nav-item <%= req.path == '/' ? 'active' : '' %>"><i class="fas fa-house mr-2 text-sm opacity-70"></i> Home</a></li>
                 <% if FEATURES_CONFIG['type'] == 'e_commerce' %>
-                    <li><a href="/cart" class="nav-item <%= req.path == '/cart' ? 'active' : '' %>"><i class="fas fa-shopping-cart mr-1"></i> Cart</a></li>
+                    <li><a href="/cart" class="nav-item <%= req.path == '/cart' ? 'active' : '' %>"><i class="fas fa-shopping-cart mr-2 text-sm opacity-70"></i> Cart</a></li>
                 <% end %>
                 <% Page.where(is_nav: true, is_active: true).all.each do |p| %>
-                    <li><a href="/<%= p.slug %>" class="nav-item <%= req.path == "/#{p.slug}" ? 'active' : '' %>"><%= p.title %></a></li>
+                    <li><a href="/<%= p.slug %>" class="nav-item <%= req.path == "/#{p.slug}" ? 'active' : '' %>"><i class="fas fa-file-lines mr-2 text-sm opacity-70"></i> <%= p.title %></a></li>
                 <% end %>
-                <li><a href="/dashboard" class="nav-item <%= req.path.start_with?('/dashboard') ? 'active' : '' %>">Dashboard</a></li>
+                <li><a href="/dashboard" class="nav-item <%= req.path.start_with?('/dashboard') ? 'active' : '' %>"><i class="fas fa-gauge-high mr-2 text-sm opacity-70"></i> Dashboard</a></li>
             </ul>
 
             <div class="flex items-center gap-4">
@@ -561,7 +628,7 @@
             
             <nav class="flex flex-col gap-6">
                 <a href="/" class="text-lg font-bold <%= req.path == '/' ? 'text-primary' : 'text-slate-500' %>">
-                    <i class="fas fa-home w-8"></i> Home
+                    <i class="fas fa-house w-8"></i> Home
                 </a>
                 <% if FEATURES_CONFIG['type'] == 'e_commerce' %>
                     <a href="/cart" class="text-lg font-bold <%= req.path == '/cart' ? 'text-primary' : 'text-slate-500' %>">
@@ -570,7 +637,7 @@
                 <% end %>
                 <% Page.where(is_nav: true, is_active: true).all.each do |p| %>
                     <a href="/<%= p.slug %>" class="text-lg font-bold <%= req.path == "/#{p.slug}" ? 'text-primary' : 'text-slate-500' %>">
-                        <i class="fas fa-file-alt w-8"></i> <%= p.title %>
+                        <i class="fas fa-file-lines w-8"></i> <%= p.title %>
                     </a>
                 <% end %>
                 <div class="h-px <%= ['light_sidebar', 'light_glass'].include?(FEATURES_CONFIG['theme']) ? 'bg-black/10' : 'bg-white/5' %> my-2"></div>

@@ -1,14 +1,17 @@
-<div class="glass-card anime-element" style="text-align: left; max-width: 800px; margin: 0 auto;">
-    <div style="margin-bottom: 2rem;">
-        <span class="badge" style="background: var(--primary); color: white; padding: 0.3rem 0.8rem; border-radius: 0.5rem; font-size: 0.8rem; font-weight: 700;">
-            <%= @post.category.upcase %>
-        </span>
-        <h1 style="margin: 1rem 0 0.5rem 0; font-size: 3rem; line-height: 1.1;"><%= @post.title %></h1>
-        <p style="color: var(--text-muted); font-size: 0.95rem;">Published on <%= @post.created_at.strftime('%B %d, %Y') %></p>
+<div class="glass-card anime-element !p-6 md:!p-12 text-left max-w-4xl mx-auto">
+    <div class="mb-8 md:mb-12">
+        <div class="badge-premium"><%= @post.category %></div>
+        <h1 class="text-3xl md:text-5xl font-black mb-4 leading-tight"><%= @post.title %></h1>
+        <p class="text-slate-500 dark:text-slate-400 text-sm md:text-base flex items-center gap-2">
+            <i class="far fa-calendar-alt"></i> Diterbitkan pada <%= @post.created_at.strftime('%d %B %Y') %>
+        </p>
     </div>
 
     <% if @post.image_url && !@post.image_url.empty? %>
-        <img src="<%= @post.image_url %>" alt="<%= @post.title %>" style="width: 100%; max-height: 400px; object-fit: cover; border-radius: 1.5rem; margin-bottom: 2.5rem; border: 1px solid var(--border);">
+        <div class="relative rounded-2xl md:rounded-3xl overflow-hidden mb-8 md:mb-12 border border-white/10">
+            <img src="<%= @post.image_url %>" alt="<%= @post.title %>" class="w-full h-auto max-h-[500px] object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+        </div>
     <% end %>
 
     <div class="post-content markdown-content">
@@ -16,8 +19,8 @@
     </div>
 
     <div class="mt-12 pt-8 border-t border-white/5">
-        <a href="/" class="btn-secondary">
-            <i class="fas fa-arrow-left mr-2"></i> Back to Blog
+        <a href="/" class="btn-secondary w-full sm:w-auto">
+            <i class="fas fa-arrow-left mr-2"></i> Kembali ke Blog
         </a>
     </div>
 </div>

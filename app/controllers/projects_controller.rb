@@ -16,6 +16,7 @@ class ProjectsController < ApplicationController
     data['is_active'] = boolean_param(data['is_active'])
     @project = Project.new(data)
     if @project.save
+      log_activity("Created project: #{@project.title}", @project, "Link: #{@project.link}")
       redirect_to '/dashboard/projects'
     else
       render 'cms/projects_form'
@@ -32,6 +33,7 @@ class ProjectsController < ApplicationController
     data = params['project']
     data['is_active'] = boolean_param(data['is_active'])
     if @project.update(data)
+      log_activity("Updated project: #{@project.title}", @project, "New Data: #{data.to_json}")
       redirect_to '/dashboard/projects'
     else
       render 'cms/projects_form'
@@ -42,7 +44,9 @@ class ProjectsController < ApplicationController
     @project = Project[params['id']]
     delete_from_storage(@project.image_url) if @project.respond_to?(:image_url)
     delete_all_images_from_content(@project.description) if @project.respond_to?(:description)
+    title = @project.title
     @project.destroy
+    log_activity("Deleted project: #{title}")
     redirect_to '/dashboard/projects'
   end
 end

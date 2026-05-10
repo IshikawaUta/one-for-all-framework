@@ -1,3 +1,5 @@
+Encoding.default_external = Encoding::UTF_8
+Encoding.default_internal = Encoding::UTF_8
 require 'bundler/setup'
 require 'dotenv/load'
 Bundler.require(:default)
@@ -40,7 +42,7 @@ module EksCent
         raise "Template not found: #{template_path}"
       end
 
-      template_content = File.read(template_path)
+      template_content = File.read(template_path, encoding: 'UTF-8')
       context = Object.new
       context.extend(ERB::Util)
       req = @request
@@ -64,17 +66,20 @@ module EksCent
       
       context.define_singleton_method(:session) { req ? (req.env['eks_cent.session'] || req.env['rack.session'] || {}) : {} }
       context.define_singleton_method(:h) { |s| CGI.escapeHTML(s.to_s) }
-      locals.each { |k, v| context.instance_variable_set("@#{k}", v) }
+      locals.each do |k, v|
+        v = v.force_encoding('UTF-8') if v.is_a?(String) && v.encoding == Encoding::BINARY
+        context.instance_variable_set("@#{k}", v)
+      end
       
-      result = ERB.new(template_content).result(context.instance_eval { binding })
+      result = ERB.new(template_content).result(context.instance_eval { binding }).force_encoding('UTF-8')
 
       if layout
         layout_name = layout == true ? 'layout' : layout.to_s
         layout_path = File.join(APP_ROOT, 'app', 'views', "#{layout_name}.erb")
         if File.file?(layout_path)
           context.instance_variable_set("@content", result)
-          layout_content = File.read(layout_path)
-          result = ERB.new(layout_content).result(context.instance_eval { binding })
+          layout_content = File.read(layout_path, encoding: 'UTF-8')
+          result = ERB.new(layout_content).result(context.instance_eval { binding }).force_encoding('UTF-8')
         end
       end
 

@@ -16,4 +16,4 @@ RUN bundle install
 EXPOSE 3000
 
 # Start command
-CMD ["./ofa", "run"]
+CMD ["bundle", "exec", "ofa", "run"]

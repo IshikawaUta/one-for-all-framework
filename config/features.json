@@ -2,8 +2,8 @@
   "auth": true,
   "cms": true,
   "type": "landing_page",
-  "theme": "light_sidebar",
+  "theme": "light_glass",
   "storage": "cloudinary",
-  "rich_text": true,
+  "rich_text": false,
   "maintenance": false
 }

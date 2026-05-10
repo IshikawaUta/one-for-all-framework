@@ -22,6 +22,7 @@ class AuthController < ApplicationController
       session['username'] = user.username
       session['last_active_at'] = Time.now.to_i
       
+      log_activity("User logged in: #{user.username}")
       redirect_to '/dashboard'
     else
       render 'login', title: 'Login - One-For-All', error: 'Invalid credentials'
@@ -29,6 +30,7 @@ class AuthController < ApplicationController
   end
 
   def logout
+    log_activity("User logged out: #{session['username']}")
     ['user_id', :user_id, 'username', :username, 'last_active_at', :last_active_at].each { |k| session.delete(k) }
     redirect_to '/login'
   end

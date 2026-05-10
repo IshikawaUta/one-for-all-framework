@@ -20,6 +20,7 @@ class ProductsController < ApplicationController
     data = params['product']
     @product = Product.new(data)
     if @product.save
+      log_activity("Created product: #{@product.name}", @product, "Price: #{@product.price}")
       redirect_to '/dashboard/products'
     else
       render 'cms/products_form'
@@ -33,7 +34,9 @@ class ProductsController < ApplicationController
 
   def update
     @product = Product[params['id']]
-    if @product.update(params['product'])
+    data = params['product']
+    if @product.update(data)
+      log_activity("Updated product: #{@product.name}", @product, "New Data: #{data.to_json}")
       redirect_to '/dashboard/products'
     else
       render 'cms/products_form'
@@ -42,7 +45,9 @@ class ProductsController < ApplicationController
 
   def destroy
     @product = Product[params['id']]
+    name = @product.name
     @product.destroy
+    log_activity("Deleted product: #{name}")
     redirect_to '/dashboard/products'
   end
 
